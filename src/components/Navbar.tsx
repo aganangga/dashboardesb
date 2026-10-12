@@ -36,15 +36,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div>
               <div className="flex items-center space-x-2">
                 <h1 className="text-lg font-bold tracking-tight text-slate-900">
-                  Dashboard Monitoring Visit &amp; Check In-Out
+                  Monitoring Kunjungan ESB
                 </h1>
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                   <ShieldCheck className="w-3 h-3 mr-1" />
-                  Live Sync
+                  Data Terfilter
                 </span>
               </div>
               <p className="text-xs text-slate-500">
-                Breakdown Tanggal, Area, SPV, Konsulting, Support &amp; Team, Book Type &amp; Komparasi Check In-Out
+                Kunjungan, produktivitas tim, dan kualitas check-in/out
               </p>
             </div>
           </div>
