@@ -3,6 +3,7 @@ import { DEFAULT_RAW_CSV } from './data/rawCsv';
 import { DEFAULT_COLUMN_MAPPING, parseCsvString, processRawData, resolveColumnMapping, buildConsultantTeamGroupings, getSupportNickname, getAvailableMonthsFromRecords, getDedicatedSupportTeamsForConsultant } from './utils/dataProcessor';
 import { ColumnMapping, FilterState, ProcessedRecord, RawDataRow, ConsultantGrouping } from './types';
 import { Navbar } from './components/Navbar';
+import { ModernSidebar } from './components/ModernSidebar';
 import { FilterBar } from './components/FilterBar';
 import { SummaryCards } from './components/SummaryCards';
 import { DailyVisitTrendChart } from './components/DailyVisitTrendChart';
@@ -405,7 +406,9 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-indigo-600 selection:text-white">
+    <div className="modern-shell min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-indigo-600 selection:text-white">
+      <ModernSidebar activeTab={activeTab} onSelect={setActiveTab} />
+
       {/* Top Navigation */}
       <Navbar
         totalRecords={rawData.length}
@@ -420,9 +423,9 @@ export default function App() {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      <main className="modern-main flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {/* Banner with user options callout */}
-        <div className="bg-gradient-to-r from-indigo-50/80 via-white to-purple-50/80 border border-indigo-100 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
+        <div className="modern-welcome bg-gradient-to-r from-indigo-50/80 via-white to-purple-50/80 border border-indigo-100 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
           <div className="space-y-1">
             <div className="flex items-center space-x-2">
               <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-100 text-indigo-700 border border-indigo-200">
@@ -484,8 +487,8 @@ export default function App() {
         />
 
         {/* View Switcher Tabs */}
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2">
-          <div className="flex bg-white p-1 rounded-xl border border-slate-200 text-xs shadow-2xs">
+        <div className="modern-view-switcher flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2">
+          <div className="modern-tab-buttons flex bg-white p-1 rounded-xl border border-slate-200 text-xs shadow-2xs">
             <button
               onClick={() => setActiveTab('overview')}
               className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
