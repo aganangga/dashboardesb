@@ -1,0 +1,8 @@
+{
+  "name": "Dashboard Monitoring Visit & Check In-Out",
+  "description": "Interactive analytics dashboard for field visits with date, area, supervisor, and book type breakdowns, check in-out duration comparison, deduplication rules, and custom column mapping.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
