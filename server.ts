@@ -9,7 +9,7 @@ import { build, createServer as createViteServer } from 'vite';
 const app = express();
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 3000);
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === 'production' || process.argv.includes('--production');
 const requestCounts = new Map<string, { count: number; resetAt: number }>();
 const rateWindowMs = 60 * 60 * 1000;
 const rateLimit = 12;
