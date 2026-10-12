@@ -1,6 +1,9 @@
 [build]
-  command = "echo Using supplied prebuilt dashboard HTML"
-  publish = "offline-site"
+  command = "npm install --no-audit --no-fund && npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
 
 [[redirects]]
   from = "/api/download-singlefile"
