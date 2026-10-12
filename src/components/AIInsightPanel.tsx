@@ -60,7 +60,7 @@ export const AIInsightPanel: React.FC<AIInsightPanelProps> = ({
   const context = useMemo<InsightContext>(() => {
     const distinct = new Map<string, ProcessedRecord>();
     records.forEach((record) => {
-      const key = record.uniqueVisitKey || record.id;
+      const key = record.primaryVisitKey || record.uniqueVisitKey || record.id;
       if (!distinct.has(key)) distinct.set(key, record);
     });
     const rows = deduplicateEnabled ? [...distinct.values()] : records;
