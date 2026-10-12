@@ -35,7 +35,9 @@ function cleanContext(value: unknown) {
     const value = Number(context[key]);
     return Number.isFinite(value) && value >= 0 ? Math.min(Math.round(value), 10000000) : 0;
   };
-  const average = Number(context.averageDurationMinutes);
+  const average = context.averageDurationMinutes === null || context.averageDurationMinutes === undefined
+    ? Number.NaN
+    : Number(context.averageDurationMinutes);
   const breakdowns = context.breakdowns && typeof context.breakdowns === 'object'
     ? context.breakdowns as Record<string, unknown>
     : {};
