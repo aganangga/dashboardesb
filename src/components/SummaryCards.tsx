@@ -50,7 +50,7 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({
   const unnameConsultantCount = records.filter((r) => r.consultantName.toLowerCase() === 'unname').length;
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
+    <div className="modern-kpi-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
       {/* 1. Total Visit (Primary Key: Tiket ID + Date Visit) */}
       <div className="bg-white border border-slate-200/90 hover:border-indigo-300 rounded-2xl p-4 shadow-xs hover:shadow-sm relative overflow-hidden flex flex-col justify-between transition-all group">
         <div className="flex items-center justify-between">
