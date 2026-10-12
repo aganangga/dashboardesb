@@ -1,0 +1,9 @@
+[build]
+  command = "echo Using supplied prebuilt dashboard HTML"
+  publish = "offline-site"
+
+[[redirects]]
+  from = "/api/download-singlefile"
+  to = "/index.html"
+  status = 200
+  force = true
