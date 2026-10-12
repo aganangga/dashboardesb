@@ -15,8 +15,7 @@ import { ColumnMapperModal } from './components/ColumnMapperModal';
 import { UploadModal } from './components/UploadModal';
 import { MultiSupportModal } from './components/MultiSupportModal';
 import { ShareModal } from './components/ShareModal';
-import { AIInsightPanel } from './components/AIInsightPanel';
-import { SlidersHorizontal, Layers, Clock, Table, BarChart2, CheckCircle2, Calendar, Share2, Sparkles } from 'lucide-react';
+import { SlidersHorizontal, Layers, Clock, Table, BarChart2, CheckCircle2, Calendar, Share2 } from 'lucide-react';
 
 export default function App() {
   // Parse initial dataset (or load pre-injected custom data if running inside downloaded singlefile HTML)
@@ -43,7 +42,6 @@ export default function App() {
   const [isUploadOpen, setIsUploadOpen] = useState<boolean>(false);
   const [isMultiSupportOpen, setIsMultiSupportOpen] = useState<boolean>(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
-  const [isAIInsightOpen, setIsAIInsightOpen] = useState<boolean>(false);
 
   // Filters state (deduplication enabled by default as requested)
   const [filters, setFilters] = useState<FilterState>({
@@ -428,27 +426,19 @@ export default function App() {
           <div className="space-y-1">
             <div className="flex items-center space-x-2">
               <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-100 text-indigo-700 border border-indigo-200">
-                Monitoring Operasional ESB
+                Aturan Khusus Terpasang
               </span>
               <span className="text-xs text-slate-500">Data ter-update secara interaktif</span>
             </div>
             <h2 className="text-sm sm:text-base font-bold text-slate-900">
-              Pantau aktivitas kunjungan, ketepatan waktu, dan tindak lanjut tim dalam satu dashboard.
+              Primary Key: Tiket ID + Date Visit (Total Visit) &bull; Separator Support Team (Line 2) &bull; Master Data Team (SPV - L2 - L1)
             </h2>
             <p className="text-xs text-slate-600">
-              Ringkasan dan grafik mengikuti filter yang kamu pilih. Gunakan AI Insight untuk membaca pola data terfilter.
+              Total Visit riil dihitung berdasarkan Tiket ID + Tanggal Visit. Mapping seluruh tim operasional tersinkronisasi per SPV &rarr; L2 &rarr; L1 tanpa missing.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
-            <button
-              onClick={() => setIsAIInsightOpen(true)}
-              className="px-3 py-2 rounded-xl text-xs font-bold bg-violet-700 hover:bg-violet-800 text-white shadow-xs transition-all flex items-center space-x-1.5 cursor-pointer"
-              title="Tanyakan insight dari metrik dan breakdown yang sedang difilter"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>AI Insight</span>
-            </button>
+          <div className="flex items-center space-x-2 shrink-0">
             <button
               onClick={() => setIsShareModalOpen(true)}
               className="px-3 py-2 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-indigo-700 border border-indigo-200 shadow-2xs transition-all flex items-center space-x-1.5 cursor-pointer"
@@ -707,14 +697,6 @@ export default function App() {
         isOpen={isMultiSupportOpen}
         onClose={() => setIsMultiSupportOpen(false)}
         records={filteredRecords}
-      />
-
-      <AIInsightPanel
-        open={isAIInsightOpen}
-        onClose={() => setIsAIInsightOpen(false)}
-        records={filteredRecords}
-        totalVisits={uniqueVisitsCount}
-        deduplicateEnabled={filters.deduplicateVisits}
       />
 
       <ShareModal
