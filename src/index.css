@@ -139,3 +139,22 @@ body { background: #f8fafc; }
 @media (prefers-reduced-motion: reduce) {
  .modern-sidebar-link, .modern-kpi-grid > div { transition: none !important; }
 }
+/* Compact floating workspace menu: keep the selected dashboard visible. */
+.modern-sidebar {
+  top: auto;
+  bottom: max(68px, calc(env(safe-area-inset-bottom) + 60px));
+  width: min(288px, calc(100vw - 28px));
+  max-height: calc(100dvh - 96px);
+  padding: 14px;
+  gap: 10px;
+  border-radius: 16px;
+}
+.modern-sidebar-brand { padding: 0 0 3px; gap: 9px; }
+.modern-sidebar-brandmark { width: 30px; height: 30px; border-radius: 9px; font-size: 10px; }
+.modern-sidebar-brandname { font-size: 13px; }
+.modern-sidebar-label { margin: 4px 0 0; padding: 0 3px; font-size: 9px; }
+.modern-module-grid, .modern-analysis-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 5px; }
+.modern-sidebar-link { min-height: 38px; gap: 7px; padding: 8px; font-size: 11px; border-radius: 9px; }
+.modern-sidebar-icon { width: 15px; height: 15px; }
+.modern-floating-toggle { min-height: 40px; padding: 9px 13px; font-size: 11px; gap: 7px; }
+.modern-sidebar-backdrop { background: rgba(15,23,42,.12); backdrop-filter: none; }

@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Ticket, Star, Users } from 'lucide-react';
-import type { RawDataRow } from '../types';
+import { WorksheetFilterBar } from './WorksheetFilterBar';
+import { enrichWorksheetRows, matchesWorksheetFilter, emptyWorksheetFilter } from '../utils/worksheetFilters';
+import type { ProcessedRecord, RawDataRow } from '../types';
 import { csatScore, csatSummary, groupCounts, groupTickets, sheetDate, teamRole, ticketDataRows, ticketSummary, uniqueTeam } from '../utils/worksheetMetrics';
 
 const number = (value: number) => value.toLocaleString('id-ID', {maximumFractionDigits:1});
@@ -37,19 +39,19 @@ function Chart({ title, data, stacked = false, horizontal = false }: { title: st
 
 const filterLabels: Record<string,string> = {Month:'Bulan',Department:'Departemen',Area:'Area',Pic:'PIC',Rating:'Rating','Nama Support':'Support','Visit Type':'Jenis kunjungan','Book Type':'Jenis booking','Job Tittle':'Jabatan'};
 
-export function WorksheetAnalytics({ id, rows, renderDetails }: { id:string; rows:RawDataRow[]; renderDetails:(rows:RawDataRow[])=>React.ReactNode }) {
+export function WorksheetAnalytics({ id, rows, renderDetails, visits = [] }: { id:string; rows:RawDataRow[]; visits?:ProcessedRecord[]; renderDetails:(rows:RawDataRow[])=>React.ReactNode }) {
   const [search,setSearch] = useState('');
   const [choices,setChoices] = useState<Record<string,string>>({});
-  const [month,setMonth] = useState('');
-  useEffect(() => {setSearch('');setChoices({});setMonth('');},[id]);
+  const [primary,setPrimary] = useState({...emptyWorksheetFilter});
+  useEffect(() => {setSearch('');setChoices({});setPrimary({...emptyWorksheetFilter});},[id]);
   const source = useMemo(() => id==='ticket' ? ticketDataRows(rows) : id==='team' ? uniqueTeam(rows) : rows,[rows,id]);
-  const fields = id==='ticket' ? ['Month','Department','Area','Pic'] : id==='csat' ? ['Rating','Nama Support','Visit Type','Book Type'] : ['Job Tittle'];
-  const months = useMemo(() => [...new Set(source.map(row=>sheetDate(row['Created At (Date Created)']).slice(0,7)).filter(Boolean))].sort(),[source]);
-  const filtered = useMemo(() => source.filter(row => {
+  const fields = id==='ticket' ? ['Department'] : id==='csat' ? ['Rating','Visit Type'] : ['Job Tittle'];
+  const enriched = useMemo(()=>enrichWorksheetRows(id,source,visits),[id,source,visits]);
+  const primaryRows = useMemo(()=>id==='team'?source:enriched.filter(item=>matchesWorksheetFilter(item,primary,id)).map(item=>item.row),[id,source,enriched,primary]);
+  const filtered = useMemo(() => primaryRows.filter(row => {
     if(search && !Object.values(row).some(value => String(value || '').toLocaleLowerCase().includes(search.toLocaleLowerCase()))) return false;
-    if(Object.entries(choices).some(([key,value])=>value && row[key]?.trim()!==value)) return false;
-    return !month || sheetDate(row['Created At (Date Created)']).slice(0,7)===month;
-  }),[source,search,choices,month]);
+    return !Object.entries(choices).some(([key,value])=>value && row[key]?.trim()!==value);
+  }),[primaryRows,search,choices]);
   const ticket = ticketSummary(filtered);
   const csat = csatSummary(filtered);
   const roles = groupCounts(filtered,row=>teamRole(row['Job Tittle']));
@@ -85,17 +87,15 @@ export function WorksheetAnalytics({ id, rows, renderDetails }: { id:string; row
       <h2 className="text-xl font-bold text-slate-900">{id==='ticket'?'Performa Tiket':id==='csat'?'Kepuasan Pelanggan':'Struktur & Direktori Tim'}</h2>
       <p className="mt-1 text-sm text-slate-500">{id==='ticket'?'Pantau volume tiket dan penyelesaian per periode, departemen, area, dan PIC.':id==='csat'?'Pantau penilaian pelanggan, tren respons, dan feedback layanan.':'Kenali komposisi jabatan dan temukan anggota tim.'}</p>
     </div></div>
+    {id !== 'team' && <WorksheetFilterBar id={id} items={enriched} filter={primary} onChange={setPrimary} count={filtered.length}/>}
     <div className={panel+' flex flex-wrap items-end gap-3'}>
-      <label className="flex-1 min-w-48 text-xs font-semibold text-slate-500">{id==='team'?'Cari anggota tim':'Cari di subdashboard'}
+      {id==='team' && <label className="flex-1 min-w-48 text-xs font-semibold text-slate-500">{id==='team'?'Cari anggota tim':'Cari di subdashboard'}
         <input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder={id==='team'?'Nama, email, atau jabatan…':'Cari PIC, tiket, atau data lainnya…'} className="mt-1 block w-full rounded-lg border border-slate-200 p-2 text-sm font-normal text-slate-900"/>
-      </label>
-      {id==='csat' && <label className="text-xs font-semibold text-slate-500">Bulan submit
-        <select aria-label="Bulan submit" value={month} onChange={e=>setMonth(e.target.value)} className="mt-1 block max-w-48 rounded-lg border border-slate-200 p-2 text-sm text-slate-900"><option value="">Semua bulan</option>{months.map(value=><option key={value} value={value}>{new Date(value+'-01T12:00:00').toLocaleDateString('id-ID',{month:'long',year:'numeric'})}</option>)}</select>
       </label>}
       {fields.map(field=><label key={field} className="text-xs font-semibold text-slate-500">{filterLabels[field]}
         <select aria-label={filterLabels[field]} value={choices[field]||''} onChange={e=>setChoices(previous=>({...previous,[field]:e.target.value}))} className="mt-1 block max-w-52 rounded-lg border border-slate-200 p-2 text-sm font-normal text-slate-900"><option value="">Semua {filterLabels[field].toLocaleLowerCase()}</option>{[...new Set(source.map(row=>row[field]?.trim()).filter(Boolean))].sort().map(value=><option key={value} value={value}>{value}</option>)}</select>
       </label>)}
-      <button onClick={()=>{setSearch('');setChoices({});setMonth('');}} className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600">Reset filter</button>
+      <button onClick={()=>{setSearch('');setChoices({});setPrimary({...emptyWorksheetFilter});}} className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600">Reset filter</button>
     </div>
     <Metrics items={metrics}/>
     {id==='ticket' && <><div className="grid grid-cols-1 xl:grid-cols-2 gap-4">

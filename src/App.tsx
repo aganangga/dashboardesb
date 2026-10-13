@@ -442,7 +442,7 @@ export default function App() {
 
       {/* Main Container */}
       <main className="modern-main flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        <WorksheetDashboard selected={selectedWorksheet} onSelect={handleWorksheetSelect} onVisitLoaded={handleWorksheetVisitLoaded} />
+        <WorksheetDashboard selected={selectedWorksheet} onSelect={handleWorksheetSelect} onVisitLoaded={handleWorksheetVisitLoaded} visits={allRecords} />
         {selectedWorksheet === 'visit' && <>
         {/* Banner with user options callout */}
         <div className="modern-welcome bg-gradient-to-r from-indigo-50/80 via-white to-purple-50/80 border border-indigo-100 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
