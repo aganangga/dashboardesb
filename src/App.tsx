@@ -12,6 +12,7 @@ import { BreakdownSection } from './components/BreakdownSection';
 import { MonthlyView } from './components/MonthlyView';
 import { CheckInOutComparison } from './components/CheckInOutComparison';
 import { VisitTable } from './components/VisitTable';
+import { CSATDashboard } from './components/CSATDashboard';
 import { ColumnMapperModal } from './components/ColumnMapperModal';
 import { UploadModal } from './components/UploadModal';
 import { MultiSupportModal } from './components/MultiSupportModal';
@@ -36,7 +37,7 @@ export default function App() {
   );
 
   // Active view tab: 'overview' | 'monthly' | 'breakdowns' | 'comparison' | 'table'
-  const [activeTab, setActiveTab] = useState<'overview' | 'monthly' | 'breakdowns' | 'comparison' | 'table'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'monthly' | 'breakdowns' | 'comparison' | 'table' | 'csat'>('overview');
 
   // Modals state
   const [isColumnMapperOpen, setIsColumnMapperOpen] = useState<boolean>(false);
@@ -47,7 +48,7 @@ export default function App() {
   // Filters state (deduplication enabled by default as requested)
   const [filters, setFilters] = useState<FilterState>({
     search: '',
-    dateRangeStart: '',
+    dateRangeStart: '2026-08-01',
     dateRangeEnd: '',
     areas: [],
     supervisors: [],
@@ -261,7 +262,7 @@ export default function App() {
   const handleResetFilters = () => {
     setFilters({
       search: '',
-      dateRangeStart: '',
+      dateRangeStart: '2026-08-01',
       dateRangeEnd: '',
       selectedMonth: '',
       areas: [],
@@ -509,6 +510,15 @@ export default function App() {
               <Table className="w-3.5 h-3.5" />
               <span>Tabel Rincian Data</span>
             </button>
+            <button
+              onClick={() => setActiveTab('csat')}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
+                activeTab === 'csat' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>CSAT · Penilaian Client</span>
+            </button>
           </div>
 
           <button
@@ -652,6 +662,10 @@ export default function App() {
 
         {activeTab === 'table' && (
           <VisitTable records={filteredRecords} deduplicateEnabled={filters.deduplicateVisits} />
+        )}
+
+        {activeTab === 'csat' && (
+          <CSATDashboard records={allRecords} filters={filters} />
         )}
       </main>
 

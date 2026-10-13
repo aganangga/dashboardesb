@@ -1,7 +1,7 @@
 import React from 'react';
-import { LayoutDashboard, CalendarDays, ChartNoAxesCombined, Clock3, Table2 } from 'lucide-react';
+import { LayoutDashboard, CalendarDays, ChartNoAxesCombined, Clock3, Table2, Star } from 'lucide-react';
 
-type DashboardTab = 'overview' | 'monthly' | 'breakdowns' | 'comparison' | 'table';
+type DashboardTab = 'overview' | 'monthly' | 'breakdowns' | 'comparison' | 'table' | 'csat';
 
 interface ModernSidebarProps {
   activeTab: DashboardTab;
@@ -14,6 +14,7 @@ const navigation: Array<{ id: DashboardTab; label: string; Icon: React.Component
   { id: 'breakdowns', label: 'Breakdown & Konsultan', Icon: ChartNoAxesCombined },
   { id: 'comparison', label: 'Check In / Check Out', Icon: Clock3 },
   { id: 'table', label: 'Rincian Data', Icon: Table2 },
+  { id: 'csat', label: 'CSAT · Penilaian Client', Icon: Star },
 ];
 
 export const ModernSidebar: React.FC<ModernSidebarProps> = ({ activeTab, onSelect }) => (

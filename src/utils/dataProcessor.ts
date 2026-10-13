@@ -190,6 +190,7 @@ export function getAvailableMonthsFromRecords(records: ProcessedRecord[]): Avail
   });
 
   return Array.from(map.values())
+    .filter((month) => month.key >= '2026-08')
     .sort((a, b) => a.key.localeCompare(b.key))
     .map((item) => {
       const monthName = INDONESIAN_MONTH_NAMES[item.monthIndex] || String(item.monthIndex + 1);
@@ -425,45 +426,65 @@ export const MASTER_DATA_TEAM: MasterDataTeamItem[] = [
 
 // Resolve consultant ownership strictly: explicit source value first, then uniquely mapped roster.
 // Never assign a default consultant or choose the first match for shared support members.
+// Master Data Team is the single source of truth for SPV / L2 / L1 membership.
 const normalizeTeamName = (value: string): string =>
   (value || '').trim().replace(/\s+/g, ' ').toLowerCase();
 
 const normalizeSpvName = (value: string): string => {
-  const name = (value || '').trim();
-  if (normalizeTeamName(name) === 'muhammad rimaduddin') return 'Muhamad Rimaduddin';
-  if (normalizeTeamName(name) === 'erp advisor') return 'ERP Advisor (Tim Khusus)';
-  return name;
+  const normalized = normalizeTeamName(value);
+  if (normalized === 'muhammad rimaduddin') return 'Muhamad Rimaduddin';
+  if (normalized === 'erp advisor') return 'ERP Advisor (Tim Khusus)';
+  return (value || '').trim();
 };
 
 const primarySupportName = (value: string): string =>
   (value || '').split(/[,;\n\r/]+/).map((name) => name.trim()).find(Boolean) || '';
 
-const canonicalConsultantName = (value: string): string | null =>
-  Object.keys(CONSULTANT_TO_SPV_MAP).find((name) => normalizeTeamName(name) === normalizeTeamName(value)) || null;
+const masterConsultants = Array.from(new Set(MASTER_DATA_TEAM.map((row) => row.l2)));
+const masterSupervisors = Array.from(new Set(MASTER_DATA_TEAM.map((row) => row.spv)));
 
-export function findMasterMappingForSupport(supportName: string): MasterDataTeamItem | null {
-  const primary = normalizeTeamName(primarySupportName(supportName));
-  if (!primary) return null;
-  const matches = MASTER_DATA_TEAM.filter(
-    (item) => normalizeTeamName(item.l1FullName) === primary || normalizeTeamName(item.l1Nickname) === primary
-  );
-  // Rafi, Tegar and other shared personnel do not have a single consultant owner.
-  if (new Set(matches.map((item) => item.l2)).size !== 1) return null;
-  return matches[0] || null;
+const canonicalConsultantName = (value: string): string | null =>
+  masterConsultants.find((name) => normalizeTeamName(name) === normalizeTeamName(value)) || null;
+
+// One person may explicitly appear in more than one team. Return all roster matches.
+export function getMasterAssignmentsForSupport(personName: string): Array<{ supervisor: string; consultantName: string; supportName: string }> {
+  const key = normalizeTeamName(personName);
+  if (!key) return [];
+  const assignments = MASTER_DATA_TEAM.filter((item) =>
+    normalizeTeamName(item.l1FullName) === key || normalizeTeamName(item.l1Nickname) === key
+  ).map((item) => ({
+    supervisor: item.spv,
+    consultantName: item.l2,
+    supportName: item.l1FullName,
+  }));
+  if (assignments.length > 0) return assignments;
+  const directL2 = canonicalConsultantName(personName);
+  if (directL2) {
+    const owner = MASTER_DATA_TEAM.find((item) => item.l2 === directL2);
+    return owner ? [{ supervisor: owner.spv, consultantName: directL2, supportName: directL2 }] : [];
+  }
+  return [];
 }
 
-// Match a support selected in the team filter without substring/nickname collisions.
-export function isSameSupportMember(person: string, selectedName: string): boolean {
-  const personKey = normalizeTeamName(person);
-  const selectedKey = normalizeTeamName(selectedName);
-  if (!personKey || !selectedKey) return false;
-  if (personKey === selectedKey) return true;
-
-  const matches = MASTER_DATA_TEAM.filter(
-    (item) => normalizeTeamName(item.l1FullName) === selectedKey || normalizeTeamName(item.l1Nickname) === selectedKey
+export function findMasterMappingForSupport(supportName: string): MasterDataTeamItem | null {
+  const key = normalizeTeamName(primarySupportName(supportName));
+  if (!key) return null;
+  const candidates = MASTER_DATA_TEAM.filter((item) =>
+    normalizeTeamName(item.l1FullName) === key || normalizeTeamName(item.l1Nickname) === key
   );
-  const fullNames = [...new Set(matches.map((item) => normalizeTeamName(item.l1FullName)))];
-  return fullNames.length === 1 && fullNames[0] === personKey;
+  return new Set(candidates.map((item) => item.l2)).size === 1 ? candidates[0] : null;
+}
+
+export function isSameSupportMember(person: string, selectedName: string): boolean {
+  const left = normalizeTeamName(person);
+  const right = normalizeTeamName(selectedName);
+  if (!left || !right) return false;
+  if (left === right) return true;
+  const candidates = MASTER_DATA_TEAM.filter((item) =>
+    normalizeTeamName(item.l1FullName) === right || normalizeTeamName(item.l1Nickname) === right
+  );
+  const uniqueFullNames = [...new Set(candidates.map((item) => normalizeTeamName(item.l1FullName)))];
+  return uniqueFullNames.length === 1 && uniqueFullNames[0] === left;
 }
 
 export function resolveSpvAndConsultant(
@@ -473,36 +494,38 @@ export function resolveSpvAndConsultant(
 ): { supervisor: string; consultantName: string } {
   const primarySupport = primarySupportName(supportRaw);
   const rawConsultant = (consultantRaw || '').trim();
-  const hasConsultant = Boolean(rawConsultant && rawConsultant !== '-' && normalizeTeamName(rawConsultant) !== 'unname');
-  let consultant = hasConsultant ? (canonicalConsultantName(rawConsultant) || rawConsultant) : '';
-  let supervisor = normalizeSpvName(supervisorRaw || '');
+  const rawSpv = normalizeSpvName(supervisorRaw || '');
 
-  if (hasConsultant && !canonicalConsultantName(consultant)) {
-    // An L1 occasionally appears in the Consultant column. Reassign only when
-    // the same person is primary support AND exactly one roster owner is known.
-    if (normalizeTeamName(primarySupport) === normalizeTeamName(rawConsultant)) {
-      const uniqueRoster = findMasterMappingForSupport(primarySupport);
-      if (uniqueRoster) consultant = uniqueRoster.l2;
-    }
+  // Raw consultant is authoritative ONLY if it is a registered L2 in Master Team.
+  // Cross-team visitor attendance does not change the registered L2 owner.
+  const explicitL2 = canonicalConsultantName(rawConsultant);
+  if (explicitL2) {
+    return {
+      consultantName: explicitL2,
+      supervisor: MASTER_DATA_TEAM.find((row) => row.l2 === explicitL2)?.spv || 'Belum Terpetakan',
+    };
   }
 
-  if (!hasConsultant) {
-    // Direct L2 visits (including consultants doing the visit themselves) are counted.
-    consultant = canonicalConsultantName(primarySupport) ||
-      findMasterMappingForSupport(primarySupport)?.l2 ||
-      'Belum Terpetakan';
-  }
+  // A raw consultant value may be L1, SPV or blank. Resolve strictly via roster.
+  const exactMember = getMasterAssignmentsForSupport(rawConsultant);
+  const rawIsSpv = masterSupervisors.some((spv) => normalizeTeamName(spv) === normalizeTeamName(rawConsultant));
+  const candidates = (!rawIsSpv && exactMember.length > 0)
+    ? exactMember
+    : getMasterAssignmentsForSupport(primarySupport);
+  const selectedSpv = masterSupervisors.find((spv) =>
+    normalizeTeamName(spv) === normalizeTeamName(rawSpv)
+  ) || masterSupervisors.find((spv) => normalizeTeamName(spv) === normalizeTeamName(rawConsultant)) || '';
+  const scoped = selectedSpv
+    ? candidates.filter((candidate) => normalizeTeamName(candidate.supervisor) === normalizeTeamName(selectedSpv))
+    : candidates;
+  const possible = [...new Set((scoped.length ? scoped : candidates).map((item) => item.consultantName))];
+  // An L1 registered under several L2s remains unassigned unless another field resolves it.
+  const consultantName = possible.length === 1 ? possible[0] : 'Belum Terpetakan';
+  const supervisor = consultantName !== 'Belum Terpetakan'
+    ? (MASTER_DATA_TEAM.find((row) => row.l2 === consultantName)?.spv || 'Belum Terpetakan')
+    : (selectedSpv || 'Belum Terpetakan');
 
-  if (!supervisor || normalizeTeamName(supervisor) === 'unname' || supervisor === '-') {
-    // A canonical consultant has a canonical SPV. Never guess 'Jane' for unknowns.
-    supervisor = CONSULTANT_TO_SPV_MAP[consultant] ||
-      (Object.values(CONSULTANT_TO_SPV_MAP).find((name) =>
-        normalizeTeamName(name) === normalizeTeamName(primarySupport)
-      )) ||
-      'Belum Terpetakan';
-  }
-
-  return { supervisor, consultantName: consultant };
+  return { supervisor, consultantName };
 }
 
 export function processRawData(
@@ -805,70 +828,19 @@ export function getSupportNickname(name: string): string {
 }
 
 // Dedicated support teams assigned to each consultant
-export const CONSULTANT_DEDICATED_TEAMS: Record<string, DedicatedSupportMember[]> = {
-  'Airlangga Aziz': [
-    { fullName: 'Alian Alfin Nuha', nickname: 'Alfin', displayName: 'Alfin (Alian Alfin Nuha)' },
-    { fullName: 'Febri Dwi Putra', nickname: 'Febri', displayName: 'Febri (Febri Dwi Putra)' },
-  ],
-  'David Prima Putra': [
-    { fullName: 'Yessi Tiyastanti', nickname: 'Yessi', displayName: 'Yessi (Yessi Tiyastanti)' },
-    { fullName: 'Febrianto Puji Waskito', nickname: 'Febrianto', displayName: 'Febrianto (Febrianto Puji Waskito)' },
-    { fullName: 'Syafiz Amiero', nickname: 'Syafiz', displayName: 'Syafiz (Syafiz Amiero)' },
-    { fullName: 'Nika Rullyta Khairunnisa', nickname: 'Nika', displayName: 'Nika (Nika Rullyta Khairunnisa)' },
-    { fullName: 'Muhammad Rimaduddin', nickname: 'Rimad', displayName: 'Rimad (Muhammad Rimaduddin)' },
-    { fullName: 'Yoan Fefi Berliani', nickname: 'Yoan', displayName: 'Yoan (Yoan Fefi Berliani)' },
-  ],
-  'Agung Setiawan': [
-    { fullName: 'Anisa Lucky', nickname: 'Anisa', displayName: 'Anisa (Anisa Lucky)' },
-    { fullName: 'Christopher Patrick Djuanda', nickname: 'Patrick', displayName: 'Patrick (Christopher Patrick Djuanda)' },
-    { fullName: 'Risky Ramadhan', nickname: 'Risky', displayName: 'Risky (Risky Ramadhan)' },
-    { fullName: 'Yayang Putri Suwondo', nickname: 'Yayang', displayName: 'Yayang (Yayang Putri Suwondo)' },
-  ],
-  'Ayu Febrina Sianturi': [
-    { fullName: 'Fera Eka Waty N', nickname: 'Fera', displayName: 'Fera (Fera Eka Waty N)' },
-    { fullName: 'Tegar Rangga', nickname: 'Tegar', displayName: 'Tegar (Tegar Rangga)' },
-    { fullName: 'Rafi Mahasin', nickname: 'Rafi', displayName: 'Rafi (Rafi Mahasin)' },
-    { fullName: 'Nabila Aprilia Nugrahany', nickname: 'Nabila', displayName: 'Nabila (Nabila Aprilia Nugrahany)' },
-  ],
-  'Cherly Vitaloka': [
-    { fullName: 'Vinna Maharani', nickname: 'Vinna', displayName: 'Vinna (Vinna Maharani)' },
-    { fullName: 'Alif Izzuddin Ramadhan', nickname: 'Alif', displayName: 'Alif (Alif Izzuddin Ramadhan)' },
-    { fullName: 'Melati Cantika', nickname: 'Melati', displayName: 'Melati (Melati Cantika)' },
-    { fullName: 'Nurul Huda', nickname: 'Nurul', displayName: 'Nurul (Nurul Huda)' },
-    { fullName: 'Rafi Mahasin', nickname: 'Rafi', displayName: 'Rafi (Rafi Mahasin)' },
-  ],
-  'ERP Advisor': [
-    { fullName: 'Pernandes Paindo Tua', nickname: 'Pernandes', displayName: 'Pernandes (Pernandes Paindo Tua)' },
-    { fullName: 'Irma Laura Siregar', nickname: 'Irma', displayName: 'Irma (Irma Laura Siregar)' },
-  ],
-  'Dika Anugerah Pratama': [
-    { fullName: 'Imam Wicaksono', nickname: 'Imam', displayName: 'Imam (Imam Wicaksono)' },
-    { fullName: 'Agita Putri Kusumaningtyas', nickname: 'Agita', displayName: 'Agita (Agita Putri Kusumaningtyas)' },
-    { fullName: 'Syahrul Zulvan', nickname: 'Syahrul', displayName: 'Syahrul (Syahrul Zulvan)' },
-    { fullName: 'Tegar Rangga', nickname: 'Tegar', displayName: 'Tegar (Tegar Rangga)' },
-    { fullName: 'Fauzi Yuda Ariyanto', nickname: 'Fauzi', displayName: 'Fauzi (Fauzi Yuda Ariyanto)' },
-  ],
-  'Kiki Tri Utari': [
-    { fullName: 'Ardiansyah Hendardi', nickname: 'Ardi', displayName: 'Ardi (Ardiansyah Hendardi)' },
-    { fullName: 'Rafi Mahasin', nickname: 'Rafi', displayName: 'Rafi (Rafi Mahasin)' },
-    { fullName: 'Nurul Huda', nickname: 'Nurul', displayName: 'Nurul (Nurul Huda)' },
-    { fullName: 'Melati Cantika', nickname: 'Melati', displayName: 'Melati (Melati Cantika)' },
-    { fullName: 'Yoan Fefi Berliani', nickname: 'Yoan', displayName: 'Yoan (Yoan Fefi Berliani)' },
-  ],
-  'Rezi Rizki Raedini': [
-    { fullName: 'Yoga Astita Ade', nickname: 'Yoga', displayName: 'Yoga (Yoga Astita Ade)' },
-    { fullName: 'Noviyanti Nadia', nickname: 'Nadia', displayName: 'Nadia (Noviyanti Nadia)' },
-    { fullName: 'Kevin Reynaldi', nickname: 'Kevin', displayName: 'Kevin (Kevin Reynaldi)' },
-    { fullName: 'Abi Muhammad Alfarezy', nickname: 'Abi', displayName: 'Abi (Abi Muhammad Alfarezy)' },
-    { fullName: 'Teddi Ari Tama', nickname: 'Teddi', displayName: 'Teddi (Teddi Ari Tama)' },
-  ],
-  'Tri Hastuti Wulandari': [
-    { fullName: 'Margaretha Agrivani', nickname: 'Margaretha', displayName: 'Margaretha (Margaretha Agrivani)' },
-    { fullName: 'Bintang Guntoro', nickname: 'Bintang', displayName: 'Bintang (Bintang Guntoro)' },
-    { fullName: 'Teddi Ari Tama', nickname: 'Teddi', displayName: 'Teddi (Teddi Ari Tama)' },
-    { fullName: 'Larezza Murda Gaharni', nickname: 'Larezza', displayName: 'Larezza (Larezza Murda Gaharni)' },
-  ],
-};
+// Keep dropdown membership synchronized with the one authoritative MASTER_DATA_TEAM.
+export const CONSULTANT_DEDICATED_TEAMS: Record<string, DedicatedSupportMember[]> =
+  MASTER_DATA_TEAM.reduce<Record<string, DedicatedSupportMember[]>>((teams, row) => {
+    if (!teams[row.l2]) teams[row.l2] = [];
+    if (!teams[row.l2].some((person) => person.fullName === row.l1FullName)) {
+      teams[row.l2].push({
+        fullName: row.l1FullName,
+        nickname: row.l1Nickname,
+        displayName: row.l1Nickname + ' (' + row.l1FullName + ')',
+      });
+    }
+    return teams;
+  }, {});
 
 // Retrieve support team members for a consultant
 export function getDedicatedSupportTeamsForConsultant(
@@ -993,11 +965,6 @@ export function buildConsultantTeamGroupings(records: ProcessedRecord[]): Consul
         primaryArea = area;
       }
     });
-
-    // Special operational domain matching: Airlangga Aziz territory is Bali
-    if (consultant.toLowerCase().includes('airlangga')) {
-      primaryArea = 'Bali';
-    }
 
     const allAreas = Array.from(data.areas.keys()).filter(Boolean);
 
