@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { PageListPagination } from './PageListPagination';
 import { VisitParticipationChart } from './VisitParticipationChart';
 import { ProcessedRecord } from '../types';
-import { Eye, MapPin, User, Calendar, X, Building, Clock, Users, Briefcase } from 'lucide-react';
+import { Eye, MapPin, User, Calendar, X, Building, Clock, Users, Briefcase, ArrowUpDown } from 'lucide-react';
+
+type VisitSortKey = 'ticketId' | 'outletName' | 'dateVisit' | 'supervisor' | 'consultantName' | 'supportName' | 'supportTeam' | 'bookType' | 'durationMinutes' | 'status';
 
 interface VisitTableProps {
   records: ProcessedRecord[];
@@ -12,16 +14,60 @@ interface VisitTableProps {
 export const VisitTable: React.FC<VisitTableProps> = ({ records, deduplicateEnabled }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
+  const [sortKey, setSortKey] = useState<VisitSortKey>('dateVisit');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [selectedRecord, setSelectedRecord] = useState<ProcessedRecord | null>(null);
   const pageSize = 15;
 
   // Filter records if deduplication is active
   const displayedRecords = deduplicateEnabled ? records.filter((r) => !r.isDuplicateOnSameDay) : records;
 
-  const totalPages = Math.max(1, Math.ceil(displayedRecords.length / pageSize));
+  const sortedRecords = useMemo(() => {
+    const sortableValue = (record: ProcessedRecord): string | number => {
+      if (sortKey === 'dateVisit') {
+        const dateParts = (record.dateVisit || '').split('/');
+        if (dateParts.length === 3) {
+          return Number(dateParts[2] + dateParts[1].padStart(2, '0') + dateParts[0].padStart(2, '0'));
+        }
+        return record.agendaDateObj?.getTime() || 0;
+      }
+      if (sortKey === 'durationMinutes') return record.durationMinutes ?? -1;
+      return String(record[sortKey] || '').trim();
+    };
+    return [...displayedRecords].sort((first, second) => {
+      const a = sortableValue(first);
+      const b = sortableValue(second);
+      const comparison = typeof a === 'number' && typeof b === 'number'
+        ? a - b
+        : String(a).localeCompare(String(b), 'id', { numeric: true, sensitivity: 'base' });
+      return sortDirection === 'asc' ? comparison : -comparison;
+    });
+  }, [displayedRecords, sortKey, sortDirection]);
+
+  const totalPages = Math.max(1, Math.ceil(sortedRecords.length / pageSize));
   const safePage = Math.min(currentPage, totalPages);
   const startIndex = (safePage - 1) * pageSize;
-  const paginatedData = displayedRecords.slice(startIndex, startIndex + pageSize);
+  const paginatedData = sortedRecords.slice(startIndex, startIndex + pageSize);
+
+  const changeSort = (column: VisitSortKey) => {
+    if (sortKey === column) setSortDirection((prev) => prev === 'asc' ? 'desc' : 'asc');
+    else {
+      setSortKey(column);
+      setSortDirection(column === 'dateVisit' ? 'desc' : 'asc');
+    }
+    setCurrentPage(1);
+  };
+
+  const sortableHeading = (title: string, column: VisitSortKey) => (
+    <th className="py-2.5 px-3" aria-sort={sortKey === column ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+      <button type="button" onClick={() => changeSort(column)}
+        title={'Urutkan ' + title}
+        className={'inline-flex items-center gap-1 text-left hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 ' +
+          (sortKey === column ? 'text-blue-700 font-extrabold' : '')}>
+        <span>{title}</span><ArrowUpDown className="h-3 w-3 shrink-0"/>
+      </button>
+    </th>
+  );
 
   // When global filters change, return to the first page to avoid empty/stale pages.
   useEffect(() => {
@@ -87,16 +133,16 @@ export const VisitTable: React.FC<VisitTableProps> = ({ records, deduplicateEnab
         <table className="w-full text-left text-xs text-slate-700">
           <thead className="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200">
             <tr>
-              <th className="py-2.5 px-3">Ticket ID</th>
-              <th className="py-2.5 px-3">Outlet &amp; Company</th>
-              <th className="py-2.5 px-3">Date Visit (Agenda)</th>
-              <th className="py-2.5 px-3">Supervisor</th>
-              <th className="py-2.5 px-3">Nama Konsulting</th>
-              <th className="py-2.5 px-3">Nama Support</th>
-              <th className="py-2.5 px-3">Support Team</th>
-              <th className="py-2.5 px-3">Book Type</th>
-              <th className="py-2.5 px-3">Durasi</th>
-              <th className="py-2.5 px-3">Status</th>
+              {sortableHeading('Ticket ID', 'ticketId')}
+              {sortableHeading('Outlet & Company', 'outletName')}
+              {sortableHeading('Date Visit (Agenda)', 'dateVisit')}
+              {sortableHeading('Supervisor', 'supervisor')}
+              {sortableHeading('Nama Konsulting', 'consultantName')}
+              {sortableHeading('Nama Support', 'supportName')}
+              {sortableHeading('Support Team', 'supportTeam')}
+              {sortableHeading('Book Type', 'bookType')}
+              {sortableHeading('Durasi', 'durationMinutes')}
+              {sortableHeading('Status', 'status')}
               <th className="py-2.5 px-3 text-right">Detail</th>
             </tr>
           </thead>
