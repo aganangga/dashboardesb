@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { PageListPagination } from './PageListPagination';
 import { ProcessedRecord } from '../types';
-import { ChevronLeft, ChevronRight, Eye, MapPin, User, Calendar, X, Building, Clock, Users, Briefcase } from 'lucide-react';
+import { Eye, MapPin, User, Calendar, X, Building, Clock, Users, Briefcase } from 'lucide-react';
 
 interface VisitTableProps {
   records: ProcessedRecord[];
@@ -15,9 +16,15 @@ export const VisitTable: React.FC<VisitTableProps> = ({ records, deduplicateEnab
   // Filter records if deduplication is active
   const displayedRecords = deduplicateEnabled ? records.filter((r) => !r.isDuplicateOnSameDay) : records;
 
-  const totalPages = Math.ceil(displayedRecords.length / pageSize) || 1;
-  const startIndex = (currentPage - 1) * pageSize;
+  const totalPages = Math.max(1, Math.ceil(displayedRecords.length / pageSize));
+  const safePage = Math.min(currentPage, totalPages);
+  const startIndex = (safePage - 1) * pageSize;
   const paginatedData = displayedRecords.slice(startIndex, startIndex + pageSize);
+
+  // When global filters change, return to the first page to avoid empty/stale pages.
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [records, deduplicateEnabled]);
 
   const getStatusBadgeClass = (status: string) => {
     switch (status.toUpperCase()) {
@@ -48,28 +55,14 @@ export const VisitTable: React.FC<VisitTableProps> = ({ records, deduplicateEnab
           </p>
         </div>
 
-        {/* Pagination controls */}
-        <div className="flex items-center space-x-2 text-xs text-slate-600">
-          <span>
-            Halaman {currentPage} dari {totalPages}
-          </span>
-          <div className="flex items-center space-x-1">
-            <button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-              className="p-1 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 disabled:opacity-40 text-slate-700 transition-colors cursor-pointer"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-              className="p-1 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 disabled:opacity-40 text-slate-700 transition-colors cursor-pointer"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
+        {/* Numbered page list: direct jump, Previous/Next, and range indicator. */}
+        <PageListPagination
+          currentPage={safePage}
+          pageSize={pageSize}
+          totalItems={displayedRecords.length}
+          onPageChange={setCurrentPage}
+          itemLabel="visit"
+        />
       </div>
 
       {/* Table */}
@@ -209,6 +202,13 @@ export const VisitTable: React.FC<VisitTableProps> = ({ records, deduplicateEnab
           </tbody>
         </table>
       </div>
+
+      {displayedRecords.length > pageSize && (
+        <div className="flex justify-end border-t border-slate-100 pt-3">
+          <PageListPagination currentPage={safePage} pageSize={pageSize}
+            totalItems={displayedRecords.length} onPageChange={setCurrentPage} itemLabel="visit" />
+        </div>
+      )}
 
       {/* Detail Modal */}
       {selectedRecord && (
