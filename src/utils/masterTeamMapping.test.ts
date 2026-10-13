@@ -6,52 +6,53 @@ import {
   processRawData,
   resolveSpvAndConsultant,
   getDedicatedSupportTeamsForConsultant,
+  isIncludedDashboardVisit,
   MASTER_DATA_TEAM,
-  SHARED_L2_TEAM_PREFIX,
-  DIRECT_SPV_VISIT_PREFIX,
 } from './dataProcessor';
 
-const oldRoster = MASTER_DATA_TEAM.filter((row) => row.l1FullName === 'Tegar Rangga');
-const teamLabel = SHARED_L2_TEAM_PREFIX + oldRoster.map((row) => row.l2).join(' / ');
-const spvLabel = DIRECT_SPV_VISIT_PREFIX + 'Jane Margareth Widjaja';
+const tegarRoster = MASTER_DATA_TEAM.filter((row) => row.l1FullName === 'Tegar Rangga');
 
-test('shared L1 maps to verified master team, without choosing Ayu or Dika arbitrarily', () => {
-  assert.deepEqual(new Set(oldRoster.map((row) => row.l2)),
-    new Set(['Ayu Febrina Sianturi', 'Dika Anugerah Pratama']));
+test('Tegar is exclusively in Dika master team, not Ayu or shared L2', () => {
+  assert.equal(tegarRoster.length, 1);
+  assert.equal(tegarRoster[0].l2, 'Dika Anugerah Pratama');
+  assert.equal(tegarRoster[0].spv, 'Jane Margareth Widjaja');
   assert.deepEqual(resolveSpvAndConsultant('Tegar Rangga', '', ''), {
     supervisor: 'Jane Margareth Widjaja',
-    consultantName: teamLabel,
+    consultantName: 'Dika Anugerah Pratama',
   });
-  assert.deepEqual(getDedicatedSupportTeamsForConsultant(teamLabel).map((member) => member.fullName),
-    ['Tegar Rangga']);
+  assert.ok(getDedicatedSupportTeamsForConsultant('Dika Anugerah Pratama')
+    .some((row) => row.fullName === 'Tegar Rangga'));
+  assert.ok(!getDedicatedSupportTeamsForConsultant('Ayu Febrina Sianturi')
+    .some((row) => row.fullName === 'Tegar Rangga'));
 });
 
-test('direct SPV visit maps to SPV master rather than an invented L2', () => {
-  assert.deepEqual(resolveSpvAndConsultant('Jane Margareth Widjaja', '', ''), {
-    supervisor: 'Jane Margareth Widjaja',
-    consultantName: spvLabel,
-  });
-  assert.deepEqual(getDedicatedSupportTeamsForConsultant(spvLabel).map((member) => member.fullName),
-    ['Jane Margareth Widjaja']);
+test('Jane stays SPV for her teams while direct Jane visit is excluded', () => {
+  assert.ok(MASTER_DATA_TEAM.some((row) => row.spv === 'Jane Margareth Widjaja'));
+  assert.equal(isIncludedDashboardVisit({ ticketId: 'ESB-S28QBG' }), false);
+  assert.equal(isIncludedDashboardVisit({ ticketId: 'ESB-5M5BBP' }), true);
+  assert.equal(isIncludedDashboardVisit({ ticketId: 'ESB-4NRR2Y' }), true);
 });
 
-test('explicit registered L2 ownership remains authoritative across teams', () => {
+test('explicit registered L2 visit owner is preserved across team boundaries', () => {
   assert.deepEqual(resolveSpvAndConsultant('Tegar Rangga', 'Airlangga Aziz', ''), {
     supervisor: 'M. Iriansyah Suhendar',
     consultantName: 'Airlangga Aziz',
   });
 });
 
-test('September baseline: all 885 rows retained and none has unverified consultant group', () => {
+test('raw CSV intact, dashboard displays 1,568 visits and September displays 884', () => {
   const raw = parseCsvString(DEFAULT_RAW_CSV);
-  const visits = processRawData(raw.data);
-  assert.equal(visits.length, 1569, 'whole August + September source remains intact');
-  const september = visits.filter((visit) => visit.dateVisit.endsWith('/09/2026'));
-  assert.equal(september.length, 885);
-  const byTicket = new Map(september.map((visit) => [visit.ticketId, visit]));
-  assert.equal(byTicket.get('ESB-5M5BBP')?.consultantName, teamLabel);
-  assert.equal(byTicket.get('ESB-4NRR2Y')?.consultantName, teamLabel);
-  assert.equal(byTicket.get('ESB-S28QBG')?.consultantName, spvLabel);
-  assert.ok(september.every((visit) => visit.consultantName !== 'Belum Terpetakan'));
-  assert.equal(new Set(september.map((visit) => visit.primaryVisitKey)).size, 885);
+  const records = processRawData(raw.data);
+  assert.equal(records.length, 1569);
+  assert.equal(records.filter((rec) => rec.dateVisit.endsWith('/09/2026')).length, 885);
+  const visible = records.filter(isIncludedDashboardVisit);
+  assert.equal(visible.length, 1568);
+  const september = visible.filter((rec) => rec.dateVisit.endsWith('/09/2026'));
+  assert.equal(september.length, 884);
+  const byTicket = new Map(september.map((rec) => [rec.ticketId, rec]));
+  assert.equal(byTicket.get('ESB-5M5BBP')?.consultantName, 'Dika Anugerah Pratama');
+  assert.equal(byTicket.get('ESB-4NRR2Y')?.consultantName, 'Dika Anugerah Pratama');
+  assert.equal(byTicket.has('ESB-S28QBG'), false);
+  assert.ok(september.every((rec) => rec.consultantName !== 'Belum Terpetakan'));
+  assert.equal(new Set(september.map((rec) => rec.primaryVisitKey)).size, 884);
 });
