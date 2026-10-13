@@ -15,7 +15,9 @@ export const VisitParticipationChart: React.FC<VisitParticipationChartProps> = (
   const [mode, setMode] = useState<'total'|'bookType'>('total');
   const { chartData, series } = useMemo(() => {
     // Baseline parity: one primary visitor for each Ticket ID + Date Visit.
-    const visits = Array.from(new Map(records.map((r) => [r.primaryVisitKey, r])).values());
+    const visits = Array.from(new Map<string, ProcessedRecord>(
+      records.map((r): [string, ProcessedRecord] => [r.primaryVisitKey, r])
+    ).values());
     const types = Array.from(new Set(visits.map((r) => r.bookType?.trim() || 'Belum diisi'))).sort();
     const series = types.map((name, i) => ({ name, key: 'bookType' + i }));
     const groups = new Map<string, Record<string, string|number>>();
