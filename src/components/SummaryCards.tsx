@@ -36,8 +36,8 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({
   const completedCount = records.filter((r) => r.status.toUpperCase() === 'COMPLETED').length;
   const cancelledCount = records.filter((r) => r.status.toUpperCase() === 'CANCEL').length;
 
-  // Rate is based on unique Ticket ID + Date Visit, consistent with Total Visit.
-  const { checkedInVisits: checkedInCount, totalVisits: checkInTotalVisits, checkInRate } =
+  // KPI formula: (Total Visit unik - Anomali Menginap unik) / Total Visit unik.
+  const { anomalyVisits, totalVisits: checkInTotalVisits, checkInRate } =
     calculateVisitCheckInMetrics(records);
 
   // Duration
@@ -171,7 +171,7 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({
         <div className="mt-2">
           <div className="text-2xl font-black text-emerald-700 tracking-tight">{checkInRate}%</div>
           <div className="text-[11px] text-slate-500 mt-0.5 truncate">
-            <span>{checkedInCount} dari {checkInTotalVisits} visit unik</span>
+            <span>({checkInTotalVisits} − {anomalyVisits} anomali) / {checkInTotalVisits} visit</span>
           </div>
         </div>
       </div>
