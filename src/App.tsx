@@ -120,12 +120,12 @@ export default function App() {
     return getAvailableMonthsFromRecords(allRecords);
   }, [allRecords]);
 
-  // Apply filters
-  const filteredRecords = useMemo(() => {
+  // Run the same filter predicate for visit totals and team-person counts.
+  const filterRecords = (activeFilters: FilterState): ProcessedRecord[] => {
     return allRecords.filter((rec) => {
       // 1. Search
-      if (filters.search) {
-        const q = filters.search.toLowerCase();
+      if (activeFilters.search) {
+        const q = activeFilters.search.toLowerCase();
         const match =
           rec.outletName.toLowerCase().includes(q) ||
           rec.supportName.toLowerCase().includes(q) ||
@@ -142,42 +142,42 @@ export default function App() {
       }
 
       // 2. Supervisor
-      if (filters.supervisors && filters.supervisors.length > 0) {
-        if (!filters.supervisors.includes(rec.supervisor)) return false;
+      if (activeFilters.supervisors && activeFilters.supervisors.length > 0) {
+        if (!activeFilters.supervisors.includes(rec.supervisor)) return false;
       }
 
       // 3. Consultant ownership follows the raw Consultant column (or a uniquely verified mapping).
       // Never exclude a valid visit only because a different team's support carried it out.
-      if (filters.consultants.length > 0 &&
-          !filters.consultants.some((cons) => rec.consultantName.toLowerCase() === cons.toLowerCase())) {
+      if (activeFilters.consultants.length > 0 &&
+          !activeFilters.consultants.some((cons) => rec.consultantName.toLowerCase() === cons.toLowerCase())) {
         return false;
       }
 
       // 4. Area
-      if (filters.areas.length > 0) {
-        if (!filters.areas.includes(rec.area)) return false;
+      if (activeFilters.areas.length > 0) {
+        if (!activeFilters.areas.includes(rec.area)) return false;
       }
 
       // 5. Book Type
-      if (filters.bookTypes.length > 0) {
-        if (!filters.bookTypes.includes(rec.bookType)) return false;
+      if (activeFilters.bookTypes.length > 0) {
+        if (!activeFilters.bookTypes.includes(rec.bookType)) return false;
       }
 
       // 6. Status
-      if (filters.statuses.length > 0) {
-        if (!filters.statuses.includes(rec.status)) return false;
+      if (activeFilters.statuses.length > 0) {
+        if (!activeFilters.statuses.includes(rec.status)) return false;
       }
 
       // 7. Support Team Filter (Pengganti Team Support Tiket sebelumnya)
-      if (filters.supportTeamFilter === 'with_team') {
+      if (activeFilters.supportTeamFilter === 'with_team') {
         if (!rec.hasSupportTeam) return false;
-      } else if (filters.supportTeamFilter === 'solo') {
+      } else if (activeFilters.supportTeamFilter === 'solo') {
         if (rec.hasSupportTeam) return false;
       }
 
       // Specific Support Team Members or Grouping Filter
-      if (filters.supportTeamMembers && filters.supportTeamMembers.length > 0) {
-        const matchesMember = filters.supportTeamMembers.some((mem) => {
+      if (activeFilters.supportTeamMembers && activeFilters.supportTeamMembers.length > 0) {
+        const matchesMember = activeFilters.supportTeamMembers.some((mem) => {
           if (!mem) return true;
           if (mem.startsWith('CONS_ALL:')) {
             const targetConsultant = mem.replace('CONS_ALL:', '').toLowerCase();
@@ -202,37 +202,46 @@ export default function App() {
       }
 
       // 8. Legacy team size filter compatibility
-      if (filters.teamSizeFilter === 'solo') {
+      if (activeFilters.teamSizeFilter === 'solo') {
         if (rec.teamSize !== 1 && !rec.hasSupportTeam) return false;
-      } else if (filters.teamSizeFilter === 'team_multi') {
+      } else if (activeFilters.teamSizeFilter === 'team_multi') {
         if (rec.teamSize < 2 && !rec.hasSupportTeam) return false;
-      } else if (filters.teamSizeFilter === 'team_3') {
+      } else if (activeFilters.teamSizeFilter === 'team_3') {
         if (rec.teamSize < 3) return false;
       }
 
       // 9. Date range and monthly filter (compared against rec.agendaDateObj)
-      if (filters.selectedMonth) {
+      if (activeFilters.selectedMonth) {
         if (!rec.agendaDateObj) return false;
         const y = rec.agendaDateObj.getFullYear();
         const m = String(rec.agendaDateObj.getMonth() + 1).padStart(2, '0');
-        if (`${y}-${m}` !== filters.selectedMonth) return false;
-      } else if (filters.dateRangeStart || filters.dateRangeEnd) {
+        if (`${y}-${m}` !== activeFilters.selectedMonth) return false;
+      } else if (activeFilters.dateRangeStart || activeFilters.dateRangeEnd) {
         if (!rec.agendaDateObj) return false;
         const recTime = rec.agendaDateObj.getTime();
-        if (filters.dateRangeStart) {
-          const startTime = new Date(filters.dateRangeStart).getTime();
+        if (activeFilters.dateRangeStart) {
+          const startTime = new Date(activeFilters.dateRangeStart).getTime();
           if (recTime < startTime) return false;
         }
-        if (filters.dateRangeEnd) {
+        if (activeFilters.dateRangeEnd) {
           // end of day
-          const endTime = new Date(`${filters.dateRangeEnd}T23:59:59`).getTime();
+          const endTime = new Date(`${activeFilters.dateRangeEnd}T23:59:59`).getTime();
           if (recTime > endTime) return false;
         }
       }
 
       return true;
     });
-  }, [allRecords, filters]);
+
+  };
+
+  const filteredRecords = useMemo(() => filterRecords(filters), [allRecords, filters]);
+  // Counts stay scoped to the current consultant, dates, area and book type,
+  // but ignore an already-selected visitor so other options remain stable.
+  const teamCountRecords = useMemo(
+    () => filterRecords({ ...filters, supportTeamMembers: [], selectedSupportTeam: '' }),
+    [allRecords, filters]
+  );
 
   // Calculate unique visits count (Total Visit) based on Primary Key: Tiket ID + Date Visit
   const uniqueVisitsCount = useMemo(() => {
@@ -449,6 +458,7 @@ export default function App() {
           availableStatuses={availableStatuses}
           availableMonths={availableMonths}
           consultantGroupings={consultantGroupings}
+          teamCountRecords={teamCountRecords}
           totalFilteredRecords={filteredRecords.length}
           totalFilteredVisits={uniqueVisitsCount}
           supportTeamVisitsCount={supportTeamVisitsCount}
