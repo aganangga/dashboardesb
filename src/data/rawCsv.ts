@@ -1,4 +1,5 @@
-// Full dataset (684 rows)
+// Complete published baseline dataset (August–September 2026; 1,569 visit agenda rows).
+// Restored from the previously deployed offline dashboard to prevent date range regression.
 export const DEFAULT_RAW_CSV = `Ticket ID,Status,Visit Type,Supervisor,Jadwal Agenda,Date Visit,Check In Time,Check Out Time,Nama Support,Nama Consultant,Nama Company
 ESB-57FCCR,SEND EMAIL,Training,Jane Margareth Widjaja,02/08/2026 15:00:00,03/08/2026,03/08/2026 07:22:28,03/08/2026 07:24:13,"Dika Anugerah Pratama, Tegar Rangga",Ayu Febrina Sianturi,CV. Jasa Rasa Sempurna
 ESB-878C62,COMPLETED,Training,Jane Margareth Widjaja,03/08/2026 08:30:00,03/08/2026,03/08/2026 09:12:28,03/08/2026 17:34:33,Fera Eka Waty N,Ayu Febrina Sianturi,CV BebekJoer
@@ -683,4 +684,889 @@ ESB-QGDFQJ,SEND EMAIL,Retraining,M. Iriansyah Suhendar,25/08/2026 09:00:00,25/08
 ESB-CXFELH,COMPLETED,Retraining,Jane Margareth Widjaja,26/08/2026 13:00:00,26/08/2026,26/08/2026 13:51:46,26/08/2026 14:21:51,"Bintang Guntoro, Tri Hastuti Wulandari",Rezi Rizki Raedini,Pagi Sore Restaurant
 ESB-MHXQFX,COMPLETED,Meeting,Jane Margareth Widjaja,31/08/2026 16:00:00,31/08/2026,31/08/2026 16:19:24,31/08/2026 18:35:19,"Fera Eka Waty N, Ayu Febrina Sianturi",Tri Hastuti Wulandari,Solaria Mega Pratama
 ESB-Q9MY72,COMPLETED,Training,Muhamad Rimaduddin,31/08/2026 16:00:00,31/08/2026,31/08/2026 16:38:55,31/08/2026 19:09:46,"Nurul Huda, Kiki Tri Utari",David Prima Putra,Mixue Indonesia Sejahtera
-ESB-D46GTF,COMPLETED,Training,Muhamad Rimaduddin,28/08/2026 13:00:00,28/08/2026,28/08/2026 13:33:13,28/08/2026 17:13:42,"Rafi Mahasin, Kiki Tri Utari",Cherly Vitaloka,Anomali Coffee Roaster`;
+ESB-D46GTF,COMPLETED,Training,Muhamad Rimaduddin,28/08/2026 13:00:00,28/08/2026,28/08/2026 13:33:13,28/08/2026 17:13:42,"Rafi Mahasin, Kiki Tri Utari",Cherly Vitaloka,Anomali Coffee Roaster
+ESB-R4E9S8,SEND EMAIL,Meeting,Muhammad Rimaduddin,01/09/2026 09:00:00,01/09/2026,01/09/2026 10:18:47,03/09/2026 16:46:03,Kiki Tri Utari,Kiki Tri Utari,PT ESTELER TUJUH TUJUH
+ESB-HTFXEB,SEND EMAIL,Training,Jane Margareth Widjaja,01/09/2026 09:00:00,01/09/2026,01/09/2026 09:04:04,01/09/2026 15:24:18,Dika Anugerah Pratama,Dika Anugerah Pratama,ROSIANA KUSUMA DEWI INDARTO
+ESB-K5VGCA,CANCEL,Training,Muhammad Rimaduddin,01/09/2026 09:00:00,01/09/2026,01/09/2026 09:57:17,,Kiki Tri Utari,Kiki Tri Utari,PT ESTELER TUJUH TUJUH
+ESB-G3WBA2,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,01/09/2026 10:00:00,01/09/2026,01/09/2026 10:09:23,01/09/2026 12:22:25,Larezza Murda Gaharni,Rezi Rizki Raedini,PT Yuda Prawira Group
+ESB-RVY5N8,SCHEDULED,Approach,,01/09/2026 10:00:00,01/09/2026,,,Pernandes Paindo Tua,,Buana Bakery & Coffee
+ESB-NS23F4,DRAFT EMAIL,Meeting,M. Iriansyah Suhendar,01/09/2026 10:00:00,01/09/2026,01/09/2026 15:32:19,01/09/2026 17:32:16,Agung Setiawan,Agung Setiawan,Picadilly
+ESB-V3NYCU,SEND EMAIL,Training,Jane Margareth Widjaja,01/09/2026 10:00:00,01/09/2026,01/09/2026 11:18:55,01/09/2026 15:26:50,Abi Muhammad Alfarezy,Rezi Rizki Raedini,CV CHULOS KREASI BOGA
+ESB-H3ESME,CANCEL,Initial Meeting,Jane Margareth Widjaja,01/09/2026 10:00:00,01/09/2026,,,Ayu Febrina Sianturi,Ayu Febrina Sianturi,PT Habibi Kopi Indonesia
+ESB-5M5BBP,CANCEL,Approach,,01/09/2026 10:00:00,01/09/2026,,,Tegar Rangga,,Other
+ESB-WWMQVD,COMPLETED,Training,Jane Margareth Widjaja,01/09/2026 10:00:00,01/09/2026,01/09/2026 10:03:39,01/09/2026 12:51:54,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,Andalan Coffee Hub
+ESB-AQAQCX,COMPLETED,Initial Meeting,Muhammad Rimaduddin,01/09/2026 10:00:00,01/09/2026,01/09/2026 10:12:39,01/09/2026 11:54:54,Yessi Tiyastanti,David Prima Putra,Burgerman
+ESB-A8CBMT,COMPLETED,Training,Muhammad Rimaduddin,01/09/2026 10:00:00,01/09/2026,01/09/2026 09:50:50,01/09/2026 14:08:35,Nika Rullyta Khairunnisa,David Prima Putra,Bread Mama
+ESB-H5X4CY,DRAFT EMAIL,Retraining,M. Iriansyah Suhendar,01/09/2026 10:00:00,01/09/2026,01/09/2026 12:48:56,01/09/2026 14:05:39,Risky Ramadhan,Agung Setiawan,PROOFED
+ESB-6F6UYE,SEND EMAIL,Training,Muhammad Rimaduddin,01/09/2026 10:00:00,01/09/2026,01/09/2026 14:51:40,01/09/2026 17:29:17,Nurul Huda,Cherly Vitaloka,PT Ghuma Nabati Indonesia
+ESB-3GAKYN,COMPLETED,Training,M. Iriansyah Suhendar,01/09/2026 10:00:00,01/09/2026,01/09/2026 10:57:34,01/09/2026 13:30:45,Alian Alfin Nuha,Airlangga Aziz,PT. PROLIFIC INVESTMENTS AUS
+ESB-BKMDJM,SEND EMAIL,Meeting,Muhammad Rimaduddin,01/09/2026 10:00:00,01/09/2026,01/09/2026 10:01:19,01/09/2026 15:20:32,Febrianto Puji Waskito,David Prima Putra,CAFE RETTA
+ESB-DYCQ44,COMPLETED,Training,Jane Margareth Widjaja,01/09/2026 10:00:00,01/09/2026,01/09/2026 09:41:36,01/09/2026 15:56:31,Teddi Ari Tama,Tri Hastuti Wulandari,CV Golden Boga Lestari
+ESB-3SVCPF,SEND EMAIL,Training,Jane Margareth Widjaja,01/09/2026 10:00:00,01/09/2026,01/09/2026 09:54:51,01/09/2026 11:26:54,Fera Eka Waty N,Ayu Febrina Sianturi,PT. Dompet Enak Anak Indonesia
+ESB-UB2YTW,SEND EMAIL,Training,Jane Margareth Widjaja,01/09/2026 10:00:00,01/09/2026,01/09/2026 17:44:59,01/09/2026 17:45:09,Kevin Reynaldi,Rezi Rizki Raedini,NERVEINV
+ESB-CCKEWR,SEND EMAIL,Approach,,01/09/2026 10:00:00,01/09/2026,02/09/2026 09:36:02,02/09/2026 09:38:03,Irma Laura Siregar,,Other
+ESB-DF9X82,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,01/09/2026 10:00:00,01/09/2026,01/09/2026 15:57:09,01/09/2026 20:25:33,Rezi Rizki Raedini,Rezi Rizki Raedini,PT. Cipta Lumbung Pangan
+ESB-VD5CRQ,COMPLETED,Training,Muhammad Rimaduddin,01/09/2026 10:00:00,01/09/2026,01/09/2026 09:48:14,01/09/2026 12:36:14,Vinna Maharani,Cherly Vitaloka,PT. MAJU DULU MIKIR NANTI
+ESB-K24QN4,DRAFT EMAIL,Training,Jane Margareth Widjaja,01/09/2026 10:00:00,01/09/2026,01/09/2026 13:58:52,01/09/2026 20:46:10,Margaretha Agrivani,Tri Hastuti Wulandari,PT Sahabat Bunga Simpour
+ESB-QGKX9P,COMPLETED,Training,Muhammad Rimaduddin,01/09/2026 11:00:00,01/09/2026,01/09/2026 11:16:14,01/09/2026 12:17:53,Ardiansyah Hendardi,Kiki Tri Utari,SS Warehouse
+ESB-NXR4T7,CANCEL,Meeting,M. Iriansyah Suhendar,01/09/2026 13:00:00,01/09/2026,,,Agung Setiawan,Agung Setiawan,PT. Golqi Sukses Mulia
+ESB-AMYBHH,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,01/09/2026 13:00:00,01/09/2026,01/09/2026 13:00:44,01/09/2026 17:47:27,Ayu Febrina Sianturi,Ayu Febrina Sianturi,BOUNCE
+ESB-9BRCAF,SEND EMAIL,Training,M. Iriansyah Suhendar,01/09/2026 13:00:00,01/09/2026,01/09/2026 16:39:32,01/09/2026 16:43:40,Anisa Lucky,Agung Setiawan,PT. Padu Rasa Group
+ESB-WXKKJ6,DRAFT EMAIL,Meeting,,01/09/2026 14:00:00,01/09/2026,01/09/2026 14:38:53,01/09/2026 16:33:08,Larezza Murda Gaharni,,Bloomery Patisserie
+ESB-M8UVST,COMPLETED,Initial Meeting,Jane Margareth Widjaja,01/09/2026 14:00:00,01/09/2026,01/09/2026 13:56:50,01/09/2026 15:00:32,Yoga Astita Ade,Rezi Rizki Raedini,PT DELAPAN KUDA TUNGGAL
+ESB-NY3H8C,SEND EMAIL,Meeting,Muhammad Rimaduddin,01/09/2026 14:00:00,01/09/2026,01/09/2026 14:30:24,03/09/2026 09:39:05,Kiki Tri Utari,Kiki Tri Utari,Terminale Gelato
+ESB-DV9H9P,CANCEL,Meeting,Jane Margareth Widjaja,01/09/2026 14:00:00,01/09/2026,01/09/2026 13:53:06,,Fera Eka Waty N,Ayu Febrina Sianturi,Titik Ramai
+ESB-7Q7872,SEND EMAIL,Training,Muhammad Rimaduddin,01/09/2026 14:00:00,01/09/2026,01/09/2026 14:30:27,02/09/2026 19:37:44,Ardiansyah Hendardi,Kiki Tri Utari,Enakin
+ESB-FY6DU7,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,01/09/2026 14:00:00,01/09/2026,01/09/2026 14:24:01,01/09/2026 20:15:38,Rafi Mahasin,Kiki Tri Utari,PT BOGA INTI CITA RASA
+ESB-QWNJE9,SEND EMAIL,Approach,,01/09/2026 14:00:00,01/09/2026,02/09/2026 09:36:05,02/09/2026 09:39:29,Irma Laura Siregar,,Other
+ESB-RZKR4T,COMPLETED,Training,M. Iriansyah Suhendar,01/09/2026 14:00:00,01/09/2026,01/09/2026 14:11:04,01/09/2026 15:53:53,Tegar Rangga,Agung Setiawan,Rally Bites
+ESB-X5D94N,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,01/09/2026 15:00:00,01/09/2026,01/09/2026 14:05:37,01/09/2026 21:14:39,Airlangga Aziz,Airlangga Aziz,PT. BAAS MAS SEJATI
+ESB-E9VAJ5,SEND EMAIL,Training,Muhammad Rimaduddin,02/09/2026 09:00:00,02/09/2026,02/09/2026 09:34:50,02/09/2026 12:19:22,Alif Izzuddin Ramadhan,Cherly Vitaloka,PT Gizi Pangan Utama
+ESB-DD8YEQ,DRAFT EMAIL,Initial Meeting,Jane Margareth Widjaja,02/09/2026 09:00:00,02/09/2026,02/09/2026 17:55:44,02/09/2026 17:55:50,Rezi Rizki Raedini,Rezi Rizki Raedini,Moeara Eatery & Hub
+ESB-2EBXA8,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,02/09/2026 09:00:00,02/09/2026,02/09/2026 09:37:32,02/09/2026 10:24:10,Febri Dwi Putra,Airlangga Aziz,PT ANEKA PANGAN SEJAHTERA
+ESB-TPG6W9,DRAFT EMAIL,Meeting,M. Iriansyah Suhendar,02/09/2026 10:00:00,02/09/2026,02/09/2026 15:36:09,02/09/2026 15:36:18,Risky Ramadhan,Agung Setiawan,Postman Dining
+ESB-D8YNJ9,SEND EMAIL,Training,Jane Margareth Widjaja,02/09/2026 10:00:00,02/09/2026,02/09/2026 16:24:08,02/09/2026 16:34:46,Kevin Reynaldi,Rezi Rizki Raedini,PT Sego Rasa Nusantara
+ESB-NXAQ42,DRAFT EMAIL,Meeting,M. Iriansyah Suhendar,02/09/2026 10:00:00,02/09/2026,03/09/2026 17:21:42,03/09/2026 17:21:50,Agung Setiawan,Agung Setiawan,PT. Primaboga Nusantara Inti
+ESB-F8KT7U,SEND EMAIL,Training,M. Iriansyah Suhendar,02/09/2026 10:00:00,02/09/2026,02/09/2026 19:37:53,02/09/2026 19:38:55,Ardiansyah Hendardi,Kiki Tri Utari,Kopi Insight
+ESB-HFRQ4W,CANCEL,Retraining,Muhammad Rimaduddin,02/09/2026 10:00:00,02/09/2026,,,Vinna Maharani,Cherly Vitaloka,PT. Pratama Karya Bangsa
+ESB-ZKDTGX,SEND EMAIL,Retraining,Jane Margareth Widjaja,02/09/2026 10:00:00,02/09/2026,02/09/2026 09:51:37,02/09/2026 14:34:17,Syahrul Zulvan,Dika Anugerah Pratama,CV Zarcoon Maju Jaya
+ESB-FMGA9D,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,02/09/2026 10:00:00,02/09/2026,02/09/2026 10:29:45,02/09/2026 12:14:37,Dika Anugerah Pratama,Dika Anugerah Pratama,Coffee Lumoo
+ESB-Y9TVV3,SEND EMAIL,Training,Muhammad Rimaduddin,02/09/2026 10:00:00,02/09/2026,02/09/2026 13:57:56,02/09/2026 16:59:28,Febrianto Puji Waskito,David Prima Putra,Matcha Masen
+ESB-58HNNX,SEND EMAIL,Training,,02/09/2026 10:00:00,02/09/2026,02/09/2026 09:36:11,02/09/2026 09:41:00,Irma Laura Siregar,,PT Esensi Solusi Buana (Present)
+ESB-7MXYJ6,COMPLETED,Meeting,Muhammad Rimaduddin,02/09/2026 10:00:00,02/09/2026,02/09/2026 09:39:55,02/09/2026 14:03:07,Alian Alfin Nuha,Airlangga Aziz,PT ALCHEMY
+ESB-D9BV9A,SEND EMAIL,Retraining,M. Iriansyah Suhendar,02/09/2026 10:00:00,02/09/2026,02/09/2026 10:14:58,,Anisa Lucky,Agung Setiawan,Dandi Rendika Bimantara
+ESB-HHY6DQ,SCHEDULED,Approach,,02/09/2026 10:00:00,02/09/2026,,,Pernandes Paindo Tua,,Other
+ESB-2KTH72,COMPLETED,Initial Meeting,Jane Margareth Widjaja,02/09/2026 10:00:00,02/09/2026,02/09/2026 14:15:23,02/09/2026 14:15:26,Ayu Febrina Sianturi,Ayu Febrina Sianturi,PT Habibi Kopi Indonesia
+ESB-JCWBST,DRAFT EMAIL,Retraining,Jane Margareth Widjaja,02/09/2026 10:00:00,02/09/2026,02/09/2026 10:19:54,02/09/2026 11:25:01,Larezza Murda Gaharni,Tri Hastuti Wulandari,PT Koba Sukses Berjaya (KOBA BBQ)
+ESB-VQXZER,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,02/09/2026 10:00:00,02/09/2026,02/09/2026 10:14:36,,Anisa Lucky,Agung Setiawan,Drama
+ESB-Z7SU6M,COMPLETED,Initial Meeting,Muhammad Rimaduddin,02/09/2026 10:00:00,02/09/2026,02/09/2026 10:10:03,02/09/2026 15:07:58,Yessi Tiyastanti,David Prima Putra,Raia Coffee
+ESB-W68FJM,COMPLETED,Initial Meeting,Muhammad Rimaduddin,02/09/2026 10:00:00,02/09/2026,02/09/2026 10:05:10,02/09/2026 11:35:38,David Prima Putra,David Prima Putra,CV. Ayam Kari Kepastian
+ESB-YEZCHQ,SEND EMAIL,Training,Jane Margareth Widjaja,02/09/2026 10:00:00,02/09/2026,02/09/2026 10:00:39,02/09/2026 11:54:52,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,CV Askara Arsa Utama
+ESB-GVJWPA,COMPLETED,Training,Muhammad Rimaduddin,02/09/2026 10:00:00,02/09/2026,02/09/2026 12:06:59,02/09/2026 12:07:05,Syafiz Amiero,David Prima Putra,Duree Global Food
+ESB-5B5RXF,SEND EMAIL,Retraining,Muhammad Rimaduddin,02/09/2026 10:00:00,02/09/2026,02/09/2026 10:24:58,02/09/2026 13:11:09,Nika Rullyta Khairunnisa,David Prima Putra,Sancha
+ESB-S5J7WC,SEND EMAIL,Retraining,Jane Margareth Widjaja,02/09/2026 10:00:00,02/09/2026,02/09/2026 10:01:01,02/09/2026 12:16:43,Nurul Huda,Ayu Febrina Sianturi,Nabilla Halfi (Naka Signature)
+ESB-ZR3V7N,DRAFT EMAIL,Retraining,Jane Margareth Widjaja,02/09/2026 10:00:00,02/09/2026,02/09/2026 09:58:00,02/09/2026 13:58:49,Margaretha Agrivani,Tri Hastuti Wulandari,PT MAKANAN LEZAT INDONESIA
+ESB-X7DDZK,COMPLETED,Meeting,Muhammad Rimaduddin,02/09/2026 10:00:00,02/09/2026,02/09/2026 10:03:14,02/09/2026 12:03:02,Melati Cantika,Kiki Tri Utari,PT Amanda Retailindo Group - Kitchen A
+ESB-3QX5FZ,SEND EMAIL,Training,Jane Margareth Widjaja,02/09/2026 10:00:00,02/09/2026,02/09/2026 10:14:15,02/09/2026 19:09:28,Fauzi Yuda Ariyanto,Dika Anugerah Pratama,CV Lintas Aroma Bumi
+ESB-VXRMDS,COMPLETED,Training,Jane Margareth Widjaja,02/09/2026 11:00:00,02/09/2026,02/09/2026 11:07:17,02/09/2026 12:51:54,Yoga Astita Ade,Rezi Rizki Raedini,Shots Coffee Rawamangun
+ESB-GVY2RX,COMPLETED,Meeting,Jane Margareth Widjaja,02/09/2026 11:00:00,02/09/2026,02/09/2026 10:54:00,02/09/2026 20:40:25,Bintang Guntoro,Tri Hastuti Wulandari,Oseng Bakar Banyurasa
+ESB-PA7B67,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,02/09/2026 13:00:00,02/09/2026,02/09/2026 13:14:15,02/09/2026 14:33:14,Yayang Putri Suwondo,Agung Setiawan,Nyonya Kaya
+ESB-F74U6G,SEND EMAIL,Meeting,Jane Margareth Widjaja,02/09/2026 13:30:00,02/09/2026,02/09/2026 15:47:03,02/09/2026 15:47:11,Teddi Ari Tama,Tri Hastuti Wulandari,PT Emados Kebab Indonesia
+ESB-WB5T2R,SEND EMAIL,Training,Muhammad Rimaduddin,02/09/2026 13:30:00,02/09/2026,02/09/2026 13:42:16,02/09/2026 17:31:11,Alif Izzuddin Ramadhan,Cherly Vitaloka,PT RAPSSTATION MAJU BERSAMA
+ESB-67DUW7,COMPLETED,Training,Muhammad Rimaduddin,02/09/2026 14:00:00,02/09/2026,02/09/2026 17:02:20,02/09/2026 17:32:27,Vinna Maharani,Cherly Vitaloka,Namora
+ESB-2UB9H5,COMPLETED,Initial Meeting,Muhammad Rimaduddin,02/09/2026 14:00:00,02/09/2026,02/09/2026 14:00:10,,Kiki Tri Utari,Kiki Tri Utari,Ben Baur 34
+ESB-YEC9AF,DRAFT EMAIL,Approach,,02/09/2026 14:00:00,02/09/2026,02/09/2026 14:01:46,02/09/2026 16:01:03,Anisa Lucky,,Other
+ESB-27MF9E,SEND EMAIL,Training,Jane Margareth Widjaja,02/09/2026 14:00:00,02/09/2026,02/09/2026 13:58:53,02/09/2026 18:04:57,Margaretha Agrivani,Tri Hastuti Wulandari,PT PIGMNT CAHAYA GEMILANG
+ESB-8Y7NBE,DRAFT EMAIL,Retraining,Jane Margareth Widjaja,02/09/2026 14:00:00,02/09/2026,02/09/2026 13:57:55,02/09/2026 16:56:40,Noviyanti Nadia,Rezi Rizki Raedini,CV. Rasa Pemersatu Bangsa
+ESB-ZBDXFK,SEND EMAIL,Training,Jane Margareth Widjaja,02/09/2026 14:00:00,02/09/2026,02/09/2026 14:14:55,02/09/2026 17:25:22,Larezza Murda Gaharni,Tri Hastuti Wulandari,Sato Dua Iga
+ESB-Y3DTQJ,COMPLETED,Meeting,Jane Margareth Widjaja,02/09/2026 14:00:00,02/09/2026,02/09/2026 13:55:18,02/09/2026 15:26:24,Fera Eka Waty N,Ayu Febrina Sianturi,Titik Ramai
+ESB-Z5GUZ6,SEND EMAIL,Training,Muhammad Rimaduddin,02/09/2026 14:00:00,02/09/2026,02/09/2026 15:07:49,03/09/2026 07:23:54,Yessi Tiyastanti,David Prima Putra,PT AGRO PANGAN NUSANTARA (KOPITIAM LIM)
+ESB-5PVFWA,SEND EMAIL,Retraining,Muhammad Rimaduddin,02/09/2026 14:00:00,02/09/2026,02/09/2026 14:20:00,02/09/2026 21:36:25,Nurul Huda,Kiki Tri Utari,PT Maha Karya Goasaya
+ESB-6WA3TK,SEND EMAIL,Training,Jane Margareth Widjaja,02/09/2026 15:00:00,02/09/2026,02/09/2026 15:08:47,02/09/2026 17:18:30,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,PT Generasi Nutrisi Emas Indonesia
+ESB-BP2MWF,SCHEDULED,Meeting,M. Iriansyah Suhendar,03/09/2026 09:00:00,03/09/2026,,,Anisa Lucky,Agung Setiawan,Lumora Cafe & Eatery
+ESB-THY49C,SEND EMAIL,Meeting,M. Iriansyah Suhendar,03/09/2026 09:00:00,03/09/2026,03/09/2026 10:47:47,03/09/2026 11:40:17,Agung Setiawan,Agung Setiawan,PT. Golqi Sukses Mulia
+ESB-4YAEQY,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,03/09/2026 09:00:00,03/09/2026,03/09/2026 11:23:45,03/09/2026 13:36:41,Dika Anugerah Pratama,Dika Anugerah Pratama,Maverick
+ESB-8UY49U,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,03/09/2026 09:00:00,03/09/2026,03/09/2026 09:22:52,03/09/2026 12:12:22,Airlangga Aziz,Airlangga Aziz,Nami Chikin Korean Street Food
+ESB-RVWVTD,SEND EMAIL,Training,Muhammad Rimaduddin,03/09/2026 10:00:00,03/09/2026,03/09/2026 10:09:45,03/09/2026 17:44:07,Febrianto Puji Waskito,David Prima Putra,Brookland Coffee
+ESB-X74AAE,COMPLETED,Training,Jane Margareth Widjaja,03/09/2026 10:00:00,03/09/2026,03/09/2026 10:01:21,03/09/2026 13:48:58,Yoga Astita Ade,Rezi Rizki Raedini,PT. Kopitiam Makmur Sentosa
+ESB-JDCGMM,COMPLETED,Babysit,Muhammad Rimaduddin,03/09/2026 10:00:00,03/09/2026,03/09/2026 11:13:22,03/09/2026 15:40:39,Yessi Tiyastanti,David Prima Putra,Burgerman
+ESB-BAN5F8,SEND EMAIL,Training,Muhammad Rimaduddin,03/09/2026 10:00:00,03/09/2026,03/09/2026 10:00:45,03/09/2026 19:52:23,Alif Izzuddin Ramadhan,Cherly Vitaloka,CV. LITTLE SINBAD PUNCAK
+ESB-WT5AMF,COMPLETED,Meeting,Muhammad Rimaduddin,03/09/2026 10:00:00,03/09/2026,03/09/2026 10:01:25,03/09/2026 12:40:10,Melati Cantika,Kiki Tri Utari,Tintjes
+ESB-2HDVHF,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,03/09/2026 10:00:00,03/09/2026,03/09/2026 14:34:57,07/09/2026 16:57:11,Ardiansyah Hendardi,Kiki Tri Utari,Warung Kopi Gunung Dago Pakar
+ESB-4WMJDV,DRAFT EMAIL,Retraining,Jane Margareth Widjaja,03/09/2026 10:00:00,03/09/2026,03/09/2026 23:36:44,03/09/2026 23:37:41,Larezza Murda Gaharni,Tri Hastuti Wulandari,Kulega
+ESB-GJ2XU3,SEND EMAIL,Babysit,Jane Margareth Widjaja,03/09/2026 10:00:00,03/09/2026,03/09/2026 12:55:20,03/09/2026 18:21:16,Syahrul Zulvan,Dika Anugerah Pratama,CV JABAT TANGAN WUJUDKAN BERKAT
+ESB-29974V,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,03/09/2026 10:00:00,03/09/2026,03/09/2026 10:43:43,03/09/2026 12:16:33,Teddi Ari Tama,Tri Hastuti Wulandari,CV Madam Catering
+ESB-M97CT4,COMPLETED,Retraining,M. Iriansyah Suhendar,03/09/2026 10:00:00,03/09/2026,03/09/2026 08:58:04,,Febri Dwi Putra,Airlangga Aziz,STONEWALL BALI
+ESB-NCQPT2,COMPLETED,Training,Jane Margareth Widjaja,03/09/2026 10:00:00,03/09/2026,03/09/2026 10:04:06,03/09/2026 15:57:14,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,Altilis Coffee & Eatery
+ESB-YKBPKM,COMPLETED,Initial Meeting,Muhammad Rimaduddin,03/09/2026 10:00:00,03/09/2026,03/09/2026 09:59:31,03/09/2026 11:12:15,David Prima Putra,David Prima Putra,Gukbapku
+ESB-CRU8H3,SEND EMAIL,Training,Jane Margareth Widjaja,03/09/2026 10:00:00,03/09/2026,03/09/2026 12:30:58,03/09/2026 20:42:00,Bintang Guntoro,Tri Hastuti Wulandari,Pusat Rasa by Ramu Saji
+ESB-Q57AAF,COMPLETED,Initial Meeting,Jane Margareth Widjaja,03/09/2026 10:00:00,03/09/2026,03/09/2026 09:50:38,03/09/2026 12:36:38,Ayu Febrina Sianturi,Ayu Febrina Sianturi,Shawarma Sultan
+ESB-S28QBG,COMPLETED,Meeting,,03/09/2026 10:00:00,03/09/2026,04/09/2026 15:27:06,09/09/2026 13:36:07,Jane Margareth Widjaja,,PT Esensi Solusi Buana
+ESB-5UABW6,COMPLETED,Training,Muhammad Rimaduddin,03/09/2026 10:00:00,03/09/2026,03/09/2026 12:54:25,03/09/2026 15:29:23,Vinna Maharani,Cherly Vitaloka,Kopilimo
+ESB-CXZHFV,COMPLETED,Meeting,M. Iriansyah Suhendar,03/09/2026 10:00:00,03/09/2026,03/09/2026 11:51:42,03/09/2026 13:03:20,Tegar Rangga,Agung Setiawan,Kukolos Bakehaus
+ESB-NSKUHZ,COMPLETED,Training,Jane Margareth Widjaja,03/09/2026 10:00:00,03/09/2026,03/09/2026 09:28:47,03/09/2026 13:56:48,Fera Eka Waty N,Ayu Febrina Sianturi,PT. Nagara Rasa Nusantara
+ESB-8S2EWC,SEND EMAIL,Training,Muhammad Rimaduddin,03/09/2026 10:00:00,03/09/2026,03/09/2026 10:00:23,03/09/2026 12:38:00,Syafiz Amiero,David Prima Putra,BBS Bungeopang
+ESB-HVT7UW,SCHEDULED,Initial Meeting,M. Iriansyah Suhendar,03/09/2026 10:30:00,03/09/2026,,,,Airlangga Aziz,PT ANEKA PANGAN SEJAHTERA
+ESB-DJD2QQ,SEND EMAIL,Meeting,Jane Margareth Widjaja,03/09/2026 10:30:00,03/09/2026,03/09/2026 10:47:20,03/09/2026 12:16:41,Margaretha Agrivani,Tri Hastuti Wulandari,Dapur JUM
+ESB-YPDH2P,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,03/09/2026 13:00:00,03/09/2026,03/09/2026 13:44:13,07/09/2026 11:35:29,Rezi Rizki Raedini,Rezi Rizki Raedini,PT Sinar Maju Raga
+ESB-G75UQJ,COMPLETED,Meeting,Jane Margareth Widjaja,03/09/2026 13:00:00,03/09/2026,04/09/2026 15:26:37,09/09/2026 13:36:16,Jane Margareth Widjaja,Tri Hastuti Wulandari,100ACREWOOD SDN BHD
+ESB-VWFZKB,COMPLETED,Training,Muhammad Rimaduddin,03/09/2026 13:00:00,03/09/2026,03/09/2026 12:54:20,03/09/2026 15:29:16,Vinna Maharani,Cherly Vitaloka,The Bay
+ESB-DSPDNG,SCHEDULED,Initial Meeting,Jane Margareth Widjaja,03/09/2026 13:30:00,03/09/2026,,,,Tri Hastuti Wulandari,PT Boga Makmur Inti Pangan
+ESB-3U6GA5,SEND EMAIL,Meeting,Jane Margareth Widjaja,03/09/2026 13:30:00,03/09/2026,03/09/2026 22:45:08,03/09/2026 22:45:16,Tri Hastuti Wulandari,Tri Hastuti Wulandari,PT Boga Makmur Inti Pangan
+ESB-YWKRTE,COMPLETED,Training,Muhammad Rimaduddin,03/09/2026 14:00:00,03/09/2026,03/09/2026 16:11:14,03/09/2026 17:38:19,Yessi Tiyastanti,David Prima Putra,B.LOW
+ESB-849X3K,SEND EMAIL,Meeting,Muhammad Rimaduddin,03/09/2026 14:00:00,03/09/2026,03/09/2026 14:19:41,03/09/2026 16:46:10,Kiki Tri Utari,Kiki Tri Utari,PT ESTELER TUJUH TUJUH
+ESB-9X5NRE,CANCEL,Initial Meeting,M. Iriansyah Suhendar,03/09/2026 14:00:00,03/09/2026,,,Agung Setiawan,Agung Setiawan,Ayam goreng Sahadja
+ESB-MTNQFG,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,03/09/2026 14:00:00,03/09/2026,03/09/2026 15:14:54,04/09/2026 10:39:30,Airlangga Aziz,Airlangga Aziz,Tahoma
+ESB-799549,COMPLETED,Initial Meeting,Muhammad Rimaduddin,03/09/2026 14:00:00,03/09/2026,03/09/2026 14:00:50,03/09/2026 15:33:30,David Prima Putra,Cherly Vitaloka,Rempah Bakar
+ESB-RD6SER,DRAFT EMAIL,Training,M. Iriansyah Suhendar,03/09/2026 14:00:00,03/09/2026,03/09/2026 13:56:25,03/09/2026 15:36:30,Risky Ramadhan,Agung Setiawan,PT. Kreasi Masakan Sejahtera
+ESB-5VNCZC,SEND EMAIL,Training,Muhammad Rimaduddin,03/09/2026 14:00:00,03/09/2026,03/09/2026 14:35:15,07/09/2026 16:57:29,Ardiansyah Hendardi,Kiki Tri Utari,PT. HABER GROUP INTERNATIONAL
+ESB-YXADH2,SEND EMAIL,Training,Muhammad Rimaduddin,03/09/2026 14:00:00,03/09/2026,03/09/2026 16:05:41,,Nurul Huda,Kiki Tri Utari,PT. Any Assembly Indonesia
+ESB-JEWRG2,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,03/09/2026 15:00:00,03/09/2026,07/09/2026 10:23:27,07/09/2026 17:26:46,Noviyanti Nadia,Rezi Rizki Raedini,PT LAKSAMANA MUDA BERSATU
+ESB-JQJFSU,SEND EMAIL,Meeting,Jane Margareth Widjaja,04/09/2026 08:30:00,04/09/2026,04/09/2026 11:59:55,04/09/2026 18:31:20,Bintang Guntoro,Tri Hastuti Wulandari,Uji Coffee
+ESB-KJY3FZ,SEND EMAIL,Approach,,04/09/2026 09:00:00,04/09/2026,04/09/2026 10:46:46,04/09/2026 11:26:56,Dika Anugerah Pratama,,Other
+ESB-6H5BPQ,CANCEL,Initial Meeting,M. Iriansyah Suhendar,04/09/2026 10:00:00,04/09/2026,,,Irma Laura Siregar,Agung Setiawan,Simbiosa
+ESB-SA4P3H,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,04/09/2026 10:00:00,04/09/2026,04/09/2026 10:03:13,04/09/2026 15:56:01,Tri Hastuti Wulandari,Rezi Rizki Raedini,Buana Bakery & Coffee
+ESB-D8UG25,DRAFT EMAIL,Babysit,M. Iriansyah Suhendar,04/09/2026 10:00:00,04/09/2026,04/09/2026 10:06:54,04/09/2026 10:34:22,Risky Ramadhan,Agung Setiawan,MIE TOREE KLAMPIS
+ESB-4KK69B,SEND EMAIL,Meeting,Muhammad Rimaduddin,04/09/2026 10:00:00,04/09/2026,04/09/2026 10:46:06,04/09/2026 10:47:48,Cherly Vitaloka,Cherly Vitaloka,EAASY Protein Coffee
+ESB-6Q5WNX,SEND EMAIL,Babysit,Jane Margareth Widjaja,04/09/2026 10:00:00,04/09/2026,04/09/2026 12:00:07,04/09/2026 12:00:20,Kevin Reynaldi,Rezi Rizki Raedini,Tempong Nusantara
+ESB-YMG6GY,SEND EMAIL,Training,Jane Margareth Widjaja,04/09/2026 10:00:00,04/09/2026,04/09/2026 11:43:57,05/09/2026 17:13:21,Syahrul Zulvan,Dika Anugerah Pratama,Baek Mee
+ESB-6PHHSM,SCHEDULED,Meeting,Jane Margareth Widjaja,04/09/2026 10:00:00,04/09/2026,,,Pernandes Paindo Tua,Tri Hastuti Wulandari,Buana Bakery & Coffee
+ESB-CJM85N,SEND EMAIL,Training,Muhammad Rimaduddin,04/09/2026 10:00:00,04/09/2026,04/09/2026 10:11:39,04/09/2026 14:30:29,Nurul Huda,Kiki Tri Utari,Bite and Beats
+ESB-ZXRQWN,SEND EMAIL,Training,Muhammad Rimaduddin,04/09/2026 10:00:00,04/09/2026,04/09/2026 09:36:25,04/09/2026 16:55:55,Alif Izzuddin Ramadhan,Cherly Vitaloka,PT Mitra Mulia Manunggal
+ESB-RTRTT3,COMPLETED,Training,Jane Margareth Widjaja,04/09/2026 10:00:00,04/09/2026,04/09/2026 10:01:32,04/09/2026 11:30:52,Fera Eka Waty N,Ayu Febrina Sianturi,Rumah Kedua
+ESB-9QJ9H3,DRAFT EMAIL,Training,Jane Margareth Widjaja,04/09/2026 10:00:00,04/09/2026,04/09/2026 10:39:10,04/09/2026 16:20:48,Larezza Murda Gaharni,Tri Hastuti Wulandari,PT Kopi Utama Indonesia
+ESB-CCDXED,CANCEL,Retraining,Jane Margareth Widjaja,04/09/2026 10:00:00,04/09/2026,04/09/2026 10:24:50,,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,Dante
+ESB-YZPEER,COMPLETED,Training,Jane Margareth Widjaja,04/09/2026 10:00:00,04/09/2026,04/09/2026 10:16:28,04/09/2026 11:57:13,Yoga Astita Ade,Rezi Rizki Raedini,CV Multi Sarana Amal (PSKW)
+ESB-FS24DW,DRAFT EMAIL,Retraining,Jane Margareth Widjaja,04/09/2026 10:00:00,04/09/2026,04/09/2026 10:09:31,04/09/2026 13:29:09,Margaretha Agrivani,Tri Hastuti Wulandari,PT Damai Elok Sukacita Indonesia
+ESB-3EPPZA,SEND EMAIL,Training,Muhammad Rimaduddin,04/09/2026 10:00:00,04/09/2026,04/09/2026 10:21:48,07/09/2026 10:40:47,Rafi Mahasin,Kiki Tri Utari,PT Moto lentera sukses
+ESB-RYQAJG,SEND EMAIL,Babysit,Muhammad Rimaduddin,04/09/2026 10:00:00,04/09/2026,04/09/2026 10:36:43,04/09/2026 12:34:14,Yessi Tiyastanti,David Prima Putra,PT Shini Mari Makan
+ESB-E87V2V,CANCEL,Training,Muhammad Rimaduddin,04/09/2026 11:00:00,04/09/2026,,,Vinna Maharani,Cherly Vitaloka,SAMBEL BLUDAK
+ESB-QFDFZS,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,04/09/2026 11:00:00,04/09/2026,04/09/2026 10:39:52,04/09/2026 12:35:10,Airlangga Aziz,Airlangga Aziz,From Coffee
+ESB-CMFN49,SEND EMAIL,Training,Jane Margareth Widjaja,04/09/2026 13:00:00,04/09/2026,04/09/2026 13:01:39,04/09/2026 16:28:39,Fauzi Yuda Ariyanto,Dika Anugerah Pratama,Serrae Place
+ESB-AJWFH2,COMPLETED,Retraining,M. Iriansyah Suhendar,04/09/2026 13:00:00,04/09/2026,04/09/2026 12:56:37,04/09/2026 17:09:26,Alian Alfin Nuha,Airlangga Aziz,PT. COVE DEVELOPMENT BALI
+ESB-5PHAZ6,CANCEL,Training,Jane Margareth Widjaja,04/09/2026 13:00:00,04/09/2026,,,Rezi Rizki Raedini,Rezi Rizki Raedini,28 Coffee Indonesia
+ESB-Q4ECJ8,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,04/09/2026 14:00:00,04/09/2026,04/09/2026 13:44:24,07/09/2026 10:21:07,Irma Laura Siregar,Rezi Rizki Raedini,Nak Sabar
+ESB-F8VXJ7,SEND EMAIL,Training,Muhammad Rimaduddin,04/09/2026 14:00:00,04/09/2026,04/09/2026 14:28:19,07/09/2026 16:59:15,Yoan Fefi Berliani,Kiki Tri Utari,PT. KARSA PANGAN BUANA
+ESB-46WR35,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,04/09/2026 14:00:00,04/09/2026,04/09/2026 18:04:42,04/09/2026 18:04:45,Kevin Reynaldi,Rezi Rizki Raedini,Abon Gulung Beruang Madu
+ESB-NRGKMS,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,04/09/2026 14:00:00,04/09/2026,04/09/2026 14:43:30,04/09/2026 16:48:09,Agung Setiawan,Agung Setiawan,Akara Coffee
+ESB-YPY5TT,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,04/09/2026 14:00:00,04/09/2026,04/09/2026 13:48:18,04/09/2026 15:50:16,Dika Anugerah Pratama,Dika Anugerah Pratama,Cellar
+ESB-95PG3B,SEND EMAIL,Retraining,Jane Margareth Widjaja,04/09/2026 14:00:00,04/09/2026,04/09/2026 14:04:10,04/09/2026 17:04:33,Imam Wicaksono,Dika Anugerah Pratama,Dante
+ESB-F8S2H5,COMPLETED,Training,M. Iriansyah Suhendar,04/09/2026 14:00:00,04/09/2026,04/09/2026 14:12:26,04/09/2026 15:19:14,Tegar Rangga,Agung Setiawan,Rally Bites
+ESB-XTPUUK,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,04/09/2026 14:00:00,04/09/2026,04/09/2026 14:07:25,04/09/2026 16:18:08,Cherly Vitaloka,Cherly Vitaloka,PT Modern Kuliner Infinit (MKI)
+ESB-KZGJ7C,COMPLETED,Training,Jane Margareth Widjaja,04/09/2026 14:00:00,04/09/2026,04/09/2026 14:00:58,04/09/2026 15:21:44,Yoga Astita Ade,Rezi Rizki Raedini,La Gramma Pontianak
+ESB-5MBC2Z,SEND EMAIL,Training,M. Iriansyah Suhendar,04/09/2026 14:00:00,04/09/2026,04/09/2026 13:50:25,04/09/2026 17:57:42,Anisa Lucky,Agung Setiawan,Lumora Cafe & Eatery
+ESB-NUPEBJ,COMPLETED,Initial Meeting,,04/09/2026 14:00:00,04/09/2026,04/09/2026 14:12:34,04/09/2026 17:00:57,Christopher Patrick Djuanda,,PT. Oyatsudo Mergonoto Makmur
+ESB-CJU66C,SEND EMAIL,Retraining,Jane Margareth Widjaja,04/09/2026 14:00:00,04/09/2026,04/09/2026 22:50:59,04/09/2026 22:56:20,Abi Muhammad Alfarezy,Rezi Rizki Raedini,PT. Merakit Sinar Group
+ESB-5EMXNZ,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,04/09/2026 15:00:00,04/09/2026,04/09/2026 14:37:02,04/09/2026 14:46:27,Airlangga Aziz,Airlangga Aziz,Rona Manis
+ESB-QKMM8E,SEND EMAIL,Meeting,Muhammad Rimaduddin,04/09/2026 16:00:00,04/09/2026,04/09/2026 16:59:39,04/09/2026 16:59:42,Syafiz Amiero,David Prima Putra,Little Miss Saito
+ESB-E8YBKP,COMPLETED,Babysit,M. Iriansyah Suhendar,07/09/2026 09:00:00,07/09/2026,07/09/2026 09:20:43,07/09/2026 10:44:53,Yayang Putri Suwondo,Agung Setiawan,CV. MOOKA INDONESIA
+ESB-4UMV6U,COMPLETED,Training,M. Iriansyah Suhendar,07/09/2026 09:00:00,07/09/2026,07/09/2026 12:18:52,08/09/2026 09:10:55,Risky Ramadhan,Agung Setiawan,Pt. Gudang FnB
+ESB-XA93GU,SEND EMAIL,Training,Muhammad Rimaduddin,07/09/2026 09:00:00,07/09/2026,07/09/2026 09:23:45,07/09/2026 16:24:14,Syafiz Amiero,David Prima Putra,Sagaleh
+ESB-R8VDCP,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,07/09/2026 09:00:00,07/09/2026,07/09/2026 09:35:51,07/09/2026 10:35:05,Irma Laura Siregar,Agung Setiawan,Simbiosa
+ESB-VHZUJK,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,07/09/2026 09:00:00,07/09/2026,07/09/2026 10:07:40,07/09/2026 11:35:18,Rezi Rizki Raedini,Rezi Rizki Raedini,CV. Rasa Pemersatu Bangsa
+ESB-CYBYUQ,DRAFT EMAIL,Event,,07/09/2026 09:00:00,07/09/2026,09/09/2026 13:19:28,09/09/2026 13:19:35,Muhammad Rimaduddin,,PT Esensi Solusi Buana (Present)
+ESB-WY5EHY,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,07/09/2026 10:00:00,07/09/2026,07/09/2026 10:10:30,07/09/2026 10:45:55,Tegar Rangga,Agung Setiawan,PT. Mandiri Kopijaya Makmur - Warkop Loodech
+ESB-HZFXQF,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,07/09/2026 10:00:00,07/09/2026,07/09/2026 16:34:34,07/09/2026 17:02:29,Teddi Ari Tama,Tri Hastuti Wulandari,PT. Pamora Coffee Indonesia (New)
+ESB-AXCWFJ,SEND EMAIL,Training,M. Iriansyah Suhendar,07/09/2026 10:00:00,07/09/2026,07/09/2026 11:09:41,07/09/2026 12:42:55,Alian Alfin Nuha,Airlangga Aziz,Nami Chikin Korean Street Food
+ESB-75Z6P4,DRAFT EMAIL,Initial Meeting,Jane Margareth Widjaja,07/09/2026 10:00:00,07/09/2026,07/09/2026 10:23:21,07/09/2026 17:26:31,Noviyanti Nadia,Rezi Rizki Raedini,Come Xia Central Kitchen
+ESB-FFCJV4,COMPLETED,Babysit,M. Iriansyah Suhendar,07/09/2026 10:00:00,07/09/2026,07/09/2026 10:00:41,07/09/2026 16:32:43,Christopher Patrick Djuanda,Agung Setiawan,paulina hartono
+ESB-UW39C4,COMPLETED,Training,Muhammad Rimaduddin,07/09/2026 10:00:00,07/09/2026,07/09/2026 14:02:39,07/09/2026 17:00:43,Melati Cantika,Kiki Tri Utari,PT Ganda Parade Berkat
+ESB-87BCEW,SEND EMAIL,Retraining,Jane Margareth Widjaja,07/09/2026 10:00:00,07/09/2026,07/09/2026 10:17:25,07/09/2026 11:51:27,Abi Muhammad Alfarezy,Rezi Rizki Raedini,PT. Adhittana Niaga Jaya
+ESB-37A3CZ,SEND EMAIL,Meeting,Jane Margareth Widjaja,07/09/2026 10:00:00,07/09/2026,08/09/2026 12:32:39,08/09/2026 12:32:45,Tri Hastuti Wulandari,Tri Hastuti Wulandari,PT Gembus Spot Nusantara
+ESB-GJY36Q,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,07/09/2026 10:00:00,07/09/2026,07/09/2026 09:19:50,07/09/2026 09:25:47,Airlangga Aziz,Airlangga Aziz,CV Bagus Pub
+ESB-JFEVV7,SEND EMAIL,Retraining,Muhammad Rimaduddin,07/09/2026 10:00:00,07/09/2026,07/09/2026 10:24:32,07/09/2026 22:33:15,Nika Rullyta Khairunnisa,David Prima Putra,PT Juancha Trang Indonesia
+ESB-9K87FJ,CANCEL,Training,Muhammad Rimaduddin,07/09/2026 10:00:00,07/09/2026,07/09/2026 10:08:32,,Cherly Vitaloka,Cherly Vitaloka,PT MAMAMO BOGA RESEP
+ESB-B5X5MM,SEND EMAIL,Training,Muhammad Rimaduddin,07/09/2026 10:00:00,07/09/2026,07/09/2026 10:50:11,07/09/2026 15:50:03,Yessi Tiyastanti,David Prima Putra,CV Mandira Setia Putra
+ESB-4TTKYH,DRAFT EMAIL,Approach,,07/09/2026 10:00:00,07/09/2026,07/09/2026 13:39:06,07/09/2026 16:51:15,Anisa Lucky,,Other
+ESB-DFGVMD,DRAFT EMAIL,Meeting,Muhammad Rimaduddin,07/09/2026 10:00:00,07/09/2026,07/09/2026 10:46:49,07/09/2026 11:27:35,Ayu Febrina Sianturi,Ayu Febrina Sianturi,PT Medan Kopi Indonesia
+ESB-F6PEE3,SEND EMAIL,Meeting,Jane Margareth Widjaja,07/09/2026 10:00:00,07/09/2026,07/09/2026 11:20:17,07/09/2026 16:08:37,Dika Anugerah Pratama,Rezi Rizki Raedini,CV RTG Seduh Indonesia
+ESB-9EJGAV,CANCEL,Training,Muhammad Rimaduddin,07/09/2026 10:00:00,07/09/2026,,,Fera Eka Waty N,Ayu Febrina Sianturi,Bibik Sayur Resto
+ESB-V4MJDF,COMPLETED,Training,Muhammad Rimaduddin,07/09/2026 10:00:00,07/09/2026,07/09/2026 09:58:14,07/09/2026 13:19:57,Vinna Maharani,Cherly Vitaloka,Namora
+ESB-PQANVM,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,07/09/2026 10:00:00,07/09/2026,07/09/2026 10:22:15,07/09/2026 11:30:42,Agung Setiawan,Agung Setiawan,Kogu Lawang
+ESB-D92EJN,SEND EMAIL,Meeting,Muhammad Rimaduddin,07/09/2026 10:00:00,07/09/2026,07/09/2026 15:58:38,07/09/2026 15:58:41,Cherly Vitaloka,Cherly Vitaloka,PT MAMAMO BOGA RESEP
+ESB-BEERPD,COMPLETED,Initial Meeting,Jane Margareth Widjaja,07/09/2026 11:00:00,07/09/2026,07/09/2026 11:00:50,07/09/2026 16:52:27,Yoga Astita Ade,Rezi Rizki Raedini,The Peoples Pleasure
+ESB-2A433S,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,07/09/2026 13:00:00,07/09/2026,07/09/2026 12:46:43,07/09/2026 14:27:42,Imam Wicaksono,Dika Anugerah Pratama,Karmen Bake House
+ESB-WRVYK5,SEND EMAIL,Retraining,Jane Margareth Widjaja,07/09/2026 13:00:00,07/09/2026,07/09/2026 12:58:28,07/09/2026 19:28:13,Syahrul Zulvan,Rezi Rizki Raedini,Kopi Mlaku ZEN
+ESB-9RYAQY,SEND EMAIL,Training,M. Iriansyah Suhendar,07/09/2026 13:00:00,07/09/2026,07/09/2026 13:39:14,07/09/2026 16:53:32,Anisa Lucky,Agung Setiawan,PT. Padu Rasa Group
+ESB-FT9AA4,SEND EMAIL,Retraining,Jane Margareth Widjaja,07/09/2026 13:00:00,07/09/2026,07/09/2026 14:39:18,07/09/2026 16:42:08,Kevin Reynaldi,Tri Hastuti Wulandari,PT. ROYAL BOGA RASA
+ESB-DEEVYY,COMPLETED,Meeting,Muhammad Rimaduddin,07/09/2026 13:00:00,07/09/2026,07/09/2026 13:24:25,,Kiki Tri Utari,Kiki Tri Utari,PT PANTAI MUTIARA JETSKI
+ESB-WCMSWP,SEND EMAIL,Training,Jane Margareth Widjaja,07/09/2026 14:00:00,07/09/2026,07/09/2026 13:54:48,07/09/2026 16:00:41,Larezza Murda Gaharni,Tri Hastuti Wulandari,Deo Dominico (Founder Bak Kut Teh)
+ESB-Z6Z2A8,SCHEDULED,Approach,,07/09/2026 14:00:00,07/09/2026,,,Pernandes Paindo Tua,,Other
+ESB-8UTYQH,SEND EMAIL,Approach,,07/09/2026 14:00:00,07/09/2026,07/09/2026 13:30:39,07/09/2026 15:24:43,Irma Laura Siregar,,Other
+ESB-M8A7U6,CANCEL,Approach,,07/09/2026 14:00:00,07/09/2026,,,Irma Laura Siregar,,SensoryXperience
+ESB-TNC2EG,COMPLETED,Retraining,Muhammad Rimaduddin,07/09/2026 14:00:00,07/09/2026,07/09/2026 14:46:33,07/09/2026 16:17:28,Tegar Rangga,Ayu Febrina Sianturi,CV. Jasa Rasa Sempurna
+ESB-CT5W2Z,CANCEL,Meeting,Muhammad Rimaduddin,07/09/2026 14:00:00,07/09/2026,,,David Prima Putra,David Prima Putra,PT DCIKA PRIMA INTERFOOD
+ESB-WVRNTJ,COMPLETED,Training,Jane Margareth Widjaja,07/09/2026 14:00:00,07/09/2026,07/09/2026 13:55:38,07/09/2026 16:34:30,Fera Eka Waty N,Ayu Febrina Sianturi,Bibik Sayur Resto
+ESB-FVE4HE,SEND EMAIL,Babysit,Muhammad Rimaduddin,07/09/2026 14:00:00,07/09/2026,07/09/2026 13:35:33,08/09/2026 09:58:20,Ardiansyah Hendardi,David Prima Putra,Mie Akup
+ESB-6U9NMQ,DRAFT EMAIL,Initial Meeting,M. Iriansyah Suhendar,07/09/2026 14:00:00,07/09/2026,07/09/2026 16:08:11,07/09/2026 18:50:49,Agung Setiawan,Agung Setiawan,RM Bendino
+ESB-6YUN9T,COMPLETED,Retraining,M. Iriansyah Suhendar,07/09/2026 14:00:00,07/09/2026,07/09/2026 13:04:47,07/09/2026 15:14:39,Alian Alfin Nuha,Airlangga Aziz,PT Umalas Lounge Rooftop
+ESB-UAPHN6,SEND EMAIL,Approach,,07/09/2026 15:00:00,07/09/2026,07/09/2026 14:06:53,07/09/2026 16:20:38,Airlangga Aziz,,Other
+ESB-5TJYS8,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,07/09/2026 15:00:00,07/09/2026,07/09/2026 16:41:19,07/09/2026 16:41:24,Rezi Rizki Raedini,Rezi Rizki Raedini,PT. Kkado Djakarta Jaya
+ESB-VWBP4N,COMPLETED,Meeting,Muhammad Rimaduddin,07/09/2026 15:00:00,07/09/2026,07/09/2026 17:14:50,07/09/2026 17:14:53,Syafiz Amiero,,PT Sari Coffee Indonesia
+ESB-EV62N4,CANCEL,Meeting,Muhammad Rimaduddin,08/09/2026 09:00:00,08/09/2026,,,Kiki Tri Utari,Kiki Tri Utari,PT Sudo Brew Naratama
+ESB-N5X2V5,COMPLETED,Training,M. Iriansyah Suhendar,08/09/2026 09:00:00,08/09/2026,08/09/2026 09:11:11,08/09/2026 14:55:55,Risky Ramadhan,Agung Setiawan,Pt. Gudang FnB
+ESB-9DCNW2,DRAFT EMAIL,Event,,08/09/2026 09:00:00,08/09/2026,08/09/2026 23:28:24,08/09/2026 23:28:30,Dika Anugerah Pratama,,PT Esensi Solusi Buana
+ESB-XVSV2N,SEND EMAIL,Meeting,Muhammad Rimaduddin,08/09/2026 09:30:00,08/09/2026,08/09/2026 09:38:40,10/09/2026 15:20:28,Kiki Tri Utari,Kiki Tri Utari,PT Sudo Brew Naratama
+ESB-ZSQYEF,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,08/09/2026 10:00:00,08/09/2026,08/09/2026 09:43:34,08/09/2026 11:19:41,Christopher Patrick Djuanda,Agung Setiawan,Kedai Bujang
+ESB-WTVN7V,COMPLETED,Training,Muhammad Rimaduddin,08/09/2026 10:00:00,08/09/2026,08/09/2026 09:54:35,08/09/2026 12:22:24,Vinna Maharani,Cherly Vitaloka,Niken Wulandari
+ESB-J4XSY4,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,08/09/2026 10:00:00,08/09/2026,08/09/2026 10:50:13,08/09/2026 11:19:26,Christopher Patrick Djuanda,Agung Setiawan,Senopati
+ESB-WFDYNA,SEND EMAIL,Meeting,Muhammad Rimaduddin,08/09/2026 10:00:00,08/09/2026,08/09/2026 10:00:43,10/09/2026 18:28:00,Ardiansyah Hendardi,Kiki Tri Utari,Mutu Loka
+ESB-866Q4M,SEND EMAIL,Retraining,Jane Margareth Widjaja,08/09/2026 10:00:00,08/09/2026,08/09/2026 12:11:10,08/09/2026 13:29:11,Margaretha Agrivani,Rezi Rizki Raedini,DOREI
+ESB-46RNT2,CANCEL,Meeting,Muhammad Rimaduddin,08/09/2026 10:00:00,08/09/2026,,,Yessi Tiyastanti,David Prima Putra,PT Mawmie Kirin Indonesia
+ESB-EVJDJB,COMPLETED,Training,Muhammad Rimaduddin,08/09/2026 10:00:00,08/09/2026,08/09/2026 12:01:43,08/09/2026 17:17:40,Febrianto Puji Waskito,David Prima Putra,PT Boga Putra Santoso New
+ESB-QW8AD6,COMPLETED,Training,Jane Margareth Widjaja,08/09/2026 10:00:00,08/09/2026,08/09/2026 10:04:14,08/09/2026 17:19:08,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,SL-13
+ESB-5RSXTZ,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,08/09/2026 10:00:00,08/09/2026,08/09/2026 10:12:01,08/09/2026 12:19:11,Larezza Murda Gaharni,Tri Hastuti Wulandari,PT AYAM GORENG BARAYAM
+ESB-9M2XNU,SEND EMAIL,Approach,,08/09/2026 10:00:00,08/09/2026,08/09/2026 14:39:17,09/09/2026 12:41:09,Irma Laura Siregar,,Other
+ESB-YCAJ5N,SEND EMAIL,Meeting,Jane Margareth Widjaja,08/09/2026 10:00:00,08/09/2026,08/09/2026 09:58:08,08/09/2026 22:01:22,Syahrul Zulvan,Dika Anugerah Pratama,CV JABAT TANGAN WUJUDKAN BERKAT
+ESB-RPH75V,COMPLETED,Retraining,M. Iriansyah Suhendar,08/09/2026 10:00:00,08/09/2026,08/09/2026 09:44:55,08/09/2026 10:41:35,Febri Dwi Putra,Airlangga Aziz,MISS FISH BALI
+ESB-P2YGE4,SEND EMAIL,Retraining,Muhammad Rimaduddin,08/09/2026 10:00:00,08/09/2026,08/09/2026 10:00:53,08/09/2026 10:40:49,Melati Cantika,Kiki Tri Utari,PT. Royal Inti Nusa
+ESB-X99FR6,COMPLETED,Meeting,Muhammad Rimaduddin,08/09/2026 10:00:00,08/09/2026,08/09/2026 10:04:47,08/09/2026 11:05:56,Cherly Vitaloka,Cherly Vitaloka,CV Pesona Wisata Boga
+ESB-Y6QQAP,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,08/09/2026 10:00:00,08/09/2026,08/09/2026 10:03:51,08/09/2026 12:58:00,Yessi Tiyastanti,David Prima Putra,Mawmie Suci Bandung
+ESB-N3AYZU,COMPLETED,Babysit,Muhammad Rimaduddin,08/09/2026 10:00:00,08/09/2026,08/09/2026 09:52:03,08/09/2026 11:00:57,Fera Eka Waty N,Ayu Febrina Sianturi,PT. Dompet Enak Anak Indonesia
+ESB-PB7964,COMPLETED,Retraining,Muhammad Rimaduddin,08/09/2026 10:00:00,08/09/2026,08/09/2026 10:43:20,08/09/2026 17:52:06,Nika Rullyta Khairunnisa,David Prima Putra,Tahizakaya
+ESB-8NKG92,SEND EMAIL,Meeting,Jane Margareth Widjaja,08/09/2026 10:00:00,08/09/2026,08/09/2026 10:11:53,08/09/2026 17:40:37,Bintang Guntoro,Tri Hastuti Wulandari,PT Gembus Spot Nusantara
+ESB-4ZHGC2,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,08/09/2026 10:30:00,08/09/2026,08/09/2026 10:58:50,08/09/2026 12:52:38,Agung Setiawan,Agung Setiawan,Ayam goreng Sahadja
+ESB-7EA9RZ,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,08/09/2026 12:00:00,08/09/2026,08/09/2026 11:45:58,08/09/2026 13:03:22,Airlangga Aziz,Airlangga Aziz,Daily Flour
+ESB-5PCRRG,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,08/09/2026 13:00:00,08/09/2026,08/09/2026 16:05:38,10/09/2026 15:24:45,Abi Muhammad Alfarezy,Rezi Rizki Raedini,Laris Coffee
+ESB-M2E6HM,SEND EMAIL,Approach,,08/09/2026 13:00:00,08/09/2026,08/09/2026 14:38:50,09/09/2026 12:39:56,Irma Laura Siregar,,Other
+ESB-AR6BCH,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,08/09/2026 13:00:00,08/09/2026,08/09/2026 12:32:55,08/09/2026 16:04:42,Tri Hastuti Wulandari,Tri Hastuti Wulandari,Jason Thajeb (Duan Thai)
+ESB-93Y5UE,DRAFT EMAIL,Training,Jane Margareth Widjaja,08/09/2026 13:00:00,08/09/2026,08/09/2026 21:52:50,10/09/2026 12:33:00,Noviyanti Nadia,Rezi Rizki Raedini,PT SLICE PADEL INDONESIA
+ESB-NDNEVB,COMPLETED,Training,Jane Margareth Widjaja,08/09/2026 14:00:00,08/09/2026,08/09/2026 13:50:12,08/09/2026 17:22:25,Yoga Astita Ade,Rezi Rizki Raedini,PT. TOMLEX PESONA SEMESTA
+ESB-7NJAR3,SEND EMAIL,Training,Muhammad Rimaduddin,08/09/2026 14:00:00,08/09/2026,08/09/2026 15:21:50,08/09/2026 18:22:26,Rafi Mahasin,Kiki Tri Utari,CV. Irama Harmonis Selaras
+ESB-U274YP,DRAFT EMAIL,Meeting,M. Iriansyah Suhendar,08/09/2026 14:00:00,08/09/2026,08/09/2026 14:11:54,08/09/2026 20:37:48,Anisa Lucky,Agung Setiawan,NASGOR IN
+ESB-U4DHMF,COMPLETED,Training,Muhammad Rimaduddin,08/09/2026 14:00:00,08/09/2026,08/09/2026 14:33:56,08/09/2026 17:17:48,Febrianto Puji Waskito,David Prima Putra,Mojo Resto
+ESB-FV4D7Z,COMPLETED,Initial Meeting,Jane Margareth Widjaja,08/09/2026 14:00:00,08/09/2026,08/09/2026 15:08:51,08/09/2026 15:09:16,Imam Wicaksono,Dika Anugerah Pratama,CV Delapan Anak Mama
+ESB-HQDYTG,COMPLETED,Retraining,Muhammad Rimaduddin,08/09/2026 14:00:00,08/09/2026,08/09/2026 14:12:10,08/09/2026 17:36:34,Melati Cantika,Kiki Tri Utari,PT. TANESIA
+ESB-RM4FQA,SEND EMAIL,Meeting,Muhammad Rimaduddin,08/09/2026 14:00:00,08/09/2026,08/09/2026 14:01:53,09/10/2026 16:51:45,Cherly Vitaloka,Cherly Vitaloka,PT Rezeki Tiap Menit
+ESB-UZSQT9,CANCEL,Retraining,M. Iriansyah Suhendar,08/09/2026 14:00:00,08/09/2026,,,Alian Alfin Nuha,Airlangga Aziz,Sate Taichan SL
+ESB-JKMVSX,COMPLETED,Training,Muhammad Rimaduddin,08/09/2026 14:00:00,08/09/2026,08/09/2026 13:47:37,08/09/2026 17:50:42,Ardiansyah Hendardi,Kiki Tri Utari,The Golden Bites
+ESB-SP5RTM,COMPLETED,Retraining,M. Iriansyah Suhendar,08/09/2026 14:00:00,08/09/2026,08/09/2026 11:31:58,08/09/2026 15:45:21,Febri Dwi Putra,Airlangga Aziz,CV REPUBLIK RAKET BALI
+ESB-9DVU56,CANCEL,Meeting,Muhammad Rimaduddin,08/09/2026 14:00:00,08/09/2026,,,David Prima Putra,David Prima Putra,Mojo Resto
+ESB-Z8MSBX,COMPLETED,Training,Muhammad Rimaduddin,08/09/2026 14:00:00,08/09/2026,08/09/2026 13:56:09,08/09/2026 20:04:54,Yessi Tiyastanti,David Prima Putra,JEEDA COFFEE
+ESB-HW8HDV,COMPLETED,Training,Muhammad Rimaduddin,08/09/2026 14:00:00,08/09/2026,08/09/2026 13:58:48,08/09/2026 17:15:37,Fera Eka Waty N,Ayu Febrina Sianturi,Bibik Sayur Resto
+ESB-U7R2DM,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,08/09/2026 15:00:00,08/09/2026,09/09/2026 12:42:28,09/09/2026 12:44:19,Irma Laura Siregar,David Prima Putra,PT Lavera Exito Indonesia
+ESB-4AKPB5,DRAFT EMAIL,Meeting,M. Iriansyah Suhendar,08/09/2026 15:00:00,08/09/2026,08/09/2026 15:04:37,08/09/2026 17:17:24,Agung Setiawan,Agung Setiawan,Ramen Master Indonesia (Head Kitchen)
+ESB-HXKWWQ,SEND EMAIL,Meeting,Jane Margareth Widjaja,09/09/2026 10:00:00,09/09/2026,09/09/2026 10:02:57,09/09/2026 15:03:13,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,Abon Surya
+ESB-25M236,SEND EMAIL,Approach,,09/09/2026 10:00:00,09/09/2026,09/09/2026 12:38:09,09/09/2026 12:45:20,Irma Laura Siregar,,PT. Kominka Hulson Soekses
+ESB-Z7UR6F,SCHEDULED,Approach,,09/09/2026 10:00:00,09/09/2026,,,Pernandes Paindo Tua,,Other
+ESB-3SCKDE,COMPLETED,Meeting,M. Iriansyah Suhendar,09/09/2026 10:00:00,09/09/2026,09/09/2026 10:17:05,09/09/2026 13:20:17,Christopher Patrick Djuanda,Agung Setiawan,PT. Nol Group Indonesia
+ESB-RY94T8,DRAFT EMAIL,Meeting,Muhammad Rimaduddin,09/09/2026 10:00:00,09/09/2026,09/09/2026 10:09:07,10/09/2026 10:21:39,Kiki Tri Utari,Kiki Tri Utari,PT. Manna Salwa Food International
+ESB-ZJYJRQ,COMPLETED,Initial Meeting,Muhammad Rimaduddin,09/09/2026 10:00:00,09/09/2026,09/09/2026 10:20:36,09/09/2026 14:39:45,Yessi Tiyastanti,David Prima Putra,Ayam Goreng Sari Endah
+ESB-RFEMJ9,DRAFT EMAIL,Retraining,M. Iriansyah Suhendar,09/09/2026 10:00:00,09/09/2026,09/09/2026 17:13:58,09/09/2026 17:14:03,Risky Ramadhan,Agung Setiawan,PROOFED
+ESB-KKMPNY,COMPLETED,Retraining,Muhammad Rimaduddin,09/09/2026 10:00:00,09/09/2026,09/09/2026 10:00:13,09/09/2026 13:38:11,Melati Cantika,Kiki Tri Utari,PT Ponut Kreasi Kuliner
+ESB-S7K699,COMPLETED,Initial Meeting,Muhammad Rimaduddin,09/09/2026 10:00:00,09/09/2026,09/09/2026 10:06:15,09/09/2026 11:26:41,Fera Eka Waty N,Ayu Febrina Sianturi,Cotta Padel
+ESB-7JXDQG,SEND EMAIL,Meeting,Muhammad Rimaduddin,09/09/2026 10:00:00,09/09/2026,09/09/2026 09:59:47,09/09/2026 17:39:00,Nurul Huda,Kiki Tri Utari,PT. Manna Salwa Food International
+ESB-DQC8Q9,COMPLETED,Meeting,M. Iriansyah Suhendar,09/09/2026 10:00:00,09/09/2026,09/09/2026 09:31:58,09/09/2026 15:40:43,Alian Alfin Nuha,Airlangga Aziz,PT ALCHEMY
+ESB-BNHUEA,CANCEL,Meeting,Muhammad Rimaduddin,09/09/2026 10:00:00,09/09/2026,,,Cherly Vitaloka,Cherly Vitaloka,SMEP (New)
+ESB-8G8UTU,CANCEL,Training,Muhammad Rimaduddin,09/09/2026 10:00:00,09/09/2026,,,Fera Eka Waty N,Ayu Febrina Sianturi,Meat Us
+ESB-5YV7XR,SEND EMAIL,Training,Jane Margareth Widjaja,09/09/2026 10:00:00,09/09/2026,09/09/2026 09:57:59,09/09/2026 15:04:39,Syahrul Zulvan,Dika Anugerah Pratama,CV Legenda Kuliner Nusantara
+ESB-2JUF63,SEND EMAIL,Training,Muhammad Rimaduddin,09/09/2026 10:00:00,09/09/2026,09/09/2026 13:32:49,09/09/2026 17:21:44,Rafi Mahasin,Kiki Tri Utari,PT ECAPS Artisan Indonesia
+ESB-GDKA4W,SEND EMAIL,Training,Muhammad Rimaduddin,09/09/2026 10:00:00,09/09/2026,09/09/2026 10:06:35,09/09/2026 12:26:07,Syafiz Amiero,David Prima Putra,PT CITRA RASA INOVASI
+ESB-K83SX9,COMPLETED,Training,M. Iriansyah Suhendar,09/09/2026 10:00:00,09/09/2026,09/09/2026 09:51:35,09/09/2026 10:10:25,Febri Dwi Putra,Airlangga Aziz,Tahoma
+ESB-G4TPUJ,COMPLETED,Retraining,Muhammad Rimaduddin,09/09/2026 10:00:00,09/09/2026,09/09/2026 13:50:03,10/09/2026 18:28:05,Ardiansyah Hendardi,Kiki Tri Utari,DONGENG THERACE
+ESB-4GEGJR,COMPLETED,Retraining,Jane Margareth Widjaja,09/09/2026 10:00:00,09/09/2026,09/09/2026 12:16:47,09/09/2026 12:16:51,Imam Wicaksono,Dika Anugerah Pratama,giornos pizzeria
+ESB-5NVYAY,COMPLETED,Training,Muhammad Rimaduddin,09/09/2026 13:00:00,09/09/2026,09/09/2026 12:52:13,09/09/2026 15:50:25,Ayu Febrina Sianturi,Ayu Febrina Sianturi,PT Vemrer Jaya Abadi
+ESB-7H4EGE,COMPLETED,Meeting,Muhammad Rimaduddin,09/09/2026 13:00:00,09/09/2026,09/09/2026 13:33:12,09/09/2026 15:47:56,David Prima Putra,David Prima Putra,PT. Ciranjang Maju Terus
+ESB-JACWP5,COMPLETED,Meeting,M. Iriansyah Suhendar,09/09/2026 13:00:00,09/09/2026,09/09/2026 14:05:29,09/09/2026 14:40:09,Yayang Putri Suwondo,Agung Setiawan,CV. Fit Sumber Berkat
+ESB-4V2CU4,SEND EMAIL,Training,Muhammad Rimaduddin,09/09/2026 13:30:00,09/09/2026,09/09/2026 13:23:59,09/09/2026 15:50:44,Alif Izzuddin Ramadhan,Cherly Vitaloka,PT RAPSSTATION MAJU BERSAMA
+ESB-URU2C7,COMPLETED,Training,M. Iriansyah Suhendar,09/09/2026 14:00:00,09/09/2026,09/09/2026 12:41:15,09/09/2026 17:16:44,Febri Dwi Putra,Airlangga Aziz,BLACK BOX
+ESB-Y3VX6R,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,09/09/2026 14:00:00,09/09/2026,09/09/2026 14:03:57,10/09/2026 10:19:23,Larezza Murda Gaharni,Tri Hastuti Wulandari,PT Pancious Tirta Jaya
+ESB-3CCX9T,SEND EMAIL,Meeting,Muhammad Rimaduddin,09/09/2026 14:00:00,09/09/2026,09/09/2026 11:05:31,09/09/2026 11:38:25,Cherly Vitaloka,Cherly Vitaloka,Gemi Coffee Supply
+ESB-QPECGR,SCHEDULED,Approach,,09/09/2026 14:00:00,09/09/2026,,,Pernandes Paindo Tua,,Other
+ESB-UTGZQT,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,09/09/2026 14:00:00,09/09/2026,09/09/2026 15:06:14,09/09/2026 17:02:24,Margaretha Agrivani,Tri Hastuti Wulandari,PT Teatree Tunas Tangguh
+ESB-END5RP,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,09/09/2026 14:00:00,09/09/2026,09/09/2026 13:29:01,10/09/2026 13:46:28,Irma Laura Siregar,Kiki Tri Utari,Ayam Djitu Sianandar
+ESB-HEDYT9,SEND EMAIL,Training,Muhammad Rimaduddin,09/09/2026 14:00:00,09/09/2026,09/09/2026 13:59:00,09/09/2026 14:39:32,Yessi Tiyastanti,Kiki Tri Utari,CV Makmur Jaya Sehat
+ESB-8SC8XY,SEND EMAIL,Meeting,Jane Margareth Widjaja,09/09/2026 14:00:00,09/09/2026,09/09/2026 13:19:43,09/09/2026 16:05:54,Dika Anugerah Pratama,Dika Anugerah Pratama,Diana Boga Gemilang - Terrata
+ESB-VS7CWS,SEND EMAIL,Meeting,M. Iriansyah Suhendar,09/09/2026 15:00:00,09/09/2026,09/09/2026 15:26:18,09/09/2026 17:28:58,Airlangga Aziz,Airlangga Aziz,PT Airport Bakery Service
+ESB-4VWAJX,COMPLETED,Initial Meeting,Muhammad Rimaduddin,09/09/2026 15:30:00,09/09/2026,09/09/2026 15:27:20,09/09/2026 17:16:11,Cherly Vitaloka,Cherly Vitaloka,PT. Martabak Sultan Sembilan Sembilan
+ESB-TND9NS,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,10/09/2026 9:00:00,10/09/2026,10/09/2026 10:16:41,10/09/2026 12:20:53,Dika Anugerah Pratama,Dika Anugerah Pratama,Rocket Chicken Indonesia
+ESB-DUJGME,DRAFT EMAIL,Babysit,M. Iriansyah Suhendar,10/09/2026 9:00:00,10/09/2026,10/09/2026 10:29:04,10/09/2026 15:55:17,Anisa Lucky,Agung Setiawan,CK DAGING (KS)
+ESB-M4RSYU,SEND EMAIL,Babysit,Jane Margareth Widjaja,10/09/2026 10:00:00,10/09/2026,10/09/2026 10:24:31,10/09/2026 12:08:50,Imam Wicaksono,Dika Anugerah Pratama,Rubu Coffee
+ESB-5P8P8M,SCHEDULED,Approach,,10/09/2026 10:00:00,10/09/2026,,,Pernandes Paindo Tua,,PT Rasa Saji Nusantara
+ESB-5R2SUZ,SEND EMAIL,Meeting,Muhammad Rimaduddin,10/09/2026 10:00:00,10/09/2026,10/09/2026 10:04:49,10/09/2026 12:55:16,Ayu Febrina Sianturi,Ayu Febrina Sianturi,Dokter Kopi
+ESB-JAG6MT,COMPLETED,Meeting,M. Iriansyah Suhendar,10/09/2026 10:00:00,10/09/2026,10/09/2026 9:34:26,10/09/2026 12:01:15,Febri Dwi Putra,Airlangga Aziz,PT STUFFED GROUP INDONESIA
+ESB-BFQXU9,COMPLETED,Retraining,Muhammad Rimaduddin,10/09/2026 10:00:00,10/09/2026,10/09/2026 18:27:49,10/09/2026 18:27:54,Ardiansyah Hendardi,Kiki Tri Utari,Toko Bubur Dibawah Pohon Rindang
+ESB-KC2F6R,DRAFT EMAIL,Training,Jane Margareth Widjaja,10/09/2026 10:00:00,10/09/2026,10/09/2026 12:32:28,10/09/2026 19:41:51,Noviyanti Nadia,Rezi Rizki Raedini,PT Virtus Maha Nirmaya (Kagawa O-Tori)
+ESB-62HQ5V,SEND EMAIL,Training,Muhammad Rimaduddin,10/09/2026 10:00:00,10/09/2026,10/09/2026 9:55:53,10/09/2026 13:07:35,Vinna Maharani,Cherly Vitaloka,PT. MAJU DULU MIKIR NANTI
+ESB-BN3FVN,COMPLETED,Retraining,Muhammad Rimaduddin,10/09/2026 10:00:00,10/09/2026,10/09/2026 14:15:56,10/09/2026 14:16:08,Nika Rullyta Khairunnisa,David Prima Putra,Bread Mama
+ESB-EECFN6,SEND EMAIL,Meeting,Muhammad Rimaduddin,10/09/2026 10:00:00,10/09/2026,10/09/2026 10:09:55,10/09/2026 17:13:31,Cherly Vitaloka,Cherly Vitaloka,PT.AGREYA BERKAH INDONESIA
+ESB-FE4PDE,DRAFT EMAIL,Approach,,10/09/2026 10:00:00,10/09/2026,10/09/2026 10:20:41,10/09/2026 12:02:28,Agung Setiawan,,Other
+ESB-JUMPZS,COMPLETED,Training,Muhammad Rimaduddin,10/09/2026 10:00:00,10/09/2026,10/09/2026 9:55:38,10/09/2026 11:30:21,Fera Eka Waty N,Ayu Febrina Sianturi,Meat Us
+ESB-UP2AWN,SEND EMAIL,Meeting,Muhammad Rimaduddin,10/09/2026 10:00:00,10/09/2026,10/09/2026 10:49:00,,Rafi Mahasin,Kiki Tri Utari,PT ESTELER TUJUH TUJUH
+ESB-J4RNYZ,SEND EMAIL,Training,Muhammad Rimaduddin,10/09/2026 10:00:00,10/09/2026,10/09/2026 9:55:26,11/09/2026 12:01:01,Yessi Tiyastanti,David Prima Putra,Naughty Neighbors
+ESB-K75USK,CANCEL,Meeting,Muhammad Rimaduddin,10/09/2026 10:00:00,10/09/2026,,,David Prima Putra,David Prima Putra,PT. OTEWE MAJU BERSAMA ( Ropang OTW)
+ESB-665TGZ,COMPLETED,Initial Meeting,Jane Margareth Widjaja,10/09/2026 10:00:00,10/09/2026,10/09/2026 10:01:23,10/09/2026 15:50:03,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,Life at Weekend
+ESB-A9WRZF,DRAFT EMAIL,Training,Jane Margareth Widjaja,10/09/2026 10:00:00,10/09/2026,10/09/2026 9:58:31,10/09/2026 14:00:14,Margaretha Agrivani,Tri Hastuti Wulandari,PT. Arsha Boekit Gemilang
+ESB-28FY3S,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,10/09/2026 10:00:00,10/09/2026,10/09/2026 10:07:17,10/09/2026 13:51:53,Fauzi Yuda Ariyanto,Dika Anugerah Pratama,PT Daily Espresso Indonesia
+ESB-RN7M47,SEND EMAIL,Training,Jane Margareth Widjaja,10/09/2026 10:00:00,10/09/2026,10/09/2026 10:23:28,10/09/2026 15:05:29,Abi Muhammad Alfarezy,Rezi Rizki Raedini,CV CHULOS KREASI BOGA
+ESB-CTT9R4,SEND EMAIL,Retraining,Muhammad Rimaduddin,10/09/2026 10:00:00,10/09/2026,10/09/2026 9:52:01,10/09/2026 11:42:55,Alif Izzuddin Ramadhan,Cherly Vitaloka,PT SINO PANGAN MAKMUR (Tanghuo Kungfu Malatang)
+ESB-Q5X6X8,COMPLETED,Meeting,M. Iriansyah Suhendar,10/09/2026 10:00:00,10/09/2026,10/09/2026 9:23:11,10/09/2026 12:03:20,Alian Alfin Nuha,Airlangga Aziz,CV Lintang Terang
+ESB-AR6H95,SEND EMAIL,Retraining,Muhammad Rimaduddin,10/09/2026 10:00:00,10/09/2026,10/09/2026 10:17:31,10/09/2026 13:38:18,Melati Cantika,Kiki Tri Utari,PT. Deheng Mahkota Kreasi
+ESB-VMEQA8,COMPLETED,Initial Meeting,Jane Margareth Widjaja,10/09/2026 10:30:00,10/09/2026,10/09/2026 9:59:36,10/09/2026 11:35:10,Yoga Astita Ade,Rezi Rizki Raedini,CV. Nusantara Asia Sukses
+ESB-A7CSHA,CANCEL,Initial Meeting,Muhammad Rimaduddin,10/09/2026 11:00:00,10/09/2026,,,Yoan Fefi Berliani,Cherly Vitaloka,GAIL
+ESB-WBFS5U,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,10/09/2026 14:00:00,10/09/2026,10/09/2026 13:44:44,10/09/2026 15:49:15,Irma Laura Siregar,Cherly Vitaloka,Terasia Cafe
+ESB-SDWP9J,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,10/09/2026 14:00:00,10/09/2026,10/09/2026 14:00:23,10/09/2026 19:12:37,Margaretha Agrivani,Tri Hastuti Wulandari,PT Damai Elok Sukacita Indonesia
+ESB-56QXWT,DRAFT EMAIL,Meeting,M. Iriansyah Suhendar,10/09/2026 14:00:00,10/09/2026,10/09/2026 13:57:27,10/09/2026 17:07:16,Agung Setiawan,Agung Setiawan,PT. Anara Jaya Boga
+ESB-CRR7J4,COMPLETED,Retraining,Jane Margareth Widjaja,10/09/2026 14:00:00,10/09/2026,11/09/2026 11:23:41,11/09/2026 20:56:54,Jane Margareth Widjaja,Dika Anugerah Pratama,CV RTG Seduh Indonesia
+ESB-UH2GAH,SEND EMAIL,Retraining,Jane Margareth Widjaja,10/09/2026 14:00:00,10/09/2026,10/09/2026 15:00:24,10/09/2026 16:58:05,Fauzi Yuda Ariyanto,Dika Anugerah Pratama,CV RTG Seduh Indonesia
+ESB-HQHNB7,COMPLETED,Meeting,Muhammad Rimaduddin,10/09/2026 14:00:00,10/09/2026,10/09/2026 13:47:02,10/09/2026 16:15:08,Cherly Vitaloka,Cherly Vitaloka,CV Rokalindo Kagumi Jaya
+ESB-33QCE6,COMPLETED,Meeting,Muhammad Rimaduddin,10/09/2026 14:00:00,10/09/2026,10/09/2026 14:08:30,10/09/2026 16:11:29,David Prima Putra,David Prima Putra,Sagaleh
+ESB-7PW78E,SEND EMAIL,Training,Muhammad Rimaduddin,10/09/2026 14:00:00,10/09/2026,10/09/2026 13:55:21,11/09/2026 12:00:55,Yessi Tiyastanti,Kiki Tri Utari,SS Warehouse
+ESB-98K5XG,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,10/09/2026 15:00:00,10/09/2026,10/09/2026 15:47:21,10/09/2026 18:07:02,Imam Wicaksono,Dika Anugerah Pratama,Kedai Misoa Qiu Qiu 99
+ESB-9KA7KN,SEND EMAIL,Approach,,11/09/2026 8:30:00,11/09/2026,11/09/2026 9:16:41,11/09/2026 16:44:20,Irma Laura Siregar,,Other
+ESB-GRYEH4,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,11/09/2026 9:00:00,11/09/2026,11/09/2026 9:36:36,11/09/2026 17:37:22,Agung Setiawan,Agung Setiawan,Roket
+ESB-TSFZKQ,SEND EMAIL,Retraining,Jane Margareth Widjaja,11/09/2026 9:00:00,11/09/2026,11/09/2026 10:04:31,11/09/2026 16:07:28,Syahrul Zulvan,Dika Anugerah Pratama,PT Bahagia Rasa Bersama
+ESB-FZ6V39,SEND EMAIL,Meeting,Jane Margareth Widjaja,11/09/2026 9:00:00,11/09/2026,11/09/2026 10:25:58,11/09/2026 15:09:29,Bintang Guntoro,Tri Hastuti Wulandari,Uji Coffee
+ESB-UEB2K4,SEND EMAIL,Babysit,Muhammad Rimaduddin,11/09/2026 10:00:00,11/09/2026,11/09/2026 9:56:46,11/09/2026 13:41:05,Vinna Maharani,Cherly Vitaloka,PT Trofi Selera Utama
+ESB-D4659A,SEND EMAIL,Meeting,Muhammad Rimaduddin,11/09/2026 10:00:00,11/09/2026,11/09/2026 10:49:49,11/09/2026 12:55:02,Kiki Tri Utari,Kiki Tri Utari,PT Bajawa Barat Bersinar
+ESB-CGAZ2Z,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,11/09/2026 10:00:00,11/09/2026,11/09/2026 10:00:12,11/09/2026 10:43:56,Larezza Murda Gaharni,Tri Hastuti Wulandari,PT AYAM GORENG BARAYAM
+ESB-25K2U3,SEND EMAIL,Meeting,Jane Margareth Widjaja,11/09/2026 10:00:00,11/09/2026,11/09/2026 9:53:56,11/09/2026 15:49:49,Fauzi Yuda Ariyanto,Dika Anugerah Pratama,Gulungann
+ESB-23FKVW,SEND EMAIL,Meeting,Jane Margareth Widjaja,11/09/2026 10:00:00,11/09/2026,11/09/2026 9:37:03,11/09/2026 11:29:09,Kevin Reynaldi,,WSB Juanda Bekasi
+ESB-S9H7VF,SEND EMAIL,Training,Jane Margareth Widjaja,11/09/2026 10:00:00,11/09/2026,11/09/2026 9:39:19,11/09/2026 14:42:32,Teddi Ari Tama,Tri Hastuti Wulandari,Noble Thai
+ESB-347ABH,SEND EMAIL,Babysit,Jane Margareth Widjaja,11/09/2026 10:00:00,11/09/2026,11/09/2026 10:28:41,11/09/2026 14:27:09,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,Dasawarsa Coffee Roasters
+ESB-N59KT7,SEND EMAIL,Training,Muhammad Rimaduddin,11/09/2026 10:00:00,11/09/2026,11/09/2026 10:09:55,11/09/2026 14:28:27,Rafi Mahasin,Kiki Tri Utari,PT Tridasa Poseidon Indonesia
+ESB-KF8A9Y,COMPLETED,Training,Muhammad Rimaduddin,11/09/2026 10:00:00,11/09/2026,11/09/2026 10:20:06,11/09/2026 17:23:50,Ardiansyah Hendardi,Kiki Tri Utari,PT. HABER GROUP INTERNATIONAL
+ESB-JPMWU9,COMPLETED,Training,Muhammad Rimaduddin,11/09/2026 10:00:00,11/09/2026,11/09/2026 9:28:06,11/09/2026 14:08:35,Alif Izzuddin Ramadhan,Cherly Vitaloka,PT Mitra Mulia Manunggal
+ESB-G5Y67B,COMPLETED,Meeting,Muhammad Rimaduddin,11/09/2026 10:00:00,11/09/2026,11/09/2026 9:59:25,11/09/2026 11:17:32,Fera Eka Waty N,Ayu Febrina Sianturi,CV. Rich Food Indonesia
+ESB-SNHWPY,SEND EMAIL,Approach,,11/09/2026 11:00:00,11/09/2026,11/09/2026 10:03:14,11/09/2026 16:43:26,Irma Laura Siregar,,Other
+ESB-EFDKS6,DRAFT EMAIL,Training,M. Iriansyah Suhendar,11/09/2026 13:00:00,11/09/2026,11/09/2026 13:39:41,11/09/2026 17:30:22,Anisa Lucky,Agung Setiawan,PT. Padu Rasa Group
+ESB-PM89UG,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,11/09/2026 14:00:00,11/09/2026,11/09/2026 12:58:12,11/09/2026 14:56:04,Tri Hastuti Wulandari,David Prima Putra,PT Lima Pilar Sentosa
+ESB-DSFDT9,SEND EMAIL,Training,Muhammad Rimaduddin,11/09/2026 14:00:00,11/09/2026,11/09/2026 14:00:42,11/09/2026 16:08:49,Nurul Huda,Kiki Tri Utari,Ayam Lunak Panglima -
+ESB-A87VMR,SEND EMAIL,Meeting,Jane Margareth Widjaja,11/09/2026 14:00:00,11/09/2026,11/09/2026 15:05:24,11/09/2026 16:07:28,Abi Muhammad Alfarezy,Rezi Rizki Raedini,PT. Kanaka Cipta Rasa
+ESB-8VUCAR,COMPLETED,Meeting,M. Iriansyah Suhendar,11/09/2026 14:00:00,11/09/2026,11/09/2026 14:06:41,11/09/2026 18:29:49,Alian Alfin Nuha,Airlangga Aziz,PT ALCHEMY
+ESB-K4MVCE,DRAFT EMAIL,Training,Jane Margareth Widjaja,11/09/2026 14:00:00,11/09/2026,11/09/2026 13:54:09,11/09/2026 15:52:52,Larezza Murda Gaharni,Tri Hastuti Wulandari,PT Kopi Utama Indonesia
+ESB-BMPMR3,DRAFT EMAIL,Initial Meeting,Muhammad Rimaduddin,11/09/2026 14:00:00,11/09/2026,11/09/2026 12:42:58,11/09/2026 12:43:04,Ardiansyah Hendardi,Kiki Tri Utari,PT. Diatas Meja Kreasi
+ESB-VS83MX,SCHEDULED,Approach,,11/09/2026 14:00:00,11/09/2026,,,Pernandes Paindo Tua,,Other
+ESB-KTKEVN,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,11/09/2026 14:00:00,11/09/2026,11/09/2026 14:02:24,,Dika Anugerah Pratama,Dika Anugerah Pratama,Cembing Dayu Resto
+ESB-XQBMAY,CANCEL,Initial Meeting,M. Iriansyah Suhendar,11/09/2026 14:00:00,11/09/2026,,,Christopher Patrick Djuanda,Agung Setiawan,Depot Cipork Keriyuk
+ESB-AKZXR6,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,11/09/2026 14:00:00,11/09/2026,11/09/2026 16:06:40,11/09/2026 17:53:23,Fauzi Yuda Ariyanto,Dika Anugerah Pratama,Akhtara Eatery & Sky View
+ESB-JAZ58C,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,11/09/2026 15:00:00,11/09/2026,11/09/2026 14:08:27,12/09/2026 16:28:18,Airlangga Aziz,Airlangga Aziz,I Bagus Eka Sentosa
+ESB-RGFP4Z,SEND EMAIL,Approach,,11/09/2026 15:30:00,11/09/2026,11/09/2026 15:41:53,11/09/2026 16:46:55,Irma Laura Siregar,,Other
+ESB-UM6RCW,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,11/09/2026 16:00:00,11/09/2026,11/09/2026 15:53:01,11/09/2026 16:24:55,Larezza Murda Gaharni,Tri Hastuti Wulandari,Ayam Goreng Bandung Bu Iyin
+ESB-R9WE4K,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,11/09/2026 16:00:00,11/09/2026,11/09/2026 15:59:49,14/09/2026 12:32:17,Margaretha Agrivani,Tri Hastuti Wulandari,Padel Sport Jakarta
+ESB-U3QQ2T,SEND EMAIL,Retraining,,13/09/2026 8:00:00,13/09/2026,14/09/2026 10:14:37,14/09/2026 16:02:27,Bintang Guntoro,,PT. Sokyo Group Indonesia
+ESB-FZ9ZJ8,CANCEL,Retraining,Jane Margareth Widjaja,14/09/2026 8:00:00,14/09/2026,15/09/2026 11:25:20,15/09/2026 19:00:50,Bintang Guntoro,Tri Hastuti Wulandari,PT. Sokyo Group Indonesia
+ESB-UCG4R9,SEND EMAIL,Approach,,14/09/2026 9:00:00,14/09/2026,14/09/2026 10:01:30,14/09/2026 15:21:14,Irma Laura Siregar,,Other
+ESB-ESF4PE,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,14/09/2026 9:00:00,14/09/2026,14/09/2026 10:04:12,14/09/2026 11:40:30,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,PT Furi Kuliner Indonesia
+ESB-F7C2EX,COMPLETED,Initial Meeting,Muhammad Rimaduddin,14/09/2026 9:00:00,14/09/2026,14/09/2026 9:16:44,14/09/2026 14:12:08,Yessi Tiyastanti,David Prima Putra,Lamama Pangan Makmur. PT
+ESB-6CPPRC,COMPLETED,Initial Meeting,Muhammad Rimaduddin,14/09/2026 9:00:00,14/09/2026,14/09/2026 9:03:44,14/09/2026 10:17:43,Cherly Vitaloka,Kiki Tri Utari,Mie Ayam Bangka Tuan Tjo
+ESB-U7XVNQ,COMPLETED,Retraining,Muhammad Rimaduddin,14/09/2026 10:00:00,14/09/2026,14/09/2026 9:36:52,14/09/2026 13:06:39,Alif Izzuddin Ramadhan,Cherly Vitaloka,PT. Pratama Karya Bangsa
+ESB-W4HVSN,SEND EMAIL,Training,Muhammad Rimaduddin,14/09/2026 10:00:00,14/09/2026,14/09/2026 10:13:54,15/09/2026 13:42:13,Ardiansyah Hendardi,Kiki Tri Utari,PT Amanda Retailindo Group - Kitchen A
+ESB-F4874M,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,14/09/2026 10:00:00,14/09/2026,14/09/2026 12:42:17,14/09/2026 16:15:10,Rezi Rizki Raedini,Jane Margareth Widjaja,PT.Grand Kuningan ( PASTIS POOL & BAR )
+ESB-W86Q2B,SCHEDULED,Approach,,14/09/2026 10:00:00,14/09/2026,,,Pernandes Paindo Tua,,Other
+ESB-9NCJPG,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,14/09/2026 10:00:00,14/09/2026,14/09/2026 10:18:19,14/09/2026 12:29:45,Christopher Patrick Djuanda,Agung Setiawan,CV DE LUNE CULINARY NUSANTARA
+ESB-3VUJGD,COMPLETED,Meeting,M. Iriansyah Suhendar,14/09/2026 10:00:00,14/09/2026,14/09/2026 8:53:34,14/09/2026 16:02:10,Febri Dwi Putra,Airlangga Aziz,RM ARYANI
+ESB-JDG56S,SEND EMAIL,Meeting,Muhammad Rimaduddin,14/09/2026 10:00:00,14/09/2026,14/09/2026 10:13:15,14/09/2026 16:05:42,Melati Cantika,Kiki Tri Utari,PT BILLIONAIRE BOGA BUANA
+ESB-9ZRK4G,SEND EMAIL,Training,Muhammad Rimaduddin,14/09/2026 10:00:00,14/09/2026,14/09/2026 10:19:36,14/09/2026 14:29:11,Syafiz Amiero,David Prima Putra,CV. Kharis Sejahtera Abadi
+ESB-QY7AAS,SEND EMAIL,Retraining,M. Iriansyah Suhendar,14/09/2026 10:00:00,14/09/2026,14/09/2026 9:03:20,14/09/2026 12:21:46,Alian Alfin Nuha,Airlangga Aziz,RED BEAN CK
+ESB-ZAJK7Y,SEND EMAIL,Meeting,Muhammad Rimaduddin,14/09/2026 10:00:00,14/09/2026,14/09/2026 10:55:52,14/09/2026 15:36:58,Rafi Mahasin,Kiki Tri Utari,Lotii
+ESB-K2QKK9,COMPLETED,Initial Meeting,Muhammad Rimaduddin,14/09/2026 10:00:00,14/09/2026,14/09/2026 9:53:10,14/09/2026 11:42:54,Fera Eka Waty N,Ayu Febrina Sianturi,Hai Sushi
+ESB-B3JRZX,DRAFT EMAIL,Retraining,Jane Margareth Widjaja,14/09/2026 10:00:00,14/09/2026,14/09/2026 9:59:14,14/09/2026 15:47:59,Larezza Murda Gaharni,Tri Hastuti Wulandari,PT. HYGGE COMMUNE INDONESIA
+ESB-K5RVZG,CANCEL,Retraining,Jane Margareth Widjaja,14/09/2026 10:00:00,14/09/2026,,,Abi Muhammad Alfarezy,Rezi Rizki Raedini,PT Citra Rasa Klasik
+ESB-UFZHTC,SEND EMAIL,Retraining,Jane Margareth Widjaja,14/09/2026 10:00:00,14/09/2026,14/09/2026 10:32:24,14/09/2026 13:58:30,Abi Muhammad Alfarezy,Rezi Rizki Raedini,PT Citra Rasa Klasik
+ESB-ZYTVSV,CANCEL,Training,M. Iriansyah Suhendar,14/09/2026 10:00:00,14/09/2026,,,Risky Ramadhan,Agung Setiawan,Lesung Pipi Coffee & Eatery
+ESB-M2W2CX,CANCEL,Meeting,M. Iriansyah Suhendar,14/09/2026 10:00:00,14/09/2026,,,Yayang Putri Suwondo,Agung Setiawan,Mingkee Malang
+ESB-4QCJTT,DRAFT EMAIL,Training,Jane Margareth Widjaja,14/09/2026 10:00:00,14/09/2026,14/09/2026 12:32:01,14/09/2026 16:10:00,Margaretha Agrivani,Rezi Rizki Raedini,PT Satulapan Inti Sentosa Dan PT Artha Jaya Persada
+ESB-ANE2YH,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,14/09/2026 10:30:00,14/09/2026,14/09/2026 9:10:53,14/09/2026 11:00:17,Airlangga Aziz,Airlangga Aziz,Poco Poco Villas By Aayan
+ESB-9N7TW2,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,14/09/2026 11:00:00,14/09/2026,14/09/2026 10:53:34,14/09/2026 11:52:16,Dika Anugerah Pratama,Dika Anugerah Pratama,Resep Kampungan
+ESB-7UEX6V,SEND EMAIL,Meeting,M. Iriansyah Suhendar,14/09/2026 13:00:00,14/09/2026,14/09/2026 13:55:19,14/09/2026 14:44:46,Tegar Rangga,Agung Setiawan,CV. Lazuna Indonesia
+ESB-P6CHWB,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,14/09/2026 13:00:00,14/09/2026,14/09/2026 14:10:12,14/09/2026 15:27:23,Cherly Vitaloka,Cherly Vitaloka,Gia Shawarma & Ayam Goreng
+ESB-UHSE25,SEND EMAIL,Approach,,14/09/2026 13:00:00,14/09/2026,14/09/2026 13:52:42,14/09/2026 16:05:24,Fauzi Yuda Ariyanto,,Other
+ESB-HSGUYQ,COMPLETED,Training,M. Iriansyah Suhendar,14/09/2026 14:00:00,14/09/2026,14/09/2026 14:13:28,14/09/2026 15:55:11,Christopher Patrick Djuanda,Agung Setiawan,PT ARTI BERKAT SELALU
+ESB-RJXWH2,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,14/09/2026 14:00:00,14/09/2026,14/09/2026 15:03:56,14/09/2026 22:49:13,Tri Hastuti Wulandari,Tri Hastuti Wulandari,Menya Beast
+ESB-RPGH8C,COMPLETED,Meeting,Muhammad Rimaduddin,14/09/2026 14:00:00,14/09/2026,14/09/2026 13:17:27,14/09/2026 15:10:17,David Prima Putra,David Prima Putra,PT. OTEWE MAJU BERSAMA ( Ropang OTW)
+ESB-P9Y6U2,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,14/09/2026 14:00:00,14/09/2026,14/09/2026 14:15:23,14/09/2026 15:19:20,Dika Anugerah Pratama,Dika Anugerah Pratama,Ikan Bakar Pantai Timur Jombor
+ESB-MWMN38,COMPLETED,Retraining,M. Iriansyah Suhendar,14/09/2026 14:00:00,14/09/2026,14/09/2026 13:00:42,14/09/2026 15:50:41,Alian Alfin Nuha,Airlangga Aziz,Sate Taichan SL
+ESB-MEHYV9,SEND EMAIL,Meeting,Muhammad Rimaduddin,14/09/2026 14:00:00,14/09/2026,14/09/2026 14:15:09,14/09/2026 15:25:38,Irma Laura Siregar,David Prima Putra,PT. ANUGRAH EMPAT SAHABAT
+ESB-RU5MFQ,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,14/09/2026 14:00:00,14/09/2026,14/09/2026 14:03:53,14/09/2026 18:10:11,Syahrul Zulvan,Dika Anugerah Pratama,CV Prana Indo Raya
+ESB-6ESSTJ,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,14/09/2026 15:00:00,14/09/2026,14/09/2026 17:04:15,14/09/2026 17:06:10,Agung Setiawan,Agung Setiawan,Ruma Coffee & Ice Cream
+ESB-MSH5V6,CANCEL,Approach,,14/09/2026 15:00:00,14/09/2026,,,Pernandes Paindo Tua,,Other
+ESB-RUKASS,SCHEDULED,Approach,,14/09/2026 15:30:00,14/09/2026,,,Pernandes Paindo Tua,,Other
+ESB-K49MND,SEND EMAIL,Training,Jane Margareth Widjaja,15/09/2026 9:00:00,15/09/2026,15/09/2026 22:50:49,15/09/2026 22:50:53,Kevin Reynaldi,Rezi Rizki Raedini,Moeara Eatery & Hub
+ESB-BCF8G9,SEND EMAIL,Retraining,Jane Margareth Widjaja,15/09/2026 9:00:00,15/09/2026,15/09/2026 19:11:37,15/09/2026 21:07:14,Bintang Guntoro,Tri Hastuti Wulandari,PT. Sokyo Group Indonesia
+ESB-JRMZKU,DRAFT EMAIL,Babysit,Jane Margareth Widjaja,15/09/2026 10:00:00,15/09/2026,15/09/2026 12:00:55,15/09/2026 15:37:12,Noviyanti Nadia,Rezi Rizki Raedini,PT. Cipta Lumbung Pangan
+ESB-KGBA72,COMPLETED,Retraining,Muhammad Rimaduddin,15/09/2026 10:00:00,15/09/2026,15/09/2026 9:47:41,15/09/2026 13:08:55,Alif Izzuddin Ramadhan,Cherly Vitaloka,PT Kopi Kalean Indonesia
+ESB-SAP2CJ,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,15/09/2026 10:00:00,15/09/2026,15/09/2026 9:44:32,15/09/2026 11:26:09,Dika Anugerah Pratama,Dika Anugerah Pratama,CV Maju Bersama Folkafe
+ESB-87QSBJ,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,15/09/2026 10:00:00,15/09/2026,15/09/2026 10:22:43,15/09/2026 15:26:45,Ayu Febrina Sianturi,Ayu Febrina Sianturi,PT MULTI REZEKI SEMESTA
+ESB-6FWMG6,COMPLETED,Retraining,M. Iriansyah Suhendar,15/09/2026 10:00:00,15/09/2026,15/09/2026 8:51:34,15/09/2026 15:58:13,Febri Dwi Putra,Airlangga Aziz,Kyu8 Bakmie
+ESB-NQCQVY,DRAFT EMAIL,Training,Jane Margareth Widjaja,15/09/2026 10:00:00,15/09/2026,15/09/2026 11:24:08,18/09/2026 16:11:28,Margaretha Agrivani,Rezi Rizki Raedini,PT Satulapan Inti Sentosa Dan PT Artha Jaya Persada
+ESB-62HBVR,SEND EMAIL,Babysit,Muhammad Rimaduddin,15/09/2026 10:00:00,15/09/2026,15/09/2026 9:42:54,15/09/2026 12:29:00,Imam Wicaksono,Dika Anugerah Pratama,ROSIANA KUSUMA DEWI INDARTO
+ESB-U4GVKQ,COMPLETED,Training,Muhammad Rimaduddin,15/09/2026 10:00:00,15/09/2026,15/09/2026 9:54:27,15/09/2026 12:02:53,Fera Eka Waty N,Ayu Febrina Sianturi,Teddy Lim
+ESB-PZ7Z6Z,COMPLETED,Training,Jane Margareth Widjaja,15/09/2026 10:00:00,15/09/2026,15/09/2026 9:52:57,15/09/2026 12:38:41,Yoga Astita Ade,Rezi Rizki Raedini,PT DELAPAN KUDA TUNGGAL
+ESB-7QF6GB,COMPLETED,Training,Muhammad Rimaduddin,15/09/2026 10:00:00,15/09/2026,15/09/2026 10:15:11,15/09/2026 16:58:53,Febrianto Puji Waskito,David Prima Putra,CV Ayoshi Jamin Bagus
+ESB-3A89U9,CANCEL,Initial Meeting,M. Iriansyah Suhendar,15/09/2026 10:00:00,15/09/2026,,,Agung Setiawan,Agung Setiawan,Kelana Kopi Ternate
+ESB-5E77DU,COMPLETED,Training,Muhammad Rimaduddin,15/09/2026 10:00:00,15/09/2026,15/09/2026 10:00:28,15/09/2026 16:56:03,Melati Cantika,Kiki Tri Utari,PT Kopi Hiu Biru
+ESB-P8QS3Q,SEND EMAIL,Meeting,M. Iriansyah Suhendar,15/09/2026 10:00:00,15/09/2026,15/09/2026 10:04:58,15/09/2026 11:11:01,Christopher Patrick Djuanda,Agung Setiawan,Senopati
+ESB-XG3C3X,SEND EMAIL,Meeting,Jane Margareth Widjaja,15/09/2026 10:00:00,15/09/2026,15/09/2026 10:12:08,15/09/2026 14:34:10,Teddi Ari Tama,Tri Hastuti Wulandari,PT Tampah Boga Nusantara
+ESB-UFEXRK,COMPLETED,Training,Muhammad Rimaduddin,15/09/2026 10:00:00,15/09/2026,15/09/2026 10:06:23,15/09/2026 15:53:17,Nika Rullyta Khairunnisa,David Prima Putra,Little Miss Saito
+ESB-UTUU8C,COMPLETED,Initial Meeting,Muhammad Rimaduddin,15/09/2026 10:00:00,15/09/2026,15/09/2026 10:02:43,15/09/2026 11:37:51,David Prima Putra,David Prima Putra,PT Formula Untuk Bahagia
+ESB-PGH9VH,CANCEL,Retraining,Muhammad Rimaduddin,15/09/2026 10:00:00,15/09/2026,,,Fauzi Yuda Ariyanto,Cherly Vitaloka,PT. Pratama Karya Bangsa
+ESB-F4AR7T,SEND EMAIL,Training,Muhammad Rimaduddin,15/09/2026 10:00:00,15/09/2026,15/09/2026 10:04:46,15/09/2026 11:57:49,Syafiz Amiero,David Prima Putra,Onni Garden House
+ESB-RTRUHY,SEND EMAIL,Meeting,Muhammad Rimaduddin,15/09/2026 10:00:00,15/09/2026,15/09/2026 10:01:06,15/09/2026 11:44:24,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,Girimanah Resto
+ESB-M3ME3T,DRAFT EMAIL,Retraining,Jane Margareth Widjaja,15/09/2026 10:00:00,15/09/2026,15/09/2026 10:09:24,15/09/2026 19:49:55,Fauzi Yuda Ariyanto,Dika Anugerah Pratama,Yama Saka Coffee
+ESB-7USDB3,COMPLETED,Training,Muhammad Rimaduddin,15/09/2026 10:00:00,15/09/2026,15/09/2026 10:00:12,15/09/2026 15:33:18,Yessi Tiyastanti,David Prima Putra,PT. Roti Segar Mendunia
+ESB-2Q4HGM,SEND EMAIL,Training,Muhammad Rimaduddin,15/09/2026 10:00:00,15/09/2026,15/09/2026 14:00:14,15/09/2026 17:08:57,Syahrul Zulvan,Dika Anugerah Pratama,PT Daily Espresso Indonesia
+ESB-KY7PBP,DRAFT EMAIL,Training,Muhammad Rimaduddin,15/09/2026 11:00:00,15/09/2026,15/09/2026 11:00:14,15/09/2026 14:17:47,Nurul Huda,Kiki Tri Utari,PT. PRIMA BOGA SAVORIA
+ESB-B99HZY,SEND EMAIL,Approach,,15/09/2026 11:30:00,15/09/2026,15/09/2026 11:38:00,15/09/2026 12:28:45,Airlangga Aziz,,Other
+ESB-VVJEWN,COMPLETED,Retraining,M. Iriansyah Suhendar,15/09/2026 13:00:00,15/09/2026,15/09/2026 14:57:52,,Yayang Putri Suwondo,Agung Setiawan,CV. Fit Sumber Berkat
+ESB-JEFD6V,SEND EMAIL,Meeting,Muhammad Rimaduddin,15/09/2026 13:30:00,15/09/2026,15/09/2026 13:31:49,15/09/2026 17:14:20,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,Rocket Chicken Indonesia
+ESB-ZQU8G3,CANCEL,Meeting,Muhammad Rimaduddin,15/09/2026 14:00:00,15/09/2026,15/09/2026 14:23:34,,Nurul Huda,Kiki Tri Utari,PT Maha Karya Goasaya
+ESB-K9KVTQ,SEND EMAIL,Approach,,15/09/2026 14:00:00,15/09/2026,15/09/2026 14:15:59,16/09/2026 16:20:04,Irma Laura Siregar,,Other
+ESB-M3Y2R7,SEND EMAIL,Meeting,Muhammad Rimaduddin,15/09/2026 14:00:00,15/09/2026,15/09/2026 14:20:33,15/09/2026 19:36:02,Kiki Tri Utari,Kiki Tri Utari,PT Maha Karya Goasaya
+ESB-E79N36,COMPLETED,Initial Meeting,Muhammad Rimaduddin,15/09/2026 14:00:00,15/09/2026,15/09/2026 15:05:52,15/09/2026 16:09:28,Cherly Vitaloka,Cherly Vitaloka,Katenzo Gelato
+ESB-7FUK8R,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,15/09/2026 14:00:00,15/09/2026,15/09/2026 21:47:10,15/09/2026 21:56:32,Tri Hastuti Wulandari,Tri Hastuti Wulandari,Noble Thai Taman Anggrek
+ESB-YNBQTR,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,15/09/2026 14:00:00,15/09/2026,15/09/2026 15:06:18,15/09/2026 16:39:46,David Prima Putra,David Prima Putra,PT DCIKA PRIMA INTERFOOD
+ESB-SFPA9X,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,15/09/2026 14:00:00,15/09/2026,15/09/2026 13:56:51,15/09/2026 15:02:25,Larezza Murda Gaharni,Tri Hastuti Wulandari,PT Pancious Tirta Jaya
+ESB-KTJJPV,COMPLETED,Training,Muhammad Rimaduddin,15/09/2026 14:00:00,15/09/2026,15/09/2026 13:54:12,15/09/2026 16:07:44,Vinna Maharani,Cherly Vitaloka,Rempah Bakar
+ESB-ZQTE2F,SCHEDULED,Approach,,15/09/2026 14:00:00,15/09/2026,,,Pernandes Paindo Tua,,Other
+ESB-UA2HRF,COMPLETED,Meeting,M. Iriansyah Suhendar,15/09/2026 14:00:00,15/09/2026,15/09/2026 16:18:52,15/09/2026 16:34:25,Agung Setiawan,Agung Setiawan,MISUPER KITCHEN & KOFFEE
+ESB-V6TFV2,SEND EMAIL,Training,M. Iriansyah Suhendar,15/09/2026 14:00:00,15/09/2026,15/09/2026 13:29:29,15/09/2026 14:43:21,Alian Alfin Nuha,Airlangga Aziz,Uncle Norms Bar & Bistro Bali
+ESB-QRCYCQ,CANCEL,Retraining,Muhammad Rimaduddin,15/09/2026 14:00:00,15/09/2026,,,Alif Izzuddin Ramadhan,Cherly Vitaloka,Ichung Bukan Kopitiam
+ESB-MDMU5A,SCHEDULED,Initial Meeting,Jane Margareth Widjaja,15/09/2026 14:00:00,15/09/2026,,,Rezi Rizki Raedini,Rezi Rizki Raedini,G25 Group
+ESB-8Z6XWK,CANCEL,Initial Meeting,Jane Margareth Widjaja,15/09/2026 16:00:00,15/09/2026,,,Larezza Murda Gaharni,Tri Hastuti Wulandari,PT Shokyu Cahaya Fukutsu
+ESB-HZPP43,SEND EMAIL,Training,Muhammad Rimaduddin,15/09/2026 19:00:00,15/09/2026,16/09/2026 15:21:52,16/09/2026 15:21:58,Ardiansyah Hendardi,Kiki Tri Utari,PT. KARSA PANGAN BUANA
+ESB-ZPQ8ZX,SEND EMAIL,Meeting,Jane Margareth Widjaja,16/09/2026 9:00:00,16/09/2026,16/09/2026 9:13:38,16/09/2026 13:33:29,Teddi Ari Tama,Tri Hastuti Wulandari,PT Reka Pangan Nusantara
+ESB-MV5RXG,SEND EMAIL,Training,Muhammad Rimaduddin,16/09/2026 9:00:00,16/09/2026,16/09/2026 9:19:21,16/09/2026 16:14:41,Rafi Mahasin,Kiki Tri Utari,PT ESTELER TUJUH TUJUH
+ESB-V2JY4F,SEND EMAIL,Retraining,Jane Margareth Widjaja,16/09/2026 9:00:00,16/09/2026,17/09/2026 11:21:22,17/09/2026 20:20:03,Bintang Guntoro,Tri Hastuti Wulandari,PT. Sokyo Group Indonesia
+ESB-W7C2QM,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,16/09/2026 9:30:00,16/09/2026,16/09/2026 9:44:18,16/09/2026 10:59:23,Dika Anugerah Pratama,Dika Anugerah Pratama,CV. Makan Ayam Goreng Setiap Hari
+ESB-KACXPA,SCHEDULED,Approach,,16/09/2026 9:30:00,16/09/2026,,,Pernandes Paindo Tua,,Other
+ESB-AF5UBE,COMPLETED,Training,Muhammad Rimaduddin,16/09/2026 10:00:00,16/09/2026,16/09/2026 10:43:34,16/09/2026 21:27:07,Vinna Maharani,Cherly Vitaloka,De Koeta Radja
+ESB-HA6HEW,DRAFT EMAIL,Retraining,M. Iriansyah Suhendar,16/09/2026 10:00:00,16/09/2026,16/09/2026 9:30:51,16/09/2026 11:39:09,Risky Ramadhan,Agung Setiawan,PT Teman Kreasi Rasa
+ESB-E4VSNH,COMPLETED,Training,M. Iriansyah Suhendar,16/09/2026 10:00:00,16/09/2026,16/09/2026 11:03:15,16/09/2026 12:11:16,Febri Dwi Putra,Airlangga Aziz,PT PADEL CENTRAL BALI
+ESB-QJZNZD,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,16/09/2026 10:00:00,16/09/2026,16/09/2026 12:48:14,16/09/2026 13:24:53,Ayu Febrina Sianturi,Ayu Febrina Sianturi,Pia Fuji Koptiam
+ESB-969V8R,COMPLETED,Initial Meeting,Muhammad Rimaduddin,16/09/2026 10:00:00,16/09/2026,16/09/2026 10:21:56,,Kiki Tri Utari,David Prima Putra,PT Rasa Saji Nusantara
+ESB-4FQ8PW,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,16/09/2026 10:00:00,16/09/2026,16/09/2026 9:57:42,16/09/2026 17:06:31,Larezza Murda Gaharni,Rezi Rizki Raedini,PT Kopitagram Seruput Bersama
+ESB-C9NPWZ,SEND EMAIL,Training,Jane Margareth Widjaja,16/09/2026 10:00:00,16/09/2026,16/09/2026 16:25:02,16/09/2026 18:00:49,Kevin Reynaldi,Rezi Rizki Raedini,Tempong Nusantara
+ESB-PW6YQT,SEND EMAIL,Approach,,16/09/2026 10:00:00,16/09/2026,16/09/2026 16:12:57,16/09/2026 16:22:06,Irma Laura Siregar,,Other
+ESB-PGZWPX,COMPLETED,Initial Meeting,Muhammad Rimaduddin,16/09/2026 10:00:00,16/09/2026,16/09/2026 10:01:24,16/09/2026 11:19:20,Cherly Vitaloka,Cherly Vitaloka,PT Karunia Kencana Inter Global
+ESB-SR7K48,DRAFT EMAIL,Training,Jane Margareth Widjaja,16/09/2026 10:00:00,16/09/2026,16/09/2026 11:33:20,16/09/2026 16:06:43,Noviyanti Nadia,Rezi Rizki Raedini,Kreya
+ESB-WU7PHY,CANCEL,Meeting,Muhammad Rimaduddin,16/09/2026 10:00:00,16/09/2026,16/09/2026 10:14:24,,Yessi Tiyastanti,David Prima Putra,PT Gerai Wahana Kuliner
+ESB-RU9ANE,SEND EMAIL,Babysit,Jane Margareth Widjaja,16/09/2026 10:00:00,16/09/2026,16/09/2026 10:34:46,16/09/2026 13:57:25,Imam Wicaksono,Dika Anugerah Pratama,Sahabat DC Food Merchant
+ESB-MVRWYH,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,16/09/2026 10:00:00,16/09/2026,16/09/2026 13:37:09,16/09/2026 15:55:20,Tri Hastuti Wulandari,Tri Hastuti Wulandari,Canton Palace
+ESB-X26D6P,COMPLETED,Meeting,Muhammad Rimaduddin,16/09/2026 10:00:00,16/09/2026,16/09/2026 10:09:09,16/09/2026 14:59:45,Ardiansyah Hendardi,Kiki Tri Utari,PT. Gulapadi Nusantara Utama
+ESB-M4CWB4,COMPLETED,Retraining,Jane Margareth Widjaja,16/09/2026 11:00:00,16/09/2026,16/09/2026 10:52:50,16/09/2026 13:53:41,Yoga Astita Ade,Rezi Rizki Raedini,Shots Coffee Rawamangun
+ESB-A8GG2H,COMPLETED,Retraining,M. Iriansyah Suhendar,16/09/2026 11:00:00,16/09/2026,16/09/2026 11:22:40,16/09/2026 12:24:23,Christopher Patrick Djuanda,Agung Setiawan,CV. Karya Manis Ceshire
+ESB-YSVEYF,SEND EMAIL,Meeting,Jane Margareth Widjaja,16/09/2026 13:00:00,16/09/2026,16/09/2026 13:33:38,16/09/2026 22:14:32,Teddi Ari Tama,Tri Hastuti Wulandari,Noble Thai Taman Anggrek
+ESB-9B7V5K,DRAFT EMAIL,Initial Meeting,Jane Margareth Widjaja,16/09/2026 13:00:00,16/09/2026,16/09/2026 14:04:53,16/09/2026 15:08:55,Dika Anugerah Pratama,Dika Anugerah Pratama,Ikan Bakar Pantai Timur Jombor
+ESB-FZXPKN,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,16/09/2026 14:00:00,16/09/2026,16/09/2026 14:02:43,16/09/2026 16:54:21,Larezza Murda Gaharni,Tri Hastuti Wulandari,PT Shokyu Cahaya Fukutsu
+ESB-4K2597,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,16/09/2026 14:00:00,16/09/2026,16/09/2026 15:55:35,16/09/2026 21:31:11,Tri Hastuti Wulandari,Tri Hastuti Wulandari,PT. Linijati Arthaprima
+ESB-WZ8XXT,COMPLETED,Training,Muhammad Rimaduddin,16/09/2026 14:00:00,16/09/2026,16/09/2026 13:54:14,16/09/2026 16:58:40,Alif Izzuddin Ramadhan,Cherly Vitaloka,Ichung Bukan Kopitiam
+ESB-GRWC99,DRAFT EMAIL,Approach,,16/09/2026 14:00:00,16/09/2026,16/09/2026 15:43:22,16/09/2026 15:56:49,Agung Setiawan,,Other
+ESB-7EZA8G,COMPLETED,Training,Muhammad Rimaduddin,16/09/2026 14:00:00,16/09/2026,16/09/2026 13:54:58,16/09/2026 15:52:54,Ardiansyah Hendardi,Kiki Tri Utari,Fromjannicetoyou
+ESB-SA4GB7,COMPLETED,Initial Meeting,Muhammad Rimaduddin,16/09/2026 14:00:00,16/09/2026,16/09/2026 14:52:27,16/09/2026 16:18:08,Kiki Tri Utari,Kiki Tri Utari,PT. Kominka Hulson Soekses
+ESB-9T76S3,SCHEDULED,Approach,,16/09/2026 14:00:00,16/09/2026,,,Pernandes Paindo Tua,,Other
+ESB-NS3AJJ,COMPLETED,Babysit,Muhammad Rimaduddin,16/09/2026 14:00:00,16/09/2026,16/09/2026 16:07:17,16/09/2026 16:07:32,Yessi Tiyastanti,David Prima Putra,Homu Kanpai
+ESB-ZBWYBV,COMPLETED,Initial Meeting,Jane Margareth Widjaja,16/09/2026 14:00:00,16/09/2026,16/09/2026 9:51:36,16/09/2026 11:58:35,Fera Eka Waty N,Ayu Febrina Sianturi,Enmore Coffee
+ESB-NGB8WW,SEND EMAIL,Training,Muhammad Rimaduddin,16/09/2026 14:00:00,16/09/2026,16/09/2026 14:34:11,17/09/2026 9:31:13,Nurul Huda,Kiki Tri Utari,CV Majoe Mapan Djaya
+ESB-3Z4AHF,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,16/09/2026 14:00:00,16/09/2026,16/09/2026 12:59:45,16/09/2026 13:29:07,Airlangga Aziz,Airlangga Aziz,PT BAEKJEONG KOREAN RESTAURANT
+ESB-2RJNDT,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,16/09/2026 15:00:00,16/09/2026,16/09/2026 15:20:56,16/09/2026 17:29:41,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,36 Ascend
+ESB-TJFTQ5,SEND EMAIL,Approach,,16/09/2026 15:00:00,16/09/2026,16/09/2026 16:13:00,16/09/2026 16:24:39,Irma Laura Siregar,,Other
+ESB-VXMSHR,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,16/09/2026 17:00:00,16/09/2026,16/09/2026 17:38:34,16/09/2026 19:19:47,Agung Setiawan,Agung Setiawan,Depot Cipork Keriyuk
+ESB-6NMXZP,COMPLETED,Meeting,M. Iriansyah Suhendar,17/09/2026 9:00:00,17/09/2026,17/09/2026 8:58:10,17/09/2026 18:36:02,Yayang Putri Suwondo,Agung Setiawan,Kopi Siippp HO
+ESB-SE7EBY,COMPLETED,Training,Muhammad Rimaduddin,17/09/2026 9:00:00,17/09/2026,17/09/2026 9:27:53,17/09/2026 13:07:22,Melati Cantika,Kiki Tri Utari,PT EMERA BOGA MAKMUR
+ESB-WTRUEW,SEND EMAIL,Training,Jane Margareth Widjaja,17/09/2026 9:00:00,17/09/2026,17/09/2026 11:03:52,17/09/2026 23:46:49,Kevin Reynaldi,Rezi Rizki Raedini,Moeara Eatery & Hub
+ESB-XD2U2G,SEND EMAIL,Meeting,Muhammad Rimaduddin,17/09/2026 9:45:00,17/09/2026,17/09/2026 11:08:12,18/09/2026 13:37:59,Nurul Huda,Kiki Tri Utari,PT. Manna Salwa Food International
+ESB-BECF74,COMPLETED,Meeting,M. Iriansyah Suhendar,17/09/2026 10:00:00,17/09/2026,17/09/2026 10:14:44,17/09/2026 11:15:24,Agung Setiawan,Agung Setiawan,Edo Aryadifa
+ESB-EQSM8B,SEND EMAIL,Babysit,Jane Margareth Widjaja,17/09/2026 10:00:00,17/09/2026,17/09/2026 10:21:55,17/09/2026 12:20:16,Imam Wicaksono,Dika Anugerah Pratama,CV The Machmud Halal Kitchen
+ESB-2FKQRY,COMPLETED,Training,M. Iriansyah Suhendar,17/09/2026 10:00:00,17/09/2026,17/09/2026 8:59:45,17/09/2026 12:05:15,Alian Alfin Nuha,Airlangga Aziz,PT. BAAS MAS SEJATI
+ESB-QJ4BSH,COMPLETED,Training,Muhammad Rimaduddin,17/09/2026 10:00:00,17/09/2026,17/09/2026 9:53:29,17/09/2026 13:56:30,Vinna Maharani,Cherly Vitaloka,De Koeta Radja
+ESB-V2Z2XG,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,17/09/2026 10:00:00,17/09/2026,17/09/2026 15:15:18,17/09/2026 15:56:03,Tri Hastuti Wulandari,Tri Hastuti Wulandari,PT. Bima Nusantara Indonesia
+ESB-9QM4AN,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,17/09/2026 10:00:00,17/09/2026,17/09/2026 9:12:18,17/09/2026 10:44:10,Airlangga Aziz,Airlangga Aziz,PT. RAYA WILKIE SUKSES
+ESB-NY9K68,COMPLETED,Training,Muhammad Rimaduddin,17/09/2026 10:00:00,17/09/2026,17/09/2026 9:54:41,17/09/2026 11:09:16,Fera Eka Waty N,Ayu Febrina Sianturi,Hai Sushi
+ESB-BDJPBR,COMPLETED,Retraining,Muhammad Rimaduddin,17/09/2026 10:00:00,17/09/2026,17/09/2026 10:27:15,17/09/2026 12:48:09,Yessi Tiyastanti,David Prima Putra,PT Satu Meja Bertujuh
+ESB-ZHQSFX,SCHEDULED,Approach,,17/09/2026 10:00:00,17/09/2026,,,Pernandes Paindo Tua,,Other
+ESB-VW2V5W,DRAFT EMAIL,Retraining,Jane Margareth Widjaja,17/09/2026 10:00:00,17/09/2026,17/09/2026 10:05:18,17/09/2026 11:09:04,Larezza Murda Gaharni,Rezi Rizki Raedini,Kulega
+ESB-5K6C6W,COMPLETED,Training,Muhammad Rimaduddin,17/09/2026 10:00:00,17/09/2026,17/09/2026 10:29:24,17/09/2026 14:45:20,Febrianto Puji Waskito,David Prima Putra,PT Sajiwa Katalis Devara
+ESB-PVQDB6,SEND EMAIL,Approach,,17/09/2026 10:00:00,17/09/2026,17/09/2026 10:20:40,,Irma Laura Siregar,,Other
+ESB-FJMG7R,SEND EMAIL,Training,Muhammad Rimaduddin,17/09/2026 10:00:00,17/09/2026,17/09/2026 23:26:12,17/09/2026 23:26:16,Ardiansyah Hendardi,Kiki Tri Utari,Kopi Insight
+ESB-SKH34K,COMPLETED,Training,Jane Margareth Widjaja,17/09/2026 10:00:00,17/09/2026,17/09/2026 10:00:03,17/09/2026 14:50:20,Yoga Astita Ade,Rezi Rizki Raedini,PT Arta Global Sukses
+ESB-QEY9TQ,COMPLETED,Meeting,Muhammad Rimaduddin,17/09/2026 10:00:00,17/09/2026,17/09/2026 10:28:40,17/09/2026 13:10:25,Syafiz Amiero,David Prima Putra,PT Akusara Global boga
+ESB-92756S,COMPLETED,Training,M. Iriansyah Suhendar,17/09/2026 10:00:00,17/09/2026,17/09/2026 10:20:23,17/09/2026 15:26:52,Tegar Rangga,Agung Setiawan,Drama
+ESB-K92UE5,COMPLETED,Training,M. Iriansyah Suhendar,17/09/2026 10:00:00,17/09/2026,17/09/2026 9:04:11,17/09/2026 12:08:33,Febri Dwi Putra,Airlangga Aziz,FUELO
+ESB-3XKBZ3,CANCEL,Meeting,Muhammad Rimaduddin,17/09/2026 10:00:00,17/09/2026,,,Melati Cantika,Kiki Tri Utari,PT. Royal Inti Nusa
+ESB-GETG2A,SEND EMAIL,Training,Muhammad Rimaduddin,17/09/2026 10:00:00,17/09/2026,17/09/2026 16:27:56,17/09/2026 18:25:22,Nika Rullyta Khairunnisa,David Prima Putra,PT DCIKA PRIMA INTERFOOD
+ESB-28RWQJ,COMPLETED,Training,Jane Margareth Widjaja,17/09/2026 11:00:00,17/09/2026,17/09/2026 11:32:08,17/09/2026 13:56:47,Abi Muhammad Alfarezy,Rezi Rizki Raedini,CV Gemes Cipta Rasa
+ESB-JH8END,SEND EMAIL,Retraining,Jane Margareth Widjaja,17/09/2026 11:00:00,17/09/2026,17/09/2026 11:00:01,17/09/2026 14:21:11,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,Pintu Nusa
+ESB-62C4SU,COMPLETED,Meeting,Muhammad Rimaduddin,17/09/2026 13:00:00,17/09/2026,17/09/2026 13:29:35,17/09/2026 17:33:33,Kiki Tri Utari,Kiki Tri Utari,PT Exotic Lifestyle Concept
+ESB-FU2G6M,COMPLETED,Initial Meeting,Muhammad Rimaduddin,17/09/2026 13:00:00,17/09/2026,17/09/2026 13:10:37,17/09/2026 15:14:33,David Prima Putra,David Prima Putra,Jonathan
+ESB-9QKV5D,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,17/09/2026 13:00:00,17/09/2026,17/09/2026 13:58:06,,Dika Anugerah Pratama,Dika Anugerah Pratama,MONSU
+ESB-E84TAS,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,17/09/2026 13:00:00,17/09/2026,17/09/2026 13:20:07,17/09/2026 14:37:53,Agung Setiawan,Agung Setiawan,CV Aneka Rasa Sukses
+ESB-8BYD64,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,17/09/2026 14:00:00,17/09/2026,17/09/2026 13:51:52,,Irma Laura Siregar,Cherly Vitaloka,Madame Arumantara
+ESB-YWJKGJ,CANCEL,Training,Muhammad Rimaduddin,17/09/2026 14:00:00,17/09/2026,,,Yessi Tiyastanti,David Prima Putra,PT. Roti Segar Mendunia
+ESB-YYCXUW,COMPLETED,Training,M. Iriansyah Suhendar,17/09/2026 14:00:00,17/09/2026,17/09/2026 12:55:19,17/09/2026 17:10:29,Febri Dwi Putra,Airlangga Aziz,PT Butter Health Grill
+ESB-EDGB3Y,DRAFT EMAIL,Meeting,M. Iriansyah Suhendar,17/09/2026 14:00:00,17/09/2026,17/09/2026 13:10:34,17/09/2026 16:15:39,Anisa Lucky,Agung Setiawan,Kampoeng Steak
+ESB-UWMNTY,CANCEL,Meeting,Jane Margareth Widjaja,17/09/2026 14:00:00,17/09/2026,,,Larezza Murda Gaharni,Tri Hastuti Wulandari,PT Koba Sukses Berjaya (CK)
+ESB-ZZG52C,COMPLETED,Meeting,Jane Margareth Widjaja,17/09/2026 14:00:00,17/09/2026,17/09/2026 15:15:27,17/09/2026 15:55:55,Tri Hastuti Wulandari,Tri Hastuti Wulandari,PT Agrapana Niaga Gemilang
+ESB-E2CVJ4,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,17/09/2026 14:00:00,17/09/2026,17/09/2026 14:58:36,18/09/2026 18:21:47,Rezi Rizki Raedini,Rezi Rizki Raedini,Chuyu
+ESB-J46BKK,SEND EMAIL,Meeting,Muhammad Rimaduddin,17/09/2026 14:00:00,17/09/2026,17/09/2026 13:50:33,17/09/2026 17:44:05,Cherly Vitaloka,Cherly Vitaloka,PT Kopi Arabika Nusantara
+ESB-YYEFVR,COMPLETED,Meeting,M. Iriansyah Suhendar,17/09/2026 14:00:00,17/09/2026,17/09/2026 14:00:05,17/09/2026 15:41:29,Christopher Patrick Djuanda,Agung Setiawan,PT. Garuda Burung Sehat
+ESB-9KEBGS,COMPLETED,Meeting,M. Iriansyah Suhendar,17/09/2026 14:00:00,17/09/2026,17/09/2026 18:36:09,17/09/2026 18:36:15,Yayang Putri Suwondo,Agung Setiawan,Mingkee Malang
+ESB-MUNZRJ,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,17/09/2026 17:00:00,17/09/2026,17/09/2026 16:18:17,17/09/2026 17:53:04,Airlangga Aziz,Airlangga Aziz,jonathan R
+ESB-2AZ3S8,SEND EMAIL,Training,Jane Margareth Widjaja,18/09/2026 9:00:00,18/09/2026,18/09/2026 21:52:44,18/09/2026 22:23:41,Bintang Guntoro,Tri Hastuti Wulandari,Vivian Li
+ESB-QRVJE9,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,18/09/2026 9:00:00,18/09/2026,18/09/2026 9:00:48,18/09/2026 13:56:45,Dika Anugerah Pratama,Dika Anugerah Pratama,Sorak Sorai Kota Lama
+ESB-BEEAYS,SEND EMAIL,Training,Jane Margareth Widjaja,18/09/2026 9:00:00,18/09/2026,18/09/2026 9:46:26,18/09/2026 16:49:38,Abi Muhammad Alfarezy,Rezi Rizki Raedini,CV Gemes Cipta Rasa
+ESB-6RJ47A,SEND EMAIL,Meeting,Muhammad Rimaduddin,18/09/2026 10:00:00,18/09/2026,18/09/2026 10:14:38,18/09/2026 12:50:53,Ayu Febrina Sianturi,Ayu Febrina Sianturi,Valtre Cafe & Resto
+ESB-BU32RT,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,18/09/2026 10:00:00,18/09/2026,18/09/2026 15:27:14,18/09/2026 15:30:14,Irma Laura Siregar,David Prima Putra,Dose Up
+ESB-Z3SGET,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,18/09/2026 10:00:00,18/09/2026,18/09/2026 9:32:00,18/09/2026 13:56:12,Ardiansyah Hendardi,Kiki Tri Utari,Warung Rindu
+ESB-VZQCGP,COMPLETED,Initial Meeting,Muhammad Rimaduddin,18/09/2026 10:00:00,18/09/2026,18/09/2026 10:12:18,18/09/2026 12:30:09,Cherly Vitaloka,Cherly Vitaloka,Walungan Rasa
+ESB-ZCZFFC,SEND EMAIL,Meeting,M. Iriansyah Suhendar,18/09/2026 10:00:00,18/09/2026,18/09/2026 9:07:52,18/09/2026 11:17:23,Alian Alfin Nuha,Airlangga Aziz,2080 Burger New
+ESB-GA8FHE,COMPLETED,Retraining,Muhammad Rimaduddin,18/09/2026 10:00:00,18/09/2026,18/09/2026 9:51:27,18/09/2026 20:35:23,Vinna Maharani,Cherly Vitaloka,PT Gerak Sehat Maju
+ESB-24AEAK,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,18/09/2026 10:00:00,18/09/2026,18/09/2026 12:49:21,18/09/2026 12:49:24,Kevin Reynaldi,Rezi Rizki Raedini,Franchise Soto Betawi H Mamat Kelender
+ESB-6YC7SZ,COMPLETED,Initial Meeting,Muhammad Rimaduddin,18/09/2026 10:00:00,18/09/2026,18/09/2026 10:37:59,18/09/2026 14:44:35,Kiki Tri Utari,Kiki Tri Utari,Central Kitchen Leckers
+ESB-ATF7GW,SCHEDULED,Approach,,18/09/2026 10:00:00,18/09/2026,,,Pernandes Paindo Tua,,Nakamaya
+ESB-G3PWN9,COMPLETED,Training,Jane Margareth Widjaja,18/09/2026 10:00:00,18/09/2026,18/09/2026 10:01:09,18/09/2026 11:33:54,Yoga Astita Ade,Tri Hastuti Wulandari,Tropicollo
+ESB-2SSM3K,COMPLETED,Meeting,M. Iriansyah Suhendar,18/09/2026 10:00:00,18/09/2026,18/09/2026 9:51:20,18/09/2026 10:46:14,Christopher Patrick Djuanda,Agung Setiawan,CV Rasa Bahagia
+ESB-AD4QN4,SEND EMAIL,Training,Muhammad Rimaduddin,18/09/2026 10:00:00,18/09/2026,18/09/2026 17:45:17,18/09/2026 17:45:31,Nika Rullyta Khairunnisa,David Prima Putra,PT DCIKA PRIMA INTERFOOD
+ESB-WQRJKJ,SEND EMAIL,Training,Jane Margareth Widjaja,18/09/2026 10:00:00,18/09/2026,18/09/2026 9:02:59,18/09/2026 15:13:01,Teddi Ari Tama,Tri Hastuti Wulandari,CV Golden Boga Lestari
+ESB-VQU2F5,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,18/09/2026 10:00:00,18/09/2026,18/09/2026 9:55:11,18/09/2026 14:24:11,Tri Hastuti Wulandari,Tri Hastuti Wulandari,PT ANNAJON CITARASA GLOBAL
+ESB-TTFCPB,COMPLETED,Training,Muhammad Rimaduddin,18/09/2026 10:00:00,18/09/2026,18/09/2026 10:38:06,18/09/2026 12:24:08,Yessi Tiyastanti,David Prima Putra,PT Taruboga Pangan
+ESB-J9DGM3,SEND EMAIL,Meeting,Muhammad Rimaduddin,18/09/2026 10:00:00,18/09/2026,18/09/2026 10:32:25,18/09/2026 18:01:12,Rafi Mahasin,Kiki Tri Utari,PT. mimpi pas muda
+ESB-7KZMDK,COMPLETED,Meeting,M. Iriansyah Suhendar,18/09/2026 13:00:00,18/09/2026,18/09/2026 14:39:07,18/09/2026 17:19:32,Agung Setiawan,Agung Setiawan,PT. Golqi Sukses Mulia
+ESB-BU8NVP,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,18/09/2026 13:00:00,18/09/2026,18/09/2026 9:00:33,,Dika Anugerah Pratama,Dika Anugerah Pratama,PT Boga Anugera Rasa
+ESB-XFSZAB,COMPLETED,Training,Muhammad Rimaduddin,18/09/2026 13:00:00,18/09/2026,18/09/2026 12:58:51,18/09/2026 14:59:56,Alif Izzuddin Ramadhan,Cherly Vitaloka,PT. Martabak Sultan Sembilan Sembilan
+ESB-5GRDUC,SEND EMAIL,Meeting,Jane Margareth Widjaja,18/09/2026 13:00:00,18/09/2026,18/09/2026 12:50:15,18/09/2026 15:26:30,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,Teh Jawa
+ESB-VWX8U9,COMPLETED,Training,Muhammad Rimaduddin,18/09/2026 13:00:00,18/09/2026,18/09/2026 14:48:24,18/09/2026 15:22:00,Fera Eka Waty N,Ayu Febrina Sianturi,Kopi Nusa
+ESB-G25RTJ,COMPLETED,Training,Jane Margareth Widjaja,18/09/2026 13:30:00,18/09/2026,18/09/2026 13:34:43,18/09/2026 15:38:39,Yoga Astita Ade,Rezi Rizki Raedini,PT Era Abyudaya Trimitra
+ESB-MC2MPD,SCHEDULED,Approach,,18/09/2026 14:00:00,18/09/2026,,,Pernandes Paindo Tua,,Other
+ESB-G9C87G,COMPLETED,Meeting,M. Iriansyah Suhendar,18/09/2026 14:00:00,18/09/2026,18/09/2026 11:55:20,18/09/2026 15:40:50,Febri Dwi Putra,Airlangga Aziz,HUTAN DAYCLUB
+ESB-JMRT8D,SEND EMAIL,Training,Muhammad Rimaduddin,18/09/2026 14:00:00,18/09/2026,21/09/2026 14:20:32,21/09/2026 21:32:44,Ardiansyah Hendardi,Kiki Tri Utari,WarKop 78s
+ESB-DEXGCN,COMPLETED,Initial Meeting,Muhammad Rimaduddin,18/09/2026 14:00:00,18/09/2026,18/09/2026 13:30:22,18/09/2026 15:22:50,Melati Cantika,Kiki Tri Utari,Ahmad Habibie (ALAMINANG)
+ESB-GB3G8N,COMPLETED,Initial Meeting,Muhammad Rimaduddin,18/09/2026 14:00:00,18/09/2026,18/09/2026 14:11:14,18/09/2026 17:33:14,David Prima Putra,David Prima Putra,PT. Bumi Parahyangan Makmur Abadi
+ESB-NZVFZV,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,18/09/2026 14:00:00,18/09/2026,18/09/2026 13:44:38,18/09/2026 15:45:42,Syahrul Zulvan,Dika Anugerah Pratama,AERO LOUNGE
+ESB-P88DD2,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,18/09/2026 14:00:00,18/09/2026,18/09/2026 16:11:42,21/09/2026 14:08:35,Margaretha Agrivani,Tri Hastuti Wulandari,PT Damai Elok Sukacita Indonesia
+ESB-MXPX3A,COMPLETED,Initial Meeting,Muhammad Rimaduddin,18/09/2026 14:00:00,18/09/2026,18/09/2026 14:50:50,,Kiki Tri Utari,Kiki Tri Utari,BPK Chika
+ESB-G6MYEB,SEND EMAIL,Meeting,Muhammad Rimaduddin,18/09/2026 14:00:00,18/09/2026,18/09/2026 14:19:08,18/09/2026 16:01:24,Yessi Tiyastanti,David Prima Putra,PT Gerai Wahana Kuliner
+ESB-J6WMFA,CANCEL,Meeting,M. Iriansyah Suhendar,18/09/2026 14:00:00,18/09/2026,,,Christopher Patrick Djuanda,Agung Setiawan,PT Dharma Putra Airlangga
+ESB-R5VHKR,SEND EMAIL,Approach,,18/09/2026 14:00:00,18/09/2026,18/09/2026 15:27:01,18/09/2026 15:33:03,Irma Laura Siregar,,Other
+ESB-R6R8MC,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,18/09/2026 14:00:00,18/09/2026,18/09/2026 13:35:03,18/09/2026 14:11:45,Airlangga Aziz,Airlangga Aziz,Mild Bistro
+ESB-H2A5D2,COMPLETED,Retraining,Muhammad Rimaduddin,18/09/2026 14:00:00,18/09/2026,18/09/2026 15:36:36,18/09/2026 15:36:41,Tegar Rangga,Agung Setiawan,Rally Bites
+ESB-SXA879,DRAFT EMAIL,Meeting,M. Iriansyah Suhendar,18/09/2026 14:00:00,18/09/2026,18/09/2026 16:56:43,18/09/2026 16:56:47,Risky Ramadhan,Agung Setiawan,Pt. Gudang FnB
+ESB-SG2BMW,SEND EMAIL,Meeting,Muhammad Rimaduddin,18/09/2026 14:00:00,18/09/2026,18/09/2026 14:05:14,18/09/2026 17:12:07,Syafiz Amiero,David Prima Putra,ROOFPARK INTERFOOD MAKMUR
+ESB-TDPGPC,DRAFT EMAIL,Training,M. Iriansyah Suhendar,18/09/2026 14:00:00,18/09/2026,18/09/2026 14:25:42,18/09/2026 19:02:24,Anisa Lucky,Agung Setiawan,RACOTTA COFFEE SPACE
+ESB-XPE75R,DRAFT EMAIL,Approach,,18/09/2026 14:00:00,18/09/2026,18/09/2026 14:15:57,18/09/2026 18:21:36,Rezi Rizki Raedini,,Other
+ESB-6BHBWY,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,18/09/2026 16:00:00,18/09/2026,18/09/2026 15:27:07,21/09/2026 10:12:18,Irma Laura Siregar,David Prima Putra,Monero Cafe
+ESB-NNKM6X,DRAFT EMAIL,Initial Meeting,M. Iriansyah Suhendar,18/09/2026 17:00:00,18/09/2026,18/09/2026 16:35:00,18/09/2026 19:35:25,Airlangga Aziz,Airlangga Aziz,PT Selasa Diwangkara Bali
+ESB-5S29AX,CANCEL,Training,Muhammad Rimaduddin,20/09/2026 9:00:00,20/09/2026,,,Ayu Febrina Sianturi,Ayu Febrina Sianturi,Nadhira Napoleon & Durian Runtuh
+ESB-GDK5N9,COMPLETED,Training,,20/09/2026 10:50:00,20/09/2026,20/09/2026 23:25:23,20/09/2026 23:25:27,Fera Eka Waty N,,PT Esensi Solusi Buana (Present)
+ESB-HKM9TM,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,20/09/2026 13:00:00,20/09/2026,21/09/2026 10:01:46,21/09/2026 16:30:50,Noviyanti Nadia,Rezi Rizki Raedini,Abon Gulung Beruang Madu
+ESB-4NRR2Y,SEND EMAIL,Training,,20/09/2026 14:00:00,20/09/2026,21/09/2026 11:55:30,21/09/2026 11:55:34,Tegar Rangga,,PT Esensi Solusi Buana
+ESB-C3J7N2,SEND EMAIL,Training,Muhammad Rimaduddin,21/09/2026 10:00:00,21/09/2026,21/09/2026 15:28:25,21/09/2026 19:15:42,Ayu Febrina Sianturi,Ayu Febrina Sianturi,Nadhira Napoleon & Durian Runtuh
+ESB-ZAWSQS,COMPLETED,Initial Meeting,Muhammad Rimaduddin,21/09/2026 10:00:00,21/09/2026,21/09/2026 9:55:26,22/09/2026 16:13:32,Yoan Fefi Berliani,Cherly Vitaloka,Steviora Tehdia
+ESB-RE32HD,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,21/09/2026 10:00:00,21/09/2026,21/09/2026 10:22:50,21/09/2026 11:08:27,Agung Setiawan,Agung Setiawan,CV. Selera Jajan Indonesia
+ESB-FMKRS6,SEND EMAIL,Retraining,Muhammad Rimaduddin,21/09/2026 10:00:00,21/09/2026,21/09/2026 10:30:59,21/09/2026 21:32:48,Ardiansyah Hendardi,Kiki Tri Utari,Rumah Makan Wangi Seruni
+ESB-4ZSCGD,CANCEL,Initial Meeting,M. Iriansyah Suhendar,21/09/2026 10:00:00,21/09/2026,,,Airlangga Aziz,Airlangga Aziz,PT RJF GLOBAL GROUP
+ESB-FHWUVZ,COMPLETED,Training,Muhammad Rimaduddin,21/09/2026 10:00:00,21/09/2026,21/09/2026 12:17:16,21/09/2026 14:34:00,Melati Cantika,Cherly Vitaloka,PT. Hope Source Indonesia
+ESB-ME8A9W,CANCEL,Babysit,Muhammad Rimaduddin,21/09/2026 10:00:00,21/09/2026,,,Fera Eka Waty N,Ayu Febrina Sianturi,Rumah Kedua
+ESB-GB97EC,CANCEL,Training,Jane Margareth Widjaja,21/09/2026 10:00:00,21/09/2026,,,Abi Muhammad Alfarezy,Rezi Rizki Raedini,Abu Nawas Fried Chicken
+ESB-8DXAGU,COMPLETED,Retraining,M. Iriansyah Suhendar,21/09/2026 10:00:00,21/09/2026,21/09/2026 8:58:50,21/09/2026 13:24:27,Febri Dwi Putra,Airlangga Aziz,Statement Coffee
+ESB-68BARB,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,21/09/2026 10:00:00,21/09/2026,21/09/2026 10:11:42,21/09/2026 12:05:31,Fera Eka Waty N,Ayu Febrina Sianturi,PT Alamanda Prima Boga
+ESB-CK9YJW,SEND EMAIL,Training,Jane Margareth Widjaja,21/09/2026 10:00:00,21/09/2026,21/09/2026 9:59:15,21/09/2026 18:29:08,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,MONSU
+ESB-VGCSYD,CANCEL,Meeting,Muhammad Rimaduddin,21/09/2026 10:00:00,21/09/2026,,,Alif Izzuddin Ramadhan,Cherly Vitaloka,PT Kreasi Abadi Jayatama
+ESB-VKUNFZ,SEND EMAIL,Retraining,Jane Margareth Widjaja,21/09/2026 10:00:00,21/09/2026,21/09/2026 10:17:10,21/09/2026 14:59:08,Teddi Ari Tama,Tri Hastuti Wulandari,PT DAPUR GOMA INDONESIA
+ESB-A74PRV,ON VISIT,Initial Meeting,Jane Margareth Widjaja,21/09/2026 10:00:00,21/09/2026,22/09/2026 15:14:10,,Rezi Rizki Raedini,Rezi Rizki Raedini,PT Era Oriental Kopi (Oriental Kopi)
+ESB-8FB24V,COMPLETED,Retraining,Jane Margareth Widjaja,21/09/2026 10:00:00,21/09/2026,21/09/2026 10:02:36,21/09/2026 14:13:34,Yoga Astita Ade,Rezi Rizki Raedini,CV Multi Sarana Amal (PSKW)
+ESB-VMY79Z,SEND EMAIL,Approach,,21/09/2026 10:00:00,21/09/2026,21/09/2026 10:10:52,22/09/2026 14:14:50,Irma Laura Siregar,,Other
+ESB-RAQ3E8,SEND EMAIL,Training,Muhammad Rimaduddin,21/09/2026 10:00:00,21/09/2026,21/09/2026 10:38:11,21/09/2026 15:30:39,Nurul Huda,David Prima Putra,PT Kuliner Jurus Maut
+ESB-92QHKU,SEND EMAIL,Training,M. Iriansyah Suhendar,21/09/2026 10:00:00,21/09/2026,21/09/2026 11:14:14,21/09/2026 20:47:34,Yayang Putri Suwondo,Agung Setiawan,Lesung Pipi Coffee & Eatery
+ESB-F6G2GJ,CANCEL,Training,Muhammad Rimaduddin,21/09/2026 10:00:00,21/09/2026,,,Vinna Maharani,Cherly Vitaloka,Bara Daily
+ESB-ENSJ4E,SEND EMAIL,Meeting,M. Iriansyah Suhendar,21/09/2026 10:00:00,21/09/2026,21/09/2026 9:00:10,21/09/2026 12:40:34,Alian Alfin Nuha,Airlangga Aziz,PT Karya Kemilau Nusantara
+ESB-HSQCJD,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,21/09/2026 10:00:00,21/09/2026,21/09/2026 10:35:09,21/09/2026 17:15:26,Fauzi Yuda Ariyanto,Dika Anugerah Pratama,PT Sumber Cita Indonesia
+ESB-ZAZKB9,CANCEL,Approach,,21/09/2026 11:00:00,21/09/2026,,,Pernandes Paindo Tua,,Kyati Selera Adyatma
+ESB-6RAYHK,SEND EMAIL,Retraining,Jane Margareth Widjaja,21/09/2026 11:00:00,21/09/2026,21/09/2026 15:01:51,21/09/2026 18:22:43,Kevin Reynaldi,Rezi Rizki Raedini,PT VARSHA ARTHA BERSAMA
+ESB-XKMHQS,COMPLETED,Initial Meeting,Muhammad Rimaduddin,21/09/2026 11:00:00,21/09/2026,21/09/2026 11:07:34,21/09/2026 15:38:24,David Prima Putra,Kiki Tri Utari,PT Hasta Kreasi Mandiri
+ESB-CH2RB4,DRAFT EMAIL,Initial Meeting,Jane Margareth Widjaja,21/09/2026 11:00:00,21/09/2026,22/09/2026 15:14:00,22/09/2026 17:52:00,Rezi Rizki Raedini,Rezi Rizki Raedini,JJ Steak Kaltim
+ESB-AEX8Z4,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,21/09/2026 13:00:00,21/09/2026,21/09/2026 13:17:31,21/09/2026 14:23:41,Agung Setiawan,Agung Setiawan,Sambelan Rindu Rasa
+ESB-ZVY52R,CANCEL,Initial Meeting,Muhammad Rimaduddin,21/09/2026 13:00:00,21/09/2026,,,Cherly Vitaloka,Ayu Febrina Sianturi,Yohanes Bosco - Rumah Seafood Lampung
+ESB-63T8T5,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,21/09/2026 13:00:00,21/09/2026,21/09/2026 11:55:42,21/09/2026 13:33:18,Tegar Rangga,Agung Setiawan,PT. Kopi Banua Jaya
+ESB-YBU7CU,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,21/09/2026 13:00:00,21/09/2026,21/09/2026 13:53:40,21/09/2026 15:55:44,Airlangga Aziz,Airlangga Aziz,JIA Coffee
+ESB-VY6QZY,SEND EMAIL,Meeting,Jane Margareth Widjaja,21/09/2026 13:00:00,21/09/2026,21/09/2026 13:03:47,21/09/2026 14:39:54,Bintang Guntoro,Tri Hastuti Wulandari,Uragawa
+ESB-5JKVGP,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,21/09/2026 13:00:00,21/09/2026,21/09/2026 9:54:09,21/09/2026 16:30:59,Noviyanti Nadia,Rezi Rizki Raedini,Abon Gulung Beruang Madu
+ESB-YVUA34,SEND EMAIL,Training,Muhammad Rimaduddin,21/09/2026 14:00:00,21/09/2026,21/09/2026 13:54:06,21/09/2026 17:52:06,Alif Izzuddin Ramadhan,Cherly Vitaloka,Ichung Bukan Kopitiam
+ESB-K9KXGH,COMPLETED,Training,Muhammad Rimaduddin,21/09/2026 14:00:00,21/09/2026,21/09/2026 14:38:37,21/09/2026 16:40:14,Syafiz Amiero,David Prima Putra,PT Formula Untuk Bahagia
+ESB-XXA3TS,DRAFT EMAIL,Training,Jane Margareth Widjaja,21/09/2026 14:00:00,21/09/2026,21/09/2026 14:08:25,21/09/2026 16:05:34,Margaretha Agrivani,Tri Hastuti Wulandari,Jason Thajeb (Duan Thai)
+ESB-43WP9Z,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,21/09/2026 14:00:00,21/09/2026,21/09/2026 13:39:17,21/09/2026 15:25:54,Dika Anugerah Pratama,Dika Anugerah Pratama,True Coffee Company
+ESB-UHWTFF,COMPLETED,Retraining,Muhammad Rimaduddin,21/09/2026 14:00:00,21/09/2026,21/09/2026 13:58:38,,Rafi Mahasin,Cherly Vitaloka,PT Gerak Sehat Maju
+ESB-6S7BC2,COMPLETED,Retraining,Muhammad Rimaduddin,21/09/2026 14:00:00,21/09/2026,21/09/2026 14:00:18,21/09/2026 16:03:47,Vinna Maharani,Cherly Vitaloka,PT Artha Rasa Cimory
+ESB-U9CJAB,ON VISIT,Meeting,Jane Margareth Widjaja,21/09/2026 14:00:00,21/09/2026,22/09/2026 15:13:50,,Rezi Rizki Raedini,Rezi Rizki Raedini,PT Era Oriental Kopi (Oriental Kopi)
+ESB-4J2KRK,DRAFT EMAIL,Approach,,21/09/2026 15:00:00,21/09/2026,21/09/2026 16:30:37,22/09/2026 9:36:07,Noviyanti Nadia,,Other
+ESB-SFT4DS,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,21/09/2026 15:00:00,21/09/2026,21/09/2026 16:11:20,21/09/2026 16:26:04,Abi Muhammad Alfarezy,Rezi Rizki Raedini,AYGOR ARRGH
+ESB-ADTQDY,SEND EMAIL,Meeting,Jane Margareth Widjaja,22/09/2026 9:00:00,22/09/2026,22/09/2026 11:01:37,22/09/2026 13:38:10,Dika Anugerah Pratama,Dika Anugerah Pratama,Rocket Chicken Indonesia
+ESB-4T48AA,COMPLETED,Retraining,M. Iriansyah Suhendar,22/09/2026 9:00:00,22/09/2026,22/09/2026 8:58:06,22/09/2026 10:22:44,Tegar Rangga,Agung Setiawan,Kopisena
+ESB-FTYMWH,COMPLETED,Initial Meeting,Muhammad Rimaduddin,22/09/2026 9:00:00,22/09/2026,22/09/2026 9:03:14,22/09/2026 14:39:52,David Prima Putra,David Prima Putra,JAGA by Amanah
+ESB-K9MAJ4,COMPLETED,Retraining,M. Iriansyah Suhendar,22/09/2026 10:00:00,22/09/2026,22/09/2026 9:01:05,22/09/2026 14:50:52,Alian Alfin Nuha,Airlangga Aziz,PT ALCHEMY
+ESB-G92GJH,SEND EMAIL,Training,M. Iriansyah Suhendar,22/09/2026 10:00:00,22/09/2026,22/09/2026 10:45:59,22/09/2026 14:03:27,Anisa Lucky,Agung Setiawan,Kogu Lawang
+ESB-SCEWZP,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,22/09/2026 10:00:00,22/09/2026,22/09/2026 9:34:57,22/09/2026 12:20:28,Teddi Ari Tama,Tri Hastuti Wulandari,Sentuh Rasa
+ESB-DP4CZF,COMPLETED,Training,Muhammad Rimaduddin,22/09/2026 10:00:00,22/09/2026,22/09/2026 10:16:33,22/09/2026 13:40:48,Rafi Mahasin,Kiki Tri Utari,Tjuan Tjoy
+ESB-YRNSSY,COMPLETED,Initial Meeting,Muhammad Rimaduddin,22/09/2026 10:00:00,22/09/2026,22/09/2026 10:02:20,22/09/2026 11:45:39,Kiki Tri Utari,Kiki Tri Utari,CV Kafeitiam Makmur Sentosa
+ESB-7VURB8,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,22/09/2026 10:00:00,22/09/2026,22/09/2026 13:41:48,22/09/2026 13:45:49,Abi Muhammad Alfarezy,Rezi Rizki Raedini,TWO PEOPLE
+ESB-GZBRHY,SEND EMAIL,Training,Jane Margareth Widjaja,22/09/2026 10:00:00,22/09/2026,22/09/2026 10:23:11,22/09/2026 15:30:38,Larezza Murda Gaharni,Tri Hastuti Wulandari,PT AYAM GORENG BARAYAM
+ESB-5GVMS3,COMPLETED,Retraining,M. Iriansyah Suhendar,22/09/2026 10:00:00,22/09/2026,22/09/2026 9:57:00,22/09/2026 14:13:28,Nurul Huda,Airlangga Aziz,SF Holding Outlet
+ESB-5VPWZX,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,22/09/2026 10:00:00,22/09/2026,22/09/2026 10:20:09,22/09/2026 13:57:04,Yoan Fefi Berliani,Cherly Vitaloka,PT Dua Tiga Cemerlang
+ESB-ARXXCU,COMPLETED,Training,Muhammad Rimaduddin,22/09/2026 10:00:00,22/09/2026,22/09/2026 9:56:02,22/09/2026 14:44:42,Vinna Maharani,Cherly Vitaloka,Kopi Sulfan
+ESB-DDSYRT,SEND EMAIL,Meeting,Jane Margareth Widjaja,22/09/2026 10:00:00,22/09/2026,22/09/2026 15:13:27,22/09/2026 17:51:30,Rezi Rizki Raedini,Rezi Rizki Raedini,PT. Oceanika Bahana
+ESB-RMJXJ8,CANCEL,Approach,Muhammad Rimaduddin,22/09/2026 10:00:00,22/09/2026,,,Irma Laura Siregar,David Prima Putra,SensoryXperience
+ESB-T2F8ET,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,22/09/2026 10:00:00,22/09/2026,22/09/2026 15:04:40,22/09/2026 17:12:12,Ayu Febrina Sianturi,Ayu Febrina Sianturi,Nadhira Napoleon & Durian Runtuh
+ESB-JZYYCB,COMPLETED,Retraining,M. Iriansyah Suhendar,22/09/2026 10:00:00,22/09/2026,22/09/2026 8:35:16,22/09/2026 10:38:33,Febri Dwi Putra,Airlangga Aziz,PT Bali Premium Mountain Coffee
+ESB-T7R4V7,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,22/09/2026 10:00:00,22/09/2026,22/09/2026 10:54:34,22/09/2026 11:14:23,Agung Setiawan,Agung Setiawan,Kelana Kopi Ternate
+ESB-YJJJT5,SEND EMAIL,Retraining,Jane Margareth Widjaja,22/09/2026 10:00:00,22/09/2026,22/09/2026 9:51:53,22/09/2026 12:01:51,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,Abon Surya
+ESB-EF8XYD,SEND EMAIL,Training,Muhammad Rimaduddin,22/09/2026 10:00:00,22/09/2026,22/09/2026 10:43:33,22/09/2026 15:23:20,Febrianto Puji Waskito,David Prima Putra,PT JAKARTA INDUSTRI PRIMA
+ESB-VDHN2N,SEND EMAIL,Training,Muhammad Rimaduddin,22/09/2026 10:00:00,22/09/2026,22/09/2026 11:00:38,22/09/2026 15:28:20,Nika Rullyta Khairunnisa,David Prima Putra,PT Juancha Trang Indonesia
+ESB-Z6TPN3,SEND EMAIL,Meeting,Muhammad Rimaduddin,22/09/2026 10:00:00,22/09/2026,22/09/2026 11:08:54,22/09/2026 11:27:29,Melati Cantika,Kiki Tri Utari,PT. Royal Inti Nusa
+ESB-8DVTXS,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,22/09/2026 10:00:00,22/09/2026,22/09/2026 10:07:26,22/09/2026 10:15:02,Airlangga Aziz,Airlangga Aziz,Rumantara
+ESB-GGR2JT,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,22/09/2026 10:00:00,22/09/2026,22/09/2026 14:00:58,22/09/2026 14:12:59,Irma Laura Siregar,David Prima Putra,SensoryXperience
+ESB-T8DTBN,DRAFT EMAIL,Training,Jane Margareth Widjaja,22/09/2026 10:00:00,22/09/2026,22/09/2026 9:36:16,22/09/2026 22:08:51,Noviyanti Nadia,Rezi Rizki Raedini,28 Coffee Indonesia
+ESB-2U4RN6,SEND EMAIL,Meeting,Muhammad Rimaduddin,22/09/2026 10:00:00,22/09/2026,22/09/2026 10:20:40,22/09/2026 16:20:38,Ardiansyah Hendardi,David Prima Putra,Padel Up
+ESB-57222S,SEND EMAIL,Training,Muhammad Rimaduddin,22/09/2026 10:00:00,22/09/2026,22/09/2026 10:13:16,22/09/2026 13:56:56,Fera Eka Waty N,Ayu Febrina Sianturi,Ayam Kalasan Puspasari
+ESB-Z9HGH5,SCHEDULED,Approach,Jane Margareth Widjaja,22/09/2026 10:30:00,22/09/2026,,,Pernandes Paindo Tua,Tri Hastuti Wulandari,Kyati Selera Adyatma
+ESB-SCZ3K9,SEND EMAIL,Babysit,Jane Margareth Widjaja,22/09/2026 11:00:00,22/09/2026,22/09/2026 10:52:10,22/09/2026 14:15:26,Syahrul Zulvan,Dika Anugerah Pratama,Serrae Place
+ESB-XUJQJ9,SEND EMAIL,Meeting,Jane Margareth Widjaja,22/09/2026 13:00:00,22/09/2026,22/09/2026 13:12:04,22/09/2026 15:45:27,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,Teh Jawa
+ESB-MN6UXY,SEND EMAIL,Training,Muhammad Rimaduddin,22/09/2026 13:00:00,22/09/2026,22/09/2026 13:01:23,22/09/2026 14:00:11,Bintang Guntoro,Cherly Vitaloka,Parisienne Bake Club
+ESB-62E8UT,CANCEL,Initial Meeting,Jane Margareth Widjaja,22/09/2026 13:00:00,22/09/2026,,,Abi Muhammad Alfarezy,Rezi Rizki Raedini,CV. Jaya Sejahtera Pangan
+ESB-P3AC3U,COMPLETED,Initial Meeting,Muhammad Rimaduddin,22/09/2026 13:00:00,22/09/2026,22/09/2026 13:49:22,22/09/2026 17:19:56,Kiki Tri Utari,Cherly Vitaloka,H&Y coffee roastery
+ESB-67GY5D,COMPLETED,Initial Meeting,Jane Margareth Widjaja,22/09/2026 13:00:00,22/09/2026,22/09/2026 9:04:34,22/09/2026 12:35:57,Imam Wicaksono,Dika Anugerah Pratama,CV Legenda Kuliner Nusantara
+ESB-Z9XGNT,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,22/09/2026 13:30:00,22/09/2026,22/09/2026 15:01:07,22/09/2026 15:21:30,Ardiansyah Hendardi,Kiki Tri Utari,PT BOGA OSKAR ECHO INDONESIA
+ESB-6JEP3U,COMPLETED,Babysit,Muhammad Rimaduddin,22/09/2026 14:00:00,22/09/2026,22/09/2026 13:57:05,22/09/2026 17:24:37,Fera Eka Waty N,Ayu Febrina Sianturi,Rumah Kedua
+ESB-4JVGWB,CANCEL,Initial Meeting,Muhammad Rimaduddin,22/09/2026 14:00:00,22/09/2026,,,Nika Rullyta Khairunnisa,David Prima Putra,Taru Ground
+ESB-75YYYA,COMPLETED,Retraining,Muhammad Rimaduddin,22/09/2026 14:00:00,22/09/2026,22/09/2026 14:09:32,22/09/2026 16:47:47,Yessi Tiyastanti,Kiki Tri Utari,Enakin
+ESB-84MRHT,SEND EMAIL,Training,Muhammad Rimaduddin,22/09/2026 14:00:00,22/09/2026,22/09/2026 16:03:20,22/09/2026 16:03:24,Syafiz Amiero,David Prima Putra,Padel Tap Indonesia PT
+ESB-VQJ7FR,COMPLETED,Initial Meeting,Muhammad Rimaduddin,22/09/2026 14:00:00,22/09/2026,22/09/2026 14:03:14,22/09/2026 14:39:56,David Prima Putra,David Prima Putra,MRI
+ESB-3AA72Q,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,22/09/2026 14:00:00,22/09/2026,22/09/2026 13:26:37,22/09/2026 14:17:44,Airlangga Aziz,Airlangga Aziz,Lestari Thrift & Cafe
+ESB-CFWKK4,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,22/09/2026 14:00:00,22/09/2026,22/09/2026 14:09:57,23/09/2026 11:00:44,Irma Laura Siregar,Cherly Vitaloka,HARTAKA
+ESB-2WRC6P,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,22/09/2026 14:00:00,22/09/2026,22/09/2026 14:33:24,22/09/2026 16:19:55,Margaretha Agrivani,Tri Hastuti Wulandari,PT MAKANAN LEZAT INDONESIA
+ESB-A6SJ3N,SEND EMAIL,Meeting,Muhammad Rimaduddin,22/09/2026 14:00:00,22/09/2026,22/09/2026 14:56:57,22/09/2026 15:50:12,Melati Cantika,Kiki Tri Utari,PT BOGA INTI CITA RASA
+ESB-S7KYQQ,SEND EMAIL,Retraining,M. Iriansyah Suhendar,23/09/2026 9:00:00,23/09/2026,23/09/2026 9:02:42,23/09/2026 11:25:52,Tegar Rangga,Agung Setiawan,Kopisena
+ESB-H7MYTT,SEND EMAIL,Approach,,23/09/2026 9:00:00,23/09/2026,23/09/2026 8:56:56,23/09/2026 11:03:34,Irma Laura Siregar,,Other
+ESB-BPH6EH,CANCEL,Initial Meeting,M. Iriansyah Suhendar,23/09/2026 9:00:00,23/09/2026,,,Agung Setiawan,Agung Setiawan,PT. Shumaique Rasa Nusantara
+ESB-963X7Z,SEND EMAIL,Retraining,Jane Margareth Widjaja,23/09/2026 10:00:00,23/09/2026,23/09/2026 14:32:14,23/09/2026 17:02:15,Kevin Reynaldi,Rezi Rizki Raedini,PT Bighot Restaurant Indonesia
+ESB-AFB5CT,SEND EMAIL,Meeting,Jane Margareth Widjaja,23/09/2026 10:00:00,23/09/2026,23/09/2026 18:32:06,23/09/2026 18:39:19,Abi Muhammad Alfarezy,Rezi Rizki Raedini,muh arifin ( sambal wiwitan)
+ESB-D8PX8N,SEND EMAIL,Training,Muhammad Rimaduddin,23/09/2026 10:00:00,23/09/2026,23/09/2026 10:36:58,23/09/2026 17:56:58,Cherly Vitaloka,Cherly Vitaloka,PT TUNAS MATCHA NUSANTARA
+ESB-G852VW,DRAFT EMAIL,Training,Jane Margareth Widjaja,23/09/2026 10:00:00,23/09/2026,23/09/2026 10:12:56,23/09/2026 14:11:31,Larezza Murda Gaharni,Tri Hastuti Wulandari,Shelley (The Coffee Room)
+ESB-GHZWCT,SEND EMAIL,Training,Muhammad Rimaduddin,23/09/2026 10:00:00,23/09/2026,23/09/2026 13:18:18,23/09/2026 17:51:18,Ardiansyah Hendardi,Kiki Tri Utari,Yong Bao House of Dimsum
+ESB-BZJN9F,COMPLETED,Retraining,M. Iriansyah Suhendar,23/09/2026 10:00:00,23/09/2026,23/09/2026 10:02:32,23/09/2026 13:19:57,Christopher Patrick Djuanda,Agung Setiawan,PT Boga Eka Putra
+ESB-CPYAH4,ON VISIT,Retraining,Jane Margareth Widjaja,23/09/2026 10:00:00,23/09/2026,23/09/2026 9:32:37,,Rezi Rizki Raedini,Rezi Rizki Raedini,PT. Holycow Danadipa Indonesia
+ESB-3DK8EP,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,23/09/2026 10:00:00,23/09/2026,23/09/2026 12:54:39,23/09/2026 16:56:33,Ayu Febrina Sianturi,Ayu Febrina Sianturi,Nadhira Napoleon & Durian Runtuh
+ESB-KRBV57,COMPLETED,Training,M. Iriansyah Suhendar,23/09/2026 10:00:00,23/09/2026,23/09/2026 9:53:18,23/09/2026 15:41:38,Febri Dwi Putra,Airlangga Aziz,CV Bagus Pub
+ESB-X9QR7M,SEND EMAIL,Retraining,Jane Margareth Widjaja,23/09/2026 10:00:00,23/09/2026,23/09/2026 10:02:01,23/09/2026 15:49:57,Teddi Ari Tama,Tri Hastuti Wulandari,Ollamaak! Asthara
+ESB-Q6MDWQ,COMPLETED,Retraining,Muhammad Rimaduddin,23/09/2026 10:00:00,23/09/2026,23/09/2026 10:11:55,23/09/2026 11:48:07,Yessi Tiyastanti,David Prima Putra,CV Butterpie Berkah Abadi
+ESB-YWFFZ6,SEND EMAIL,Training,Muhammad Rimaduddin,23/09/2026 10:00:00,23/09/2026,23/09/2026 10:03:33,23/09/2026 14:45:43,Fera Eka Waty N,Ayu Febrina Sianturi,Kopi Nusa
+ESB-FFXE59,DRAFT EMAIL,Training,Jane Margareth Widjaja,23/09/2026 10:00:00,23/09/2026,23/09/2026 14:24:54,23/09/2026 16:18:00,Noviyanti Nadia,Rezi Rizki Raedini,28 Coffee Indonesia
+ESB-RZ3AC4,SEND EMAIL,Meeting,M. Iriansyah Suhendar,23/09/2026 10:00:00,23/09/2026,23/09/2026 11:24:50,23/09/2026 11:45:57,Airlangga Aziz,Airlangga Aziz,PT Tumbuh Kearifan Nusantara
+ESB-3FWW2S,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,23/09/2026 10:00:00,23/09/2026,23/09/2026 21:47:02,23/09/2026 23:39:56,Margaretha Agrivani,Rezi Rizki Raedini,PT ALAM KOPI LOGISTIK
+ESB-W7JXNA,COMPLETED,Training,Muhammad Rimaduddin,23/09/2026 10:00:00,23/09/2026,23/09/2026 10:33:50,23/09/2026 12:16:40,Syafiz Amiero,David Prima Putra,PT PRIMA SEMESTA RASA
+ESB-7HVN8Q,COMPLETED,Retraining,Jane Margareth Widjaja,23/09/2026 10:00:00,23/09/2026,23/09/2026 9:42:51,23/09/2026 14:10:09,Yoga Astita Ade,Rezi Rizki Raedini,PT. Holycow Mitra Indonesia
+ESB-UBZ3ND,DRAFT EMAIL,Meeting,M. Iriansyah Suhendar,23/09/2026 10:00:00,23/09/2026,24/09/2026 10:12:22,24/09/2026 10:13:04,Anisa Lucky,Agung Setiawan,The Lifestyle Hotels
+ESB-4TUK26,COMPLETED,Training,Muhammad Rimaduddin,23/09/2026 10:00:00,23/09/2026,23/09/2026 10:11:16,23/09/2026 15:27:40,Vinna Maharani,Cherly Vitaloka,PT MAMAMO BOGA RESEP
+ESB-XN7G53,COMPLETED,Initial Meeting,Muhammad Rimaduddin,23/09/2026 11:00:00,23/09/2026,23/09/2026 11:16:25,23/09/2026 17:23:36,Kiki Tri Utari,Kiki Tri Utari,PT Laras Varia Arta
+ESB-GZKWRT,COMPLETED,Training,M. Iriansyah Suhendar,23/09/2026 13:00:00,23/09/2026,23/09/2026 15:29:29,24/09/2026 10:08:28,Yayang Putri Suwondo,Agung Setiawan,Kedai Tanah Djawa
+ESB-8HHTSJ,SEND EMAIL,Meeting,Jane Margareth Widjaja,23/09/2026 13:00:00,23/09/2026,23/09/2026 13:56:46,23/09/2026 17:51:41,Dika Anugerah Pratama,Dika Anugerah Pratama,SL-13
+ESB-STGFZ3,COMPLETED,Retraining,Muhammad Rimaduddin,23/09/2026 13:00:00,23/09/2026,23/09/2026 13:49:08,09/10/2026 16:42:54,Nika Rullyta Khairunnisa,David Prima Putra,PT Mantewe Graha Properti
+ESB-A935DU,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,23/09/2026 13:30:00,23/09/2026,23/09/2026 13:47:34,23/09/2026 17:22:13,Cherly Vitaloka,Cherly Vitaloka,CV KOPI JAM KERJA (Kopi Jam Kerja)
+ESB-XVMAFF,DRAFT EMAIL,Training,M. Iriansyah Suhendar,23/09/2026 14:00:00,23/09/2026,23/09/2026 14:19:53,23/09/2026 15:16:53,Risky Ramadhan,Agung Setiawan,Degan ho
+ESB-2C977W,DRAFT EMAIL,Training,Jane Margareth Widjaja,23/09/2026 14:00:00,23/09/2026,23/09/2026 21:46:57,23/09/2026 23:39:48,Margaretha Agrivani,Tri Hastuti Wulandari,PT Shokyu Cahaya Fukutsu
+ESB-JBBY69,CANCEL,Retraining,M. Iriansyah Suhendar,23/09/2026 14:00:00,23/09/2026,,,Febri Dwi Putra,Airlangga Aziz,Sepakat Morrobati Gede
+ESB-4NMY8P,COMPLETED,Retraining,M. Iriansyah Suhendar,23/09/2026 14:00:00,23/09/2026,23/09/2026 12:05:12,23/09/2026 14:44:07,Tegar Rangga,Agung Setiawan,CV. Fit Sumber Berkat
+ESB-99RKGP,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,23/09/2026 14:00:00,23/09/2026,23/09/2026 14:01:50,23/09/2026 16:36:29,Bintang Guntoro,Tri Hastuti Wulandari,Puro Coffee
+ESB-UKB32U,SEND EMAIL,Approach,,23/09/2026 14:00:00,23/09/2026,23/09/2026 14:11:52,25/09/2026 10:03:43,Irma Laura Siregar,,Other
+ESB-WEZWZQ,SCHEDULED,Approach,,23/09/2026 14:00:00,23/09/2026,,,Pernandes Paindo Tua,,Other
+ESB-6FFJXD,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,23/09/2026 14:00:00,23/09/2026,23/09/2026 14:15:20,23/09/2026 15:07:50,Agung Setiawan,Agung Setiawan,PT. Hedon Sumber Artha
+ESB-VZXYVC,CANCEL,Training,Muhammad Rimaduddin,23/09/2026 14:00:00,23/09/2026,,,Nurul Huda,Kiki Tri Utari,PT Lima Pilar Berkah - Cibiuk Resto -
+ESB-3KPNAG,SEND EMAIL,Training,Muhammad Rimaduddin,23/09/2026 14:00:00,23/09/2026,23/09/2026 13:42:09,24/09/2026 16:43:02,Yoan Fefi Berliani,David Prima Putra,PT. Roti Segar Mendunia
+ESB-M4HM46,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,23/09/2026 14:00:00,23/09/2026,23/09/2026 15:21:55,23/09/2026 15:27:14,Syahrul Zulvan,Dika Anugerah Pratama,Ronde Ny Ong
+ESB-TQM6CB,COMPLETED,Training,Muhammad Rimaduddin,23/09/2026 14:00:00,23/09/2026,23/09/2026 14:05:24,23/09/2026 17:37:40,Rafi Mahasin,Kiki Tri Utari,Cv. Sahabat Suka Bakmi
+ESB-KPD2NF,SEND EMAIL,Meeting,Muhammad Rimaduddin,23/09/2026 14:00:00,23/09/2026,23/09/2026 14:05:58,23/09/2026 15:39:01,Nurul Huda,David Prima Putra,Warung Lambak
+ESB-449KWT,COMPLETED,Meeting,M. Iriansyah Suhendar,23/09/2026 14:00:00,23/09/2026,23/09/2026 12:55:59,23/09/2026 15:02:58,Febri Dwi Putra,Airlangga Aziz,PT. Sana Oka Persada - Sundari Beach Resort
+ESB-ZFGS6M,DRAFT EMAIL,Initial Meeting,,23/09/2026 15:00:00,23/09/2026,23/09/2026 16:10:33,23/09/2026 17:05:52,Noviyanti Nadia,,CV. Jaya Sejahtera Pangan
+ESB-HCB7P7,SEND EMAIL,Training,Jane Margareth Widjaja,23/09/2026 16:00:00,23/09/2026,23/09/2026 16:03:00,23/09/2026 17:14:30,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,PT Generasi Nutrisi Emas Indonesia
+ESB-DEQKHM,DRAFT EMAIL,Approach,,23/09/2026 17:00:00,23/09/2026,23/09/2026 17:06:11,24/09/2026 8:18:28,Noviyanti Nadia,,Other
+ESB-H3FGNU,SEND EMAIL,Training,Muhammad Rimaduddin,24/09/2026 9:00:00,24/09/2026,24/09/2026 10:19:34,24/09/2026 18:13:21,Cherly Vitaloka,Cherly Vitaloka,PT TUNAS MATCHA NUSANTARA
+ESB-YXNBYP,SEND EMAIL,Retraining,Jane Margareth Widjaja,24/09/2026 9:00:00,24/09/2026,24/09/2026 9:00:37,24/09/2026 13:13:12,Syahrul Zulvan,Dika Anugerah Pratama,Akhtara Eatery & Sky View
+ESB-MSWWHS,DRAFT EMAIL,Event,,24/09/2026 9:00:00,24/09/2026,24/09/2026 8:18:48,24/09/2026 19:03:55,Noviyanti Nadia,,ESB Core Test Company
+ESB-P85HA5,COMPLETED,Initial Meeting,Jane Margareth Widjaja,24/09/2026 9:00:00,24/09/2026,24/09/2026 9:24:41,24/09/2026 10:07:53,Jane Margareth Widjaja,Tri Hastuti Wulandari,Revolusi Rasa Global Sdn. Bhd.
+ESB-K9TNXU,SEND EMAIL,Retraining,Jane Margareth Widjaja,24/09/2026 10:00:00,24/09/2026,24/09/2026 9:54:25,24/09/2026 16:37:26,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,Elder Group
+ESB-AFU795,SEND EMAIL,Meeting,Jane Margareth Widjaja,24/09/2026 10:00:00,24/09/2026,24/09/2026 9:38:41,24/09/2026 13:34:43,Teddi Ari Tama,Tri Hastuti Wulandari,PT Emados Kebab Indonesia
+ESB-ZH2Q8U,SEND EMAIL,Training,M. Iriansyah Suhendar,24/09/2026 10:00:00,24/09/2026,24/09/2026 10:13:10,24/09/2026 16:13:52,Anisa Lucky,Agung Setiawan,Drama
+ESB-MBQWVD,COMPLETED,Retraining,M. Iriansyah Suhendar,24/09/2026 10:00:00,24/09/2026,24/09/2026 10:13:47,24/09/2026 14:58:46,Christopher Patrick Djuanda,Agung Setiawan,PT. Karya Sekawan Sentosa
+ESB-YZ3Y6C,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,24/09/2026 10:00:00,24/09/2026,25/09/2026 22:18:55,25/09/2026 22:19:54,Margaretha Agrivani,Rezi Rizki Raedini,PT ALAM KOPI LOGISTIK
+ESB-TAUBW3,COMPLETED,Babysit,Muhammad Rimaduddin,24/09/2026 10:00:00,24/09/2026,24/09/2026 9:54:58,24/09/2026 12:57:37,Fera Eka Waty N,Ayu Febrina Sianturi,PT. Nagara Rasa Nusantara
+ESB-E2Q3FA,COMPLETED,Initial Meeting,Muhammad Rimaduddin,24/09/2026 10:00:00,24/09/2026,24/09/2026 10:21:47,24/09/2026 11:59:29,Kiki Tri Utari,Kiki Tri Utari,Maruichi
+ESB-SCGARR,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,24/09/2026 10:00:00,24/09/2026,24/09/2026 12:05:19,24/09/2026 12:22:45,Agung Setiawan,Agung Setiawan,PT. Kenyang Bersama Sehat Bahagia
+ESB-3TPWKD,SEND EMAIL,Training,Muhammad Rimaduddin,24/09/2026 10:00:00,24/09/2026,24/09/2026 10:04:32,24/09/2026 16:35:12,Yoan Fefi Berliani,Kiki Tri Utari,PT Darmaga Sunda Maju Bersama
+ESB-XG37XQ,DRAFT EMAIL,Training,M. Iriansyah Suhendar,24/09/2026 10:00:00,24/09/2026,24/09/2026 10:11:54,24/09/2026 11:38:16,Risky Ramadhan,Agung Setiawan,CV Aneka Rasa Sukses
+ESB-PA84DN,SEND EMAIL,Retraining,Jane Margareth Widjaja,24/09/2026 10:00:00,24/09/2026,24/09/2026 23:17:07,24/09/2026 23:17:32,Kevin Reynaldi,Rezi Rizki Raedini,PT Bighot Restaurant Indonesia
+ESB-HNWGXX,SEND EMAIL,Retraining,M. Iriansyah Suhendar,24/09/2026 10:00:00,24/09/2026,24/09/2026 9:00:22,24/09/2026 12:23:49,Alian Alfin Nuha,Airlangga Aziz,PT. Bundaran Renon Agroboga
+ESB-UPMGRB,COMPLETED,Retraining,M. Iriansyah Suhendar,24/09/2026 10:00:00,24/09/2026,24/09/2026 8:56:14,24/09/2026 17:09:07,Febri Dwi Putra,Airlangga Aziz,PT Mutiara Timbis Sejahtera
+ESB-VDZM9E,SEND EMAIL,Training,Muhammad Rimaduddin,24/09/2026 10:00:00,24/09/2026,24/09/2026 14:38:43,24/09/2026 16:26:17,Ayu Febrina Sianturi,Ayu Febrina Sianturi,Nadhira Napoleon & Durian Runtuh
+ESB-44QY66,COMPLETED,Meeting,Muhammad Rimaduddin,24/09/2026 10:00:00,24/09/2026,24/09/2026 10:10:23,09/10/2026 13:45:11,David Prima Putra,David Prima Putra,PT. Dcika Prima Mahkota
+ESB-VFVF4K,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,24/09/2026 10:00:00,24/09/2026,24/09/2026 9:03:58,24/09/2026 10:08:27,Tegar Rangga,Agung Setiawan,PT Aisyah Putri Andalan
+ESB-3TD2GG,SEND EMAIL,Retraining,Jane Margareth Widjaja,24/09/2026 10:00:00,24/09/2026,24/09/2026 9:54:17,24/09/2026 17:10:36,Bintang Guntoro,Tri Hastuti Wulandari,PT. Terasultan Kuliner Nusantara
+ESB-2TRNCJ,SCHEDULED,Meeting,Jane Margareth Widjaja,24/09/2026 10:00:00,24/09/2026,,,Rezi Rizki Raedini,Rezi Rizki Raedini,Buana Bakery & Coffee
+ESB-528BHE,COMPLETED,Retraining,Muhammad Rimaduddin,24/09/2026 10:00:00,24/09/2026,24/09/2026 10:19:37,24/09/2026 13:54:38,Nurul Huda,Kiki Tri Utari,PT. KARSA PANGAN BUANA
+ESB-E3WDVX,CANCEL,Meeting,Jane Margareth Widjaja,24/09/2026 10:00:00,24/09/2026,24/09/2026 13:15:31,24/09/2026 19:32:42,Kevin Reynaldi,Rezi Rizki Raedini,PT Bighot Restaurant Indonesia
+ESB-JY56YX,SCHEDULED,Approach,,24/09/2026 10:30:00,24/09/2026,,,Pernandes Paindo Tua,,PT Hoki Berkat Jaya
+ESB-URET6D,SEND EMAIL,Training,Jane Margareth Widjaja,24/09/2026 10:30:00,24/09/2026,24/09/2026 10:41:20,24/09/2026 15:29:07,Fauzi Yuda Ariyanto,Dika Anugerah Pratama,Cellar
+ESB-JFT9GP,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,24/09/2026 11:00:00,24/09/2026,24/09/2026 9:38:07,24/09/2026 12:17:38,Airlangga Aziz,Airlangga Aziz,CV Visi Esa Dana
+ESB-975HDR,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,24/09/2026 13:00:00,24/09/2026,24/09/2026 12:58:06,24/09/2026 14:43:54,Imam Wicaksono,Dika Anugerah Pratama,PT Sinar boga Nusantara
+ESB-TQBESM,SEND EMAIL,Meeting,Muhammad Rimaduddin,24/09/2026 13:00:00,24/09/2026,24/09/2026 14:13:47,24/09/2026 17:50:03,Syafiz Amiero,David Prima Putra,PT Ootoya Indonesia
+ESB-69E6W9,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,24/09/2026 14:00:00,24/09/2026,24/09/2026 13:11:31,24/09/2026 14:40:32,Tegar Rangga,Agung Setiawan,CV. Kreasi Kopi Indonesia
+ESB-JB4VY3,CANCEL,Approach,,24/09/2026 14:00:00,24/09/2026,,,Irma Laura Siregar,,PT. Sentra Gastronomi Indonesia
+ESB-E8ZF7F,SEND EMAIL,Training,Muhammad Rimaduddin,24/09/2026 14:00:00,24/09/2026,24/09/2026 13:59:36,24/09/2026 15:58:59,Nurul Huda,Kiki Tri Utari,PT Lima Pilar Berkah
+ESB-9SC2NA,DRAFT EMAIL,Training,Jane Margareth Widjaja,24/09/2026 14:00:00,24/09/2026,24/09/2026 15:39:48,25/09/2026 0:03:34,Margaretha Agrivani,Tri Hastuti Wulandari,Padel Sport Jakarta
+ESB-Q6ACZ8,DRAFT EMAIL,Retraining,M. Iriansyah Suhendar,24/09/2026 14:00:00,24/09/2026,24/09/2026 13:55:37,24/09/2026 21:00:51,Risky Ramadhan,Agung Setiawan,Alas Hajo
+ESB-48VFXQ,SEND EMAIL,Approach,,24/09/2026 14:00:00,24/09/2026,25/09/2026 10:04:40,25/09/2026 10:58:15,Irma Laura Siregar,,Other
+ESB-PQCJXH,COMPLETED,Initial Meeting,Muhammad Rimaduddin,24/09/2026 14:00:00,24/09/2026,24/09/2026 14:17:02,24/09/2026 15:40:54,Kiki Tri Utari,David Prima Putra,PT Nduo Catering Management
+ESB-GP63F8,SEND EMAIL,Meeting,Muhammad Rimaduddin,24/09/2026 14:00:00,24/09/2026,24/09/2026 14:03:53,24/09/2026 17:44:38,Rafi Mahasin,Kiki Tri Utari,PT ESTELER TUJUH TUJUH
+ESB-7RCQ2Y,COMPLETED,Meeting,M. Iriansyah Suhendar,24/09/2026 14:00:00,24/09/2026,24/09/2026 17:09:16,24/09/2026 19:30:06,Febri Dwi Putra,Airlangga Aziz,PT. Suku Matahari Terbenam (SUKU Beach Club)
+ESB-MFTRJ8,COMPLETED,Meeting,M. Iriansyah Suhendar,24/09/2026 14:00:00,24/09/2026,24/09/2026 14:01:34,24/09/2026 16:40:14,Yayang Putri Suwondo,Agung Setiawan,PT Dharma Putra Airlangga
+ESB-579Q3C,COMPLETED,Meeting,Muhammad Rimaduddin,24/09/2026 14:00:00,24/09/2026,24/09/2026 14:33:31,24/09/2026 15:00:03,Yessi Tiyastanti,David Prima Putra,Teras Bumi
+ESB-XNWPKA,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,24/09/2026 15:00:00,24/09/2026,24/09/2026 14:59:42,24/09/2026 16:54:34,Syahrul Zulvan,Dika Anugerah Pratama,Sensassy
+ESB-P6RZF9,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,25/09/2026 8:00:00,25/09/2026,25/09/2026 11:26:48,25/09/2026 11:27:57,Tegar Rangga,Agung Setiawan,PT. Shumaique Rasa Nusantara
+ESB-7H35D9,CANCEL,Initial Meeting,Jane Margareth Widjaja,25/09/2026 8:30:00,25/09/2026,,,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,MIE CUWAN
+ESB-QRBHAR,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,25/09/2026 9:00:00,25/09/2026,25/09/2026 8:27:00,25/09/2026 13:05:40,Ardiansyah Hendardi,David Prima Putra,CV. Boga Rejeki Indah
+ESB-YW84HU,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,25/09/2026 9:30:00,25/09/2026,25/09/2026 10:44:25,25/09/2026 15:44:48,Rafi Mahasin,Rezi Rizki Raedini,PT Sumber Olahan Lestari
+ESB-PA4TQ8,COMPLETED,Meeting,Muhammad Rimaduddin,25/09/2026 10:00:00,25/09/2026,25/09/2026 10:03:29,25/09/2026 13:48:49,Cherly Vitaloka,Kiki Tri Utari,CV Golden Agam Sampatti
+ESB-NASY5F,SEND EMAIL,Meeting,Jane Margareth Widjaja,25/09/2026 10:00:00,25/09/2026,25/09/2026 19:09:44,25/09/2026 19:19:21,Abi Muhammad Alfarezy,Tri Hastuti Wulandari,Warmindo Konco Lawas
+ESB-7PTYJU,COMPLETED,Training,Muhammad Rimaduddin,25/09/2026 10:00:00,25/09/2026,25/09/2026 11:54:47,25/09/2026 18:08:45,Melati Cantika,Kiki Tri Utari,PT PANTAI MUTIARA JETSKI
+ESB-7FVCE3,COMPLETED,Initial Meeting,Muhammad Rimaduddin,25/09/2026 10:00:00,25/09/2026,25/09/2026 10:08:48,25/09/2026 13:57:49,Nika Rullyta Khairunnisa,David Prima Putra,Panna Hospitality Group
+ESB-UTPKNB,SEND EMAIL,Retraining,Jane Margareth Widjaja,25/09/2026 10:00:00,25/09/2026,25/09/2026 10:16:45,25/09/2026 16:27:07,Bintang Guntoro,Tri Hastuti Wulandari,PT. Diana Boga Gemilang
+ESB-J865Q2,COMPLETED,Retraining,M. Iriansyah Suhendar,25/09/2026 10:00:00,25/09/2026,25/09/2026 10:28:58,25/09/2026 14:05:03,Febri Dwi Putra,Airlangga Aziz,PT Mezcal Concept Bali
+ESB-5V2ZGA,DRAFT EMAIL,Training,Jane Margareth Widjaja,25/09/2026 10:00:00,25/09/2026,25/09/2026 9:12:07,25/09/2026 13:36:53,Noviyanti Nadia,Rezi Rizki Raedini,Moeara Eatery & Hub
+ESB-GJPK7R,COMPLETED,Babysit,Muhammad Rimaduddin,25/09/2026 10:00:00,25/09/2026,25/09/2026 10:03:29,25/09/2026 13:42:15,Fera Eka Waty N,Ayu Febrina Sianturi,Bibik Sayur Resto
+ESB-6PZ8V9,CANCEL,Retraining,Jane Margareth Widjaja,25/09/2026 10:00:00,25/09/2026,,,Abi Muhammad Alfarezy,Rezi Rizki Raedini,CV. Hobi Yellow Dokk Indonesia
+ESB-EYN3X4,DRAFT EMAIL,Training,Jane Margareth Widjaja,25/09/2026 10:00:00,25/09/2026,25/09/2026 14:07:44,25/09/2026 22:19:22,Margaretha Agrivani,Tri Hastuti Wulandari,Padel Sport Jakarta
+ESB-UUTDME,SEND EMAIL,Approach,,25/09/2026 10:00:00,25/09/2026,25/09/2026 10:04:45,25/09/2026 15:08:45,Irma Laura Siregar,,Other
+ESB-4E4SCT,DRAFT EMAIL,Meeting,M. Iriansyah Suhendar,25/09/2026 10:00:00,25/09/2026,25/09/2026 10:15:26,25/09/2026 12:08:53,Anisa Lucky,Agung Setiawan,PT Harris Arthur Hedar
+ESB-WNB6ZZ,COMPLETED,Meeting,Muhammad Rimaduddin,25/09/2026 10:00:00,25/09/2026,25/09/2026 10:03:05,25/09/2026 12:53:33,Yessi Tiyastanti,David Prima Putra,Burgerman
+ESB-HQGJKC,COMPLETED,Training,Muhammad Rimaduddin,25/09/2026 10:00:00,25/09/2026,25/09/2026 9:52:42,25/09/2026 10:55:44,Vinna Maharani,Cherly Vitaloka,Gia Shawarma & Ayam Goreng
+ESB-7KGPEH,SEND EMAIL,Meeting,Jane Margareth Widjaja,25/09/2026 10:00:00,25/09/2026,25/09/2026 10:28:57,25/09/2026 10:32:07,Rezi Rizki Raedini,Rezi Rizki Raedini,PT. Musi Lestari Indo Makmur (Gyukaku Palembang)
+ESB-FWBG67,CANCEL,Retraining,Muhammad Rimaduddin,25/09/2026 10:00:00,25/09/2026,,,Vinna Maharani,Cherly Vitaloka,PT. Nutrisi Unggul Rasa Energi - Nouree
+ESB-VUWF2C,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,25/09/2026 10:00:00,25/09/2026,25/09/2026 9:18:07,25/09/2026 15:06:14,Yoan Fefi Berliani,Cherly Vitaloka,Bite and Bond
+ESB-TS9E3W,COMPLETED,Training,Jane Margareth Widjaja,25/09/2026 10:00:00,25/09/2026,25/09/2026 10:05:16,25/09/2026 15:38:51,Imam Wicaksono,Dika Anugerah Pratama,Resep Kampungan
+ESB-W9DMPU,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,25/09/2026 10:30:00,25/09/2026,25/09/2026 9:20:41,25/09/2026 11:10:10,Airlangga Aziz,Airlangga Aziz,PT. AMERTA LIFE BALI
+ESB-5F9H4G,COMPLETED,Training,M. Iriansyah Suhendar,25/09/2026 12:00:00,25/09/2026,25/09/2026 13:26:12,25/09/2026 14:01:07,Yayang Putri Suwondo,Agung Setiawan,PT Kura Kaya Raya
+ESB-TCK7VN,DRAFT EMAIL,Initial Meeting,M. Iriansyah Suhendar,25/09/2026 13:00:00,25/09/2026,25/09/2026 13:37:08,25/09/2026 14:29:09,Anisa Lucky,Agung Setiawan,PT. Berkat Niaga Rukun
+ESB-RUWQHJ,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,25/09/2026 13:00:00,25/09/2026,25/09/2026 12:09:37,25/09/2026 14:43:38,Tegar Rangga,Agung Setiawan,PT. Kaori Berkah Rasa
+ESB-77G5GG,COMPLETED,Retraining,Jane Margareth Widjaja,25/09/2026 13:00:00,25/09/2026,25/09/2026 12:51:58,25/09/2026 16:41:44,Yoga Astita Ade,Rezi Rizki Raedini,Raden Dirgantara Naradipa
+ESB-3J5842,COMPLETED,Training,Muhammad Rimaduddin,25/09/2026 13:00:00,25/09/2026,25/09/2026 13:58:33,25/09/2026 17:23:51,Nika Rullyta Khairunnisa,David Prima Putra,PT Hei Segar Indonesia
+ESB-ZVYEYE,SEND EMAIL,Meeting,Jane Margareth Widjaja,25/09/2026 13:00:00,25/09/2026,25/09/2026 16:08:45,25/09/2026 18:21:14,Dika Anugerah Pratama,Dika Anugerah Pratama,Slari Coffee
+ESB-MYKZ6M,SEND EMAIL,Approach,M. Iriansyah Suhendar,25/09/2026 13:00:00,25/09/2026,25/09/2026 15:09:00,25/09/2026 15:11:17,Irma Laura Siregar,Agung Setiawan,PT. Amakute Karya Bersama
+ESB-WYX37V,COMPLETED,Meeting,Muhammad Rimaduddin,25/09/2026 13:30:00,25/09/2026,25/09/2026 15:09:22,25/09/2026 15:09:26,Syafiz Amiero,David Prima Putra,PT. BOGA ABADI PRIMA
+ESB-RWHKEF,CANCEL,Retraining,Muhammad Rimaduddin,25/09/2026 14:00:00,25/09/2026,,,Rafi Mahasin,Kiki Tri Utari,PT Yuire Ekajaya Sukses
+ESB-WVE3P6,DRAFT EMAIL,Meeting,M. Iriansyah Suhendar,25/09/2026 14:00:00,25/09/2026,25/09/2026 15:11:43,25/09/2026 19:52:16,Risky Ramadhan,Agung Setiawan,Kulino Roso
+ESB-BP4K5S,COMPLETED,Meeting,M. Iriansyah Suhendar,25/09/2026 14:00:00,25/09/2026,25/09/2026 16:34:33,,Yayang Putri Suwondo,Agung Setiawan,CV Nalini Suvarna Bavarha
+ESB-4HMUWQ,SEND EMAIL,Meeting,Jane Margareth Widjaja,25/09/2026 14:00:00,25/09/2026,25/09/2026 18:11:54,25/09/2026 18:47:53,Rezi Rizki Raedini,Rezi Rizki Raedini,PT. Holycow Danadipa Indonesia
+ESB-ZF8EJP,COMPLETED,Training,M. Iriansyah Suhendar,25/09/2026 14:00:00,25/09/2026,25/09/2026 13:56:42,25/09/2026 15:50:04,Christopher Patrick Djuanda,Agung Setiawan,Room 11
+ESB-FVKU2K,CANCEL,Meeting,Muhammad Rimaduddin,25/09/2026 14:00:00,25/09/2026,,,Cherly Vitaloka,Kiki Tri Utari,PT Jalan Cerah Tercipta -
+ESB-MDCRT7,COMPLETED,Training,M. Iriansyah Suhendar,25/09/2026 14:00:00,25/09/2026,25/09/2026 12:51:53,25/09/2026 15:37:20,Airlangga Aziz,Airlangga Aziz,JIA Coffee
+ESB-NJSND2,SEND EMAIL,Training,Muhammad Rimaduddin,25/09/2026 14:00:00,25/09/2026,25/09/2026 14:06:46,25/09/2026 16:29:51,Yessi Tiyastanti,David Prima Putra,Minuta Resto & Eatery
+ESB-RCVCEJ,COMPLETED,Initial Meeting,Muhammad Rimaduddin,25/09/2026 14:00:00,25/09/2026,25/09/2026 13:54:36,01/10/2026 10:30:56,Ardiansyah Hendardi,Kiki Tri Utari,PT. Panca Abadi Nan Jaya
+ESB-D86NE7,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,25/09/2026 14:00:00,25/09/2026,25/09/2026 12:54:45,25/09/2026 16:43:56,Alian Alfin Nuha,Airlangga Aziz,PT RJF GLOBAL GROUP
+ESB-SZ38J9,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,25/09/2026 14:00:00,25/09/2026,25/09/2026 14:35:08,25/09/2026 15:45:14,Agung Setiawan,Agung Setiawan,Resto JMT
+ESB-X7BBQW,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,25/09/2026 14:00:00,25/09/2026,25/09/2026 13:31:18,28/09/2026 14:37:47,Tri Hastuti Wulandari,Tri Hastuti Wulandari,Matcha Na Tewe
+ESB-KXNPK4,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,25/09/2026 15:00:00,25/09/2026,25/09/2026 16:02:15,25/09/2026 17:31:06,Ayu Febrina Sianturi,Ayu Febrina Sianturi,Kede Kopi Sedya
+ESB-C64J54,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,25/09/2026 15:00:00,25/09/2026,25/09/2026 13:36:44,26/09/2026 9:13:35,Noviyanti Nadia,Rezi Rizki Raedini,CV. Nusantara Asia Sukses
+ESB-XFZPHD,DRAFT EMAIL,Training,Jane Margareth Widjaja,26/09/2026 10:00:00,26/09/2026,26/09/2026 9:13:42,28/09/2026 15:53:04,Noviyanti Nadia,Rezi Rizki Raedini,Moeara Eatery & Hub
+ESB-44PTVV,CANCEL,Training,Muhammad Rimaduddin,27/09/2026 10:00:00,27/09/2026,,,Ayu Febrina Sianturi,Ayu Febrina Sianturi,CV Menes Kartini
+ESB-796NMG,SEND EMAIL,Retraining,Jane Margareth Widjaja,28/09/2026 9:30:00,28/09/2026,28/09/2026 9:54:45,28/09/2026 12:11:25,Bintang Guntoro,Tri Hastuti Wulandari,PT Kopi Putra Bangsa (Wisma Mulia II - Franchise)
+ESB-A9ZEUA,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,28/09/2026 10:00:00,28/09/2026,28/09/2026 10:01:49,28/09/2026 11:29:33,Larezza Murda Gaharni,Rezi Rizki Raedini,DOREI
+ESB-2WT2J5,COMPLETED,Retraining,M. Iriansyah Suhendar,28/09/2026 10:00:00,28/09/2026,28/09/2026 8:55:27,28/09/2026 12:01:37,Febri Dwi Putra,Airlangga Aziz,PT JEJAK MENGUKIR LANGIT
+ESB-XR25K7,SEND EMAIL,Retraining,M. Iriansyah Suhendar,28/09/2026 10:00:00,28/09/2026,28/09/2026 10:00:32,28/09/2026 13:00:33,Yayang Putri Suwondo,Agung Setiawan,Noctra Hookah Lounge
+ESB-MN27YM,COMPLETED,Retraining,Jane Margareth Widjaja,28/09/2026 10:00:00,28/09/2026,28/09/2026 10:02:32,28/09/2026 12:18:31,Teddi Ari Tama,Tri Hastuti Wulandari,Malacca Toast Rawamangun
+ESB-AJVHZX,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,28/09/2026 10:00:00,28/09/2026,28/09/2026 10:18:12,28/09/2026 12:14:11,David Prima Putra,David Prima Putra,PT Belio Inti Group
+ESB-RHS2T5,SEND EMAIL,Training,Muhammad Rimaduddin,28/09/2026 10:00:00,28/09/2026,28/09/2026 10:05:28,28/09/2026 21:51:58,Cherly Vitaloka,Cherly Vitaloka,PT TUNAS MATCHA NUSANTARA
+ESB-BUMAFP,COMPLETED,Training,Muhammad Rimaduddin,28/09/2026 10:00:00,28/09/2026,28/09/2026 10:47:23,28/09/2026 12:44:26,Yessi Tiyastanti,David Prima Putra,JEEDA COFFEE
+ESB-UXMMQ5,DRAFT EMAIL,Meeting,,28/09/2026 10:00:00,28/09/2026,28/09/2026 10:53:20,28/09/2026 13:40:37,Anisa Lucky,Anisa Lucky,PT Harris Arthur Hedar
+ESB-R2HZA8,COMPLETED,Babysit,Muhammad Rimaduddin,28/09/2026 10:00:00,28/09/2026,28/09/2026 9:51:47,28/09/2026 12:18:50,Fera Eka Waty N,Ayu Febrina Sianturi,Titik Ramai
+ESB-6HECNC,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,28/09/2026 10:00:00,28/09/2026,28/09/2026 15:53:11,28/09/2026 17:33:29,Noviyanti Nadia,Rezi Rizki Raedini,Laris Coffee
+ESB-HWS6EX,SEND EMAIL,Training,M. Iriansyah Suhendar,28/09/2026 10:00:00,28/09/2026,28/09/2026 9:00:37,28/09/2026 12:12:34,Alian Alfin Nuha,Airlangga Aziz,PT ALCHEMY
+ESB-MMPCJU,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,28/09/2026 10:00:00,28/09/2026,28/09/2026 9:54:34,28/09/2026 14:49:38,Irma Laura Siregar,Rezi Rizki Raedini,Sanseviera & Co
+ESB-HNW8ZD,DRAFT EMAIL,Initial Meeting,,28/09/2026 10:00:00,28/09/2026,28/09/2026 22:03:55,28/09/2026 23:38:36,Margaretha Agrivani,,Jin Grill & Nabe Baywalk Mall
+ESB-K8NAU4,COMPLETED,Retraining,M. Iriansyah Suhendar,28/09/2026 10:00:00,28/09/2026,28/09/2026 9:10:52,28/09/2026 11:10:12,Airlangga Aziz,Airlangga Aziz,NEXX
+ESB-GW88HJ,COMPLETED,Initial Meeting,Jane Margareth Widjaja,28/09/2026 10:00:00,28/09/2026,28/09/2026 10:01:08,28/09/2026 12:19:01,Yoga Astita Ade,Rezi Rizki Raedini,PT. UNGGUL NIAGA SELARAS
+ESB-2NN59S,SEND EMAIL,Training,Muhammad Rimaduddin,28/09/2026 10:00:00,28/09/2026,28/09/2026 12:17:08,28/09/2026 16:35:01,Ayu Febrina Sianturi,Ayu Febrina Sianturi,CV Menes Kartini
+ESB-P7TZ2B,COMPLETED,Training,Muhammad Rimaduddin,28/09/2026 10:00:00,28/09/2026,28/09/2026 10:58:43,28/09/2026 16:35:24,Melati Cantika,Cherly Vitaloka,PT Nusantara Gastronomi Lestari
+ESB-99CH9T,SEND EMAIL,Initial Meeting,,28/09/2026 10:00:00,28/09/2026,28/09/2026 9:59:18,28/09/2026 14:01:38,Cherly Vitaloka,Cherly Vitaloka,PT Sanghiang Perkasa (Hydro Coco)
+ESB-TEKZB9,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,28/09/2026 10:00:00,28/09/2026,28/09/2026 21:54:07,28/09/2026 22:34:04,Tri Hastuti Wulandari,Cherly Vitaloka,PT Kairos Adirasa Kencana
+ESB-U5AZ92,COMPLETED,Training,Muhammad Rimaduddin,28/09/2026 10:00:00,28/09/2026,28/09/2026 12:10:01,01/10/2026 10:29:12,Ardiansyah Hendardi,Kiki Tri Utari,PT. Panca Abadi Nan Jaya
+ESB-D99GT3,CANCEL,Initial Meeting,Jane Margareth Widjaja,28/09/2026 11:00:00,28/09/2026,,,Rezi Rizki Raedini,Rezi Rizki Raedini,Bebek Becek
+ESB-GHGQEX,COMPLETED,Training,M. Iriansyah Suhendar,28/09/2026 11:00:00,28/09/2026,28/09/2026 17:54:37,28/09/2026 19:32:30,Christopher Patrick Djuanda,Agung Setiawan,PT Jack John Lestari
+ESB-TBPP3R,SEND EMAIL,Meeting,Jane Margareth Widjaja,28/09/2026 11:00:00,28/09/2026,28/09/2026 21:54:21,28/09/2026 22:33:57,Tri Hastuti Wulandari,Tri Hastuti Wulandari,PT ANNAJON CITARASA GLOBAL
+ESB-8PT9GZ,COMPLETED,Training,Muhammad Rimaduddin,28/09/2026 13:00:00,28/09/2026,28/09/2026 14:51:02,28/09/2026 21:58:10,Nika Rullyta Khairunnisa,David Prima Putra,PT Hei Segar Indonesia
+ESB-ZBEKTM,SEND EMAIL,Retraining,,28/09/2026 13:00:00,28/09/2026,28/09/2026 13:32:14,28/09/2026 17:13:15,Bintang Guntoro,,Celine Veronika
+ESB-P88PD4,SEND EMAIL,Training,Muhammad Rimaduddin,28/09/2026 13:30:00,28/09/2026,28/09/2026 13:29:00,28/09/2026 16:43:15,Nurul Huda,Cherly Vitaloka,Katenzo Gelato
+ESB-BN7SCV,COMPLETED,Training,Jane Margareth Widjaja,28/09/2026 14:00:00,28/09/2026,28/09/2026 14:00:00,28/09/2026 15:34:32,Yoga Astita Ade,Rezi Rizki Raedini,PT Arta Global Sukses
+ESB-3YN73B,SEND EMAIL,Meeting,Muhammad Rimaduddin,28/09/2026 14:00:00,28/09/2026,28/09/2026 15:20:58,28/09/2026 16:36:58,Kiki Tri Utari,Kiki Tri Utari,PT AFRINESIA BANGUN ABADI
+ESB-VDXEQ4,SEND EMAIL,Approach,,28/09/2026 14:00:00,28/09/2026,29/09/2026 13:51:03,29/09/2026 13:53:08,Irma Laura Siregar,,Other
+ESB-XG5729,SEND EMAIL,Meeting,Jane Margareth Widjaja,28/09/2026 14:00:00,28/09/2026,28/09/2026 14:38:05,28/09/2026 14:38:16,Tri Hastuti Wulandari,Tri Hastuti Wulandari,Dolan Kopi
+ESB-M8P3SF,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,28/09/2026 14:00:00,28/09/2026,28/09/2026 15:59:51,28/09/2026 19:56:20,Rezi Rizki Raedini,Rezi Rizki Raedini,PT Sequoia International Cuisine
+ESB-9NP4MB,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,28/09/2026 14:00:00,28/09/2026,28/09/2026 15:05:42,28/09/2026 15:13:52,Airlangga Aziz,Airlangga Aziz,PT Riva Putra Sejati
+ESB-QPQAHZ,COMPLETED,Retraining,,28/09/2026 14:00:00,28/09/2026,28/09/2026 14:46:51,,Yayang Putri Suwondo,Agung Setiawan,PT ANUGRAH BUMI PERKASA MAKMUR
+ESB-BNX69T,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,28/09/2026 15:00:00,28/09/2026,28/09/2026 16:13:45,28/09/2026 19:21:35,Abi Muhammad Alfarezy,Rezi Rizki Raedini,Roti Gendut
+ESB-ZTRQEK,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,28/09/2026 15:00:00,28/09/2026,28/09/2026 16:40:54,28/09/2026 19:58:05,Agung Setiawan,Agung Setiawan,Lima Nyonya Kuwat
+ESB-QZPNFV,DRAFT EMAIL,Approach,,28/09/2026 16:00:00,28/09/2026,28/09/2026 17:33:35,28/09/2026 22:02:39,Noviyanti Nadia,,Other
+ESB-RXNHJ5,SEND EMAIL,Training,M. Iriansyah Suhendar,28/09/2026 18:00:00,28/09/2026,28/09/2026 11:32:18,28/09/2026 12:42:03,Christopher Patrick Djuanda,Agung Setiawan,PT Jack John Lestari
+ESB-4MNBYF,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,28/09/2026 18:00:00,28/09/2026,28/09/2026 18:41:14,28/09/2026 19:52:09,Agung Setiawan,,Mitrapub
+ESB-HFR4NS,SEND EMAIL,Meeting,,29/09/2026 9:00:00,29/09/2026,29/09/2026 9:22:52,29/09/2026 17:31:27,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,Rocket Chicken -
+ESB-3XS3BD,COMPLETED,Retraining,M. Iriansyah Suhendar,29/09/2026 9:00:00,29/09/2026,29/09/2026 9:17:29,29/09/2026 14:08:10,Christopher Patrick Djuanda,Agung Setiawan,PT. Corindo Amagi Putra
+ESB-HNWVTW,SEND EMAIL,Meeting,,29/09/2026 9:00:00,29/09/2026,29/09/2026 10:00:28,29/09/2026 11:32:18,Bintang Guntoro,Tri Hastuti Wulandari,Puro Coffee
+ESB-X4MB3F,SEND EMAIL,Training,,29/09/2026 9:00:00,29/09/2026,29/09/2026 9:21:45,29/09/2026 12:23:29,Syafiz Amiero,David Prima Putra,Onni Garden House
+ESB-7GZ3BD,SEND EMAIL,Meeting,,29/09/2026 9:00:00,29/09/2026,01/10/2026 10:20:09,01/10/2026 10:20:12,David Prima Putra,,PT Esensi Solusi Buana
+ESB-Y7ZM5E,COMPLETED,Meeting,,29/09/2026 10:00:00,29/09/2026,29/09/2026 10:20:36,29/09/2026 12:24:43,Imam Wicaksono,Dika Anugerah Pratama,PT Charis Mitra Anda
+ESB-ECXA8S,SCHEDULED,Approach,,29/09/2026 10:00:00,29/09/2026,,,Pernandes Paindo Tua,,Other
+ESB-KZHJYC,SEND EMAIL,Training,,29/09/2026 10:00:00,29/09/2026,29/09/2026 17:19:08,29/09/2026 17:19:11,Cherly Vitaloka,Cherly Vitaloka,PT TUNAS MATCHA NUSANTARA
+ESB-VWS84G,COMPLETED,Meeting,,29/09/2026 10:00:00,29/09/2026,29/09/2026 14:34:57,29/09/2026 16:45:39,Teddi Ari Tama,Tri Hastuti Wulandari,Ikinari Steak - One Satrio
+ESB-7ZR7MX,COMPLETED,Training,,29/09/2026 10:00:00,29/09/2026,29/09/2026 8:54:52,,Febri Dwi Putra,Airlangga Aziz,PT BOESA ALAMI INDONESIA
+ESB-3YY2J5,DRAFT EMAIL,Meeting,M. Iriansyah Suhendar,29/09/2026 10:00:00,29/09/2026,29/09/2026 14:47:54,29/09/2026 14:48:02,Risky Ramadhan,Agung Setiawan,PROOFED
+ESB-HQZSFP,COMPLETED,Training,,29/09/2026 10:00:00,29/09/2026,29/09/2026 9:03:24,29/09/2026 13:28:25,Alian Alfin Nuha,Airlangga Aziz,Nami Chikin Korean Street Food
+ESB-4XSUAD,DRAFT EMAIL,Training,Jane Margareth Widjaja,29/09/2026 10:00:00,29/09/2026,28/09/2026 22:02:48,28/09/2026 22:03:04,Noviyanti Nadia,Rezi Rizki Raedini,Laris Coffee
+ESB-HYQMRZ,SEND EMAIL,Training,Muhammad Rimaduddin,29/09/2026 10:00:00,29/09/2026,29/09/2026 10:10:16,29/09/2026 14:26:30,Ayu Febrina Sianturi,Ayu Febrina Sianturi,CV Menes Kartini
+ESB-F4PNA5,COMPLETED,Training,,29/09/2026 10:00:00,29/09/2026,29/09/2026 10:18:34,29/09/2026 23:31:21,Nika Rullyta Khairunnisa,Tri Hastuti Wulandari,CV. Ayam Kari Kepastian
+ESB-P2RY62,SEND EMAIL,Approach,Jane Margareth Widjaja,29/09/2026 10:00:00,29/09/2026,29/09/2026 13:51:16,29/09/2026 13:55:50,Irma Laura Siregar,Tri Hastuti Wulandari,PT. Selera Nikmat Nusantara
+ESB-ASGE8B,DRAFT EMAIL,Training,,29/09/2026 10:00:00,29/09/2026,29/09/2026 11:14:12,29/09/2026 13:12:19,Anisa Lucky,,PT Jack John Lestari
+ESB-3D8U2C,COMPLETED,Training,,29/09/2026 10:00:00,29/09/2026,29/09/2026 11:55:01,01/10/2026 10:27:48,Ardiansyah Hendardi,Kiki Tri Utari,PT. Panca Abadi Nan Jaya
+ESB-VNMP6J,COMPLETED,Training,Muhammad Rimaduddin,29/09/2026 10:00:00,29/09/2026,29/09/2026 9:33:40,29/09/2026 11:21:46,Fera Eka Waty N,Ayu Febrina Sianturi,Cotta Padel
+ESB-6TW5WZ,COMPLETED,Meeting,Jane Margareth Widjaja,29/09/2026 10:00:00,29/09/2026,29/09/2026 9:50:11,29/09/2026 14:01:10,Yoga Astita Ade,Rezi Rizki Raedini,PT SOLUSI AMANAH NUSANTARA
+ESB-XZE678,SEND EMAIL,Initial Meeting,,29/09/2026 10:00:00,29/09/2026,29/09/2026 10:10:45,29/09/2026 12:35:43,Tegar Rangga,Agung Setiawan,Sun art
+ESB-4YXN97,COMPLETED,Training,,29/09/2026 10:00:00,29/09/2026,29/09/2026 10:03:44,29/09/2026 15:37:45,Vinna Maharani,Cherly Vitaloka,PT Nusantara Gastronomi Lestari
+ESB-4Z5V5J,SEND EMAIL,Initial Meeting,,29/09/2026 11:00:00,29/09/2026,29/09/2026 16:29:05,29/09/2026 18:50:12,Kevin Reynaldi,Rezi Rizki Raedini,Bebek Becek
+ESB-9VQYEU,SEND EMAIL,Training,,29/09/2026 11:00:00,29/09/2026,29/09/2026 10:45:52,29/09/2026 12:47:04,Syahrul Zulvan,Dika Anugerah Pratama,PT Bahagia Rasa Bersama
+ESB-SGYMDV,SEND EMAIL,Training,,29/09/2026 13:00:00,29/09/2026,29/09/2026 12:53:18,29/09/2026 17:49:11,Yoan Fefi Berliani,David Prima Putra,Mie Akup
+ESB-SWPCXR,SCHEDULED,Approach,,29/09/2026 13:00:00,29/09/2026,,,Pernandes Paindo Tua,,Other
+ESB-36FFME,SEND EMAIL,Meeting,M. Iriansyah Suhendar,29/09/2026 13:00:00,29/09/2026,29/09/2026 15:24:24,29/09/2026 15:35:46,Tegar Rangga,Airlangga Aziz,PT Butter Health Grill
+ESB-8FRYQX,SEND EMAIL,Retraining,,29/09/2026 13:00:00,29/09/2026,29/09/2026 17:55:19,29/09/2026 18:09:02,Bintang Guntoro,Bintang Guntoro,Celine Veronika
+ESB-FU683Z,DRAFT EMAIL,Retraining,Jane Margareth Widjaja,29/09/2026 13:30:00,29/09/2026,29/09/2026 13:31:01,29/09/2026 20:24:22,Fauzi Yuda Ariyanto,Dika Anugerah Pratama,CV Janji Boga Sentosa (Solo)
+ESB-HA7XJZ,CANCEL,Meeting,,29/09/2026 13:30:00,29/09/2026,,,Dika Anugerah Pratama,Dika Anugerah Pratama,CV Janji Boga Sentosa (Solo)
+ESB-AQWMDJ,COMPLETED,Initial Meeting,Muhammad Rimaduddin,29/09/2026 14:00:00,29/09/2026,29/09/2026 14:09:17,29/09/2026 15:23:48,David Prima Putra,David Prima Putra,Kedai Daily Home
+ESB-5V4GRA,DRAFT EMAIL,Initial Meeting,Muhammad Rimaduddin,29/09/2026 14:00:00,29/09/2026,29/09/2026 13:51:24,03/10/2026 10:00:50,Irma Laura Siregar,Cherly Vitaloka,Kaffu Coffee
+ESB-ADD5YA,SEND EMAIL,Training,,29/09/2026 14:00:00,29/09/2026,29/09/2026 14:05:59,29/09/2026 16:31:25,Nurul Huda,Kiki Tri Utari,PT. Kominka Hulson Soekses
+ESB-FBHG7Z,COMPLETED,Meeting,,29/09/2026 14:00:00,29/09/2026,29/09/2026 14:12:08,29/09/2026 16:19:49,Yessi Tiyastanti,David Prima Putra,Burgerman
+ESB-8HR2D4,SEND EMAIL,Training,,29/09/2026 14:00:00,29/09/2026,29/09/2026 16:45:46,29/09/2026 18:04:11,Teddi Ari Tama,Tri Hastuti Wulandari,PT. Ada Gemilang Jaya
+ESB-3CZ2KQ,COMPLETED,Initial Meeting,M. Iriansyah Suhendar,29/09/2026 14:00:00,29/09/2026,29/09/2026 13:11:38,29/09/2026 14:16:22,Agung Setiawan,Agung Setiawan,Deerkeik
+ESB-KP8SXQ,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,29/09/2026 14:00:00,29/09/2026,29/09/2026 14:38:23,29/09/2026 15:52:06,Kiki Tri Utari,Kiki Tri Utari,Neighbour Bakery
+ESB-2U3QTH,COMPLETED,Meeting,,29/09/2026 14:00:00,29/09/2026,29/09/2026 14:33:42,29/09/2026 15:46:10,Yoga Astita Ade,Rezi Rizki Raedini,PT Era Abyudaya Trimitra
+ESB-Q9XG7S,SEND EMAIL,Retraining,,29/09/2026 14:00:00,29/09/2026,29/09/2026 15:34:55,,Rafi Mahasin,Kiki Tri Utari,PT. RODA URBAN NUSANTARA
+ESB-ADD9NU,SCHEDULED,Approach,,29/09/2026 15:00:00,29/09/2026,,,Pernandes Paindo Tua,,Other
+ESB-JKTAJZ,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,29/09/2026 15:00:00,29/09/2026,29/09/2026 14:55:07,29/09/2026 15:43:09,Airlangga Aziz,Airlangga Aziz,64 BEANS
+ESB-5VQ82H,DRAFT EMAIL,Meeting,Muhammad Rimaduddin,29/09/2026 16:00:00,29/09/2026,29/09/2026 16:19:41,29/09/2026 17:36:01,Ayu Febrina Sianturi,Ayu Febrina Sianturi,PT Muda Selera Kuliner
+ESB-V62MVE,SEND EMAIL,Training,,29/09/2026 17:00:00,29/09/2026,29/09/2026 17:12:34,29/09/2026 21:15:01,Alian Alfin Nuha,Airlangga Aziz,PT Selasa Diwangkara Bali
+ESB-3AA8V3,SEND EMAIL,Meeting,Jane Margareth Widjaja,30/09/2026 9:00:00,30/09/2026,30/09/2026 9:26:13,30/09/2026 14:31:35,Imam Wicaksono,Dika Anugerah Pratama,Mii Chan Bottle Shop
+ESB-KRSV76,COMPLETED,Meeting,Muhammad Rimaduddin,30/09/2026 10:00:00,30/09/2026,30/09/2026 10:00:39,30/09/2026 11:35:03,Melati Cantika,Kiki Tri Utari,PT EMERA BOGA MAKMUR
+ESB-4M4VAG,COMPLETED,Training,Muhammad Rimaduddin,30/09/2026 10:00:00,30/09/2026,30/09/2026 12:15:37,30/09/2026 19:29:46,Alif Izzuddin Ramadhan,Cherly Vitaloka,CV. LITTLE SINBAD PUNCAK
+ESB-A5R3TP,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,30/09/2026 10:00:00,30/09/2026,30/09/2026 14:34:11,30/09/2026 19:33:52,Tri Hastuti Wulandari,Tri Hastuti Wulandari,Pusaka Rempah
+ESB-VJUUEQ,COMPLETED,Training,M. Iriansyah Suhendar,30/09/2026 10:00:00,30/09/2026,30/09/2026 10:21:51,30/09/2026 12:51:32,Tegar Rangga,Agung Setiawan,CV. Selera Jajan Indonesia
+ESB-G775XC,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,30/09/2026 10:00:00,30/09/2026,30/09/2026 10:00:22,30/09/2026 11:25:38,Cherly Vitaloka,Kiki Tri Utari,ARUNGA METROPOLAR PADEL BRIPENS
+ESB-FHE9JE,COMPLETED,Training,Muhammad Rimaduddin,30/09/2026 10:00:00,30/09/2026,30/09/2026 9:57:43,30/09/2026 13:58:13,Rafi Mahasin,Kiki Tri Utari,CV. Panglima Kuliner Indonesia (Central Kitchen)
+ESB-RVZY84,SEND EMAIL,Approach,,30/09/2026 10:00:00,30/09/2026,03/10/2026 10:02:31,03/10/2026 10:04:43,Irma Laura Siregar,,Other
+ESB-KCJ378,SEND EMAIL,Retraining,Muhammad Rimaduddin,30/09/2026 10:00:00,30/09/2026,30/09/2026 10:02:46,30/09/2026 12:14:46,Syafiz Amiero,David Prima Putra,PT. Rin Kolaborasi Alpha - Sukiyaki Rin Sudirman
+ESB-NV6R7G,COMPLETED,Training,M. Iriansyah Suhendar,30/09/2026 10:00:00,30/09/2026,30/09/2026 10:00:22,30/09/2026 12:39:51,Yoga Astita Ade,Airlangga Aziz,PT. Centra Boga Perkasa
+ESB-Q7X997,SEND EMAIL,Retraining,Jane Margareth Widjaja,30/09/2026 10:00:00,30/09/2026,30/09/2026 13:25:46,30/09/2026 15:06:30,Teddi Ari Tama,Tri Hastuti Wulandari,CV Golden Boga Lestari
+ESB-DNCW8N,COMPLETED,Training,M. Iriansyah Suhendar,30/09/2026 10:00:00,30/09/2026,30/09/2026 10:18:52,30/09/2026 11:26:27,Christopher Patrick Djuanda,Agung Setiawan,PT Jack John Lestari
+ESB-5DWYSX,COMPLETED,Retraining,M. Iriansyah Suhendar,30/09/2026 10:00:00,30/09/2026,30/09/2026 10:04:42,30/09/2026 12:22:39,Febri Dwi Putra,Airlangga Aziz,LIMA PADEL
+ESB-5Z3RMV,COMPLETED,Meeting,M. Iriansyah Suhendar,30/09/2026 10:00:00,30/09/2026,30/09/2026 9:16:26,30/09/2026 9:32:29,Airlangga Aziz,Airlangga Aziz,PT DEWA MITRA SUKSES_390
+ESB-U96KQ5,COMPLETED,Initial Meeting,Muhammad Rimaduddin,30/09/2026 10:00:00,30/09/2026,30/09/2026 10:20:03,30/09/2026 11:41:16,Yessi Tiyastanti,David Prima Putra,PT Tara Pangan Lestari
+ESB-36H7T6,SEND EMAIL,Training,M. Iriansyah Suhendar,30/09/2026 10:00:00,30/09/2026,30/09/2026 9:12:06,30/09/2026 12:29:38,Alian Alfin Nuha,Airlangga Aziz,PT BAEKJEONG KOREAN RESTAURANT
+ESB-6JTQUJ,COMPLETED,Retraining,M. Iriansyah Suhendar,30/09/2026 10:00:00,30/09/2026,30/09/2026 11:34:33,30/09/2026 11:34:41,Risky Ramadhan,Agung Setiawan,PT Citra Rasa Tradisi
+ESB-J2R57C,COMPLETED,Initial Meeting,Muhammad Rimaduddin,30/09/2026 10:00:00,30/09/2026,30/09/2026 9:46:27,30/09/2026 14:28:04,Fera Eka Waty N,Ayu Febrina Sianturi,PT. Nagara Rasa Nusantara
+ESB-8SKFBC,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,30/09/2026 10:00:00,30/09/2026,30/09/2026 10:45:47,30/09/2026 13:00:47,Ayu Febrina Sianturi,Ayu Febrina Sianturi,Rumah Kopi Tarempa
+ESB-6JQCRN,DRAFT EMAIL,Training,Muhammad Rimaduddin,30/09/2026 10:00:00,30/09/2026,30/09/2026 10:31:19,01/10/2026 10:22:54,Nurul Huda,Cherly Vitaloka,PT Karunia Kencana Inter Global
+ESB-2YJ7S3,SEND EMAIL,Training,Muhammad Rimaduddin,30/09/2026 10:00:00,30/09/2026,30/09/2026 10:39:09,30/09/2026 17:29:02,Yoan Fefi Berliani,Cherly Vitaloka,PT. Martabak Sultan Sembilan Sembilan
+ESB-EF432F,SEND EMAIL,Training,Jane Margareth Widjaja,30/09/2026 10:00:00,30/09/2026,30/09/2026 10:04:02,01/10/2026 0:15:06,Syahrul Zulvan,Dika Anugerah Pratama,True Coffee Company
+ESB-UZKZXX,DRAFT EMAIL,Retraining,Jane Margareth Widjaja,30/09/2026 10:00:00,30/09/2026,30/09/2026 10:17:20,30/09/2026 13:05:33,Kevin Reynaldi,Rezi Rizki Raedini,PT Astro Projects International
+ESB-S2R9GD,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,30/09/2026 10:00:00,30/09/2026,30/09/2026 19:52:22,30/09/2026 23:31:51,Margaretha Agrivani,Tri Hastuti Wulandari,CV. Tujuh Bintang Lestari (Teras Nona Manis)
+ESB-8GJAA8,SEND EMAIL,Meeting,Muhammad Rimaduddin,30/09/2026 10:00:00,30/09/2026,30/09/2026 10:21:44,30/09/2026 19:57:13,David Prima Putra,David Prima Putra,PT. Dcika Prima Mahkota
+ESB-ZVCQW2,CANCEL,Initial Meeting,Jane Margareth Widjaja,30/09/2026 10:00:00,30/09/2026,,,Abi Muhammad Alfarezy,Rezi Rizki Raedini,Gerobak Betawi
+ESB-VHDNKP,SEND EMAIL,Initial Meeting,Jane Margareth Widjaja,30/09/2026 11:00:00,30/09/2026,30/09/2026 11:10:19,30/09/2026 16:36:13,Fauzi Yuda Ariyanto,Dika Anugerah Pratama,Komi Tokoro
+ESB-UWGMFM,COMPLETED,Initial Meeting,Muhammad Rimaduddin,30/09/2026 12:00:00,30/09/2026,30/09/2026 12:19:27,01/10/2026 12:13:32,Kiki Tri Utari,Kiki Tri Utari,Teuku Thufeil Hermawan
+ESB-V93PV8,SCHEDULED,Meeting,,30/09/2026 13:00:00,30/09/2026,,,Pernandes Paindo Tua,,Support ERP Database
+ESB-MNSJCV,DRAFT EMAIL,Initial Meeting,Jane Margareth Widjaja,30/09/2026 13:00:00,30/09/2026,01/10/2026 6:30:37,01/10/2026 6:31:35,Noviyanti Nadia,Rezi Rizki Raedini,Aura Coffee Space
+ESB-2394AF,SEND EMAIL,Meeting,Jane Margareth Widjaja,30/09/2026 13:00:00,30/09/2026,30/09/2026 13:11:15,30/09/2026 17:08:47,Agita Putri Kusumaningtyas,Dika Anugerah Pratama,Teh Jawa
+ESB-W4P6XH,DRAFT EMAIL,Initial Meeting,Jane Margareth Widjaja,30/09/2026 14:00:00,30/09/2026,30/09/2026 14:34:05,30/09/2026 19:33:59,Tri Hastuti Wulandari,Tri Hastuti Wulandari,PT AYAM GORENG BARAYAM - CENTRAL KITCHEN
+ESB-ZPKR29,SEND EMAIL,Training,Muhammad Rimaduddin,30/09/2026 14:00:00,30/09/2026,30/09/2026 16:58:15,30/09/2026 16:58:22,Syafiz Amiero,David Prima Putra,JAGA by Amanah
+ESB-Y73DQ9,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,30/09/2026 14:00:00,30/09/2026,03/10/2026 10:02:43,03/10/2026 10:07:51,Irma Laura Siregar,David Prima Putra,PT Dee Samota Hill
+ESB-YJRABF,DRAFT EMAIL,Meeting,M. Iriansyah Suhendar,30/09/2026 14:00:00,30/09/2026,30/09/2026 15:03:04,30/09/2026 21:43:40,Risky Ramadhan,Agung Setiawan,PT. Garuda Burung Sehat
+ESB-KKYNXC,DRAFT EMAIL,Meeting,Jane Margareth Widjaja,30/09/2026 14:00:00,30/09/2026,30/09/2026 19:52:31,30/09/2026 23:31:57,Margaretha Agrivani,Tri Hastuti Wulandari,Kedai Steak Nusantara
+ESB-2528ZQ,DRAFT EMAIL,Meeting,M. Iriansyah Suhendar,30/09/2026 14:00:00,30/09/2026,30/09/2026 14:06:58,30/09/2026 16:28:56,Agung Setiawan,Agung Setiawan,MISUPER KITCHEN & KOFFEE
+ESB-34TZ3S,COMPLETED,Initial Meeting,Muhammad Rimaduddin,30/09/2026 14:00:00,30/09/2026,30/09/2026 13:58:20,,Rafi Mahasin,Kiki Tri Utari,MR. PARK - SCBD
+ESB-G63SN2,SEND EMAIL,Initial Meeting,Muhammad Rimaduddin,30/09/2026 14:00:00,30/09/2026,30/09/2026 14:37:29,01/10/2026 10:25:19,Ardiansyah Hendardi,Kiki Tri Utari,CV Rasa Rakyat Group
+ESB-8GSTGC,SEND EMAIL,Meeting,Jane Margareth Widjaja,30/09/2026 14:00:00,30/09/2026,30/09/2026 14:25:06,30/09/2026 16:25:33,Dika Anugerah Pratama,Rezi Rizki Raedini,Medja Cerita
+ESB-HTYQU7,SEND EMAIL,Training,Jane Margareth Widjaja,30/09/2026 15:00:00,30/09/2026,30/09/2026 19:58:18,30/09/2026 20:03:56,Abi Muhammad Alfarezy,Rezi Rizki Raedini,Roti Gendut
+ESB-W2FG65,SEND EMAIL,Initial Meeting,M. Iriansyah Suhendar,30/09/2026 17:00:00,30/09/2026,30/09/2026 14:01:47,,Airlangga Aziz,Airlangga Aziz,CV SERI KOPI SATU`;
