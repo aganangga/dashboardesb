@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { ChevronLeft, ChevronRight, MessageSquare, Star, TicketCheck, Users, Link2 } from 'lucide-react';
+import { MessageSquare, Star, TicketCheck, Users, Link2 } from 'lucide-react';
+import { PageListPagination } from './PageListPagination';
 import { CSAT_RESPONSES, CsatResponse } from '../data/csatResponses';
 import { ProcessedRecord, FilterState } from '../types';
 import { getMasterAssignmentsForSupport, isSameSupportMember } from '../utils/dataProcessor';
@@ -246,13 +247,13 @@ export const CSATDashboard: React.FC<Props> = ({ records, filters }) => {
             <h3 className="text-sm font-bold text-slate-900">Rincian respons CSAT</h3>
             <p className="text-xs text-slate-500">10 respons per halaman · tanpa data PIC atau komentar</p>
           </div>
-          <div className="flex items-center gap-2 text-xs text-slate-600">
-            <button type="button" disabled={safePage <= 1} onClick={() => setPage(Math.max(1, safePage-1))}
-              aria-label="Halaman sebelumnya" className="p-1.5 border rounded-lg disabled:opacity-40"><ChevronLeft className="h-4 w-4"/></button>
-            <span>{safePage} / {pageCount}</span>
-            <button type="button" disabled={safePage >= pageCount} onClick={() => setPage(Math.min(pageCount, safePage+1))}
-              aria-label="Halaman berikutnya" className="p-1.5 border rounded-lg disabled:opacity-40"><ChevronRight className="h-4 w-4"/></button>
-          </div>
+          <PageListPagination
+            currentPage={safePage}
+            pageSize={10}
+            totalItems={filtered.length}
+            onPageChange={setPage}
+            itemLabel="respons"
+          />
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left">
