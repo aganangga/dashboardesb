@@ -1,3 +1,4 @@
+import { handler as worksheetHandler } from './netlify/functions/worksheets.mjs';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { execSync } from 'child_process';
@@ -11,6 +12,14 @@ function aistudioMediaPlugin(): Plugin {
   return {
     name: 'vite-plugin-aistudio-media',
     configureServer(server) {
+      server.middlewares.use(async (req, res, next) => {
+        const url = new URL(req.url || '/', 'http://localhost');
+        if (url.pathname !== '/api/worksheets') return next();
+        const result = await worksheetHandler({ httpMethod: req.method || 'GET', queryStringParameters: { sheet: url.searchParams.get('sheet') || '' } });
+        res.statusCode = result.statusCode;
+        for (const [name, value] of Object.entries(result.headers)) res.setHeader(name, value);
+        res.end(result.body);
+      });
       server.middlewares.use((req, res, next) => {
         // Direct download endpoint for single-file HTML
         if (req.url && req.url.startsWith('/api/download-singlefile')) {

@@ -1,6 +1,17 @@
 # Database dashboardesb — Supabase dan Google Sheets
 
-Sumber yang diminta: `1SoNn_O4JurYhG-GFIa7-5XtA-90TgDzqeLTPgehFHmI`, tab `gid=0`.
+Sumber: spreadsheet `1SoNn_O4JurYhG-GFIa7-5XtA-90TgDzqeLTPgehFHmI`, empat worksheet:
+
+| Pilihan dashboard | gid | source_key | Baris nonkosong saat diperiksa |
+| --- | --- | --- | --- |
+| RAW DATA VISIT | 0 | dashboardesb-main | 1568 |
+| RAW DATA TIKET | 1220387159 | dashboardesb-ticket | 997 |
+| TEAM MASTER | 2104832140 | dashboardesb-team | 43 |
+| CSAT | 1457583822 | dashboardesb-csat | 1018 |
+
+Data RAW DATA TIKET dimulai setelah empat baris judul/metadata; header ganda
+seperti L2 dan Approach diberi akhiran `(2)` supaya nilainya tidak tertimpa.
+TEAM MASTER memakai baris ketiga sebagai header; kolom yang sepenuhnya kosong diabaikan.
 
 ## Status dan batas integrasi
 
@@ -18,9 +29,14 @@ di database.
 
 Checkout telah diselaraskan dengan pembaruan remote `896d86b`. Dashboard sekarang
 dibangun dari React (`src`) ke `dist`, dengan integrasi Omni yang sudah ada tetap
-terjaga. Sinkronisasi ini menambahkan penyimpanan Supabase; pembacaan database dari UI
-belum diaktifkan. Integrasi baca perlu autentikasi pengguna/backend sebelum dibuka.
-Jangan membuka tabel atau service-role key ke publik.
+terjaga. Dropdown worksheet memuat data langsung dari sumber Google Sheets yang sudah
+bisa dibaca publik, melalui fungsi Netlify `/api/worksheets?sheet=<id>`.
+Pemilihan RAW DATA VISIT memperbarui data analitik kunjungan; tiga worksheet lain
+memiliki tabel, pencarian dan pagination masing-masing. Muat ulang membaca sumber
+terbaru. Bila pembacaan gagal, data sebelumnya tetap tersedia untuk worksheet itu.
+Ini bukan bukti bahwa Supabase telah disinkronkan: jadwal database tetap proses
+terpisah. Pembacaan database dari UI belum diaktifkan; jangan membuka tabel atau
+service-role key ke publik.
 
 ## Aktivasi
 
@@ -49,7 +65,8 @@ Jangan membuka tabel atau service-role key ke publik.
 
 ## Perilaku pembaruan
 
-Impor menggunakan satu transaksi PostgreSQL. Snapshot baru baru diaktifkan sesudah
+Keempat worksheet diimpor paralel ke source_key masing-masing. Kegagalan satu tab
+tidak menghalangi tab lainnya. Setiap impor menggunakan satu transaksi PostgreSQL. Snapshot baru baru diaktifkan sesudah
 semua baris masuk; kegagalan atau CSV kosong mempertahankan snapshot terakhir.
 Respons login HTML, CSV rusak, header ganda/kosong, dan jumlah kolom tak cocok ditolak.
 Checksum mencegah snapshot baru jika data tidak berubah. Snapshot historis dipertahankan
@@ -76,7 +93,14 @@ from public.current_sheet_records order by row_number limit 10;
 cd /workspace/dashboardesb
 node --test test/sheet-sync-function.test.mjs
 npm run lint
+# Pada lingkungan Codex Node 24, gunakan proxy yang sudah disediakan:
+NODE_USE_ENV_PROXY=1 npm run dev
 ```
+
+Scheduled sync tetap memerlukan key Supabase server. Selector worksheet tidak
+memerlukan key Supabase karena membaca sumber Sheets yang sudah bisa diakses.
+Versi file:// memakai data visit tersimpan; worksheet online memerlukan koneksi.
+
 
 Test importer menggunakan respons jaringan tiruan. Skema juga divalidasi menggunakan
 PostgreSQL embedded (PGlite), termasuk snapshot, pengulangan, rollback dan hak akses.

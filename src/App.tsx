@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { DEFAULT_RAW_CSV } from './data/rawCsv';
 import { DEFAULT_COLUMN_MAPPING, parseCsvString, processRawData, resolveColumnMapping, buildConsultantTeamGroupings, isSameSupportMember, getAvailableMonthsFromRecords, isIncludedDashboardVisit } from './utils/dataProcessor';
 import { ColumnMapping, FilterState, ProcessedRecord, RawDataRow, ConsultantGrouping } from './types';
+import { WorksheetDashboard } from './components/WorksheetDashboard';
 import { Navbar } from './components/Navbar';
 import { ModernSidebar } from './components/ModernSidebar';
 import { FilterBar } from './components/FilterBar';
@@ -23,6 +24,7 @@ import { ShareModal } from './components/ShareModal';
 import { SlidersHorizontal, Layers, Clock, Table, BarChart2, CheckCircle2, Calendar, Share2, Sparkles } from 'lucide-react';
 
 export default function App() {
+  const [selectedWorksheet, setSelectedWorksheet] = useState('visit');
   // Parse initial dataset (or load pre-injected custom data if running inside downloaded singlefile HTML)
   const initialParsed = useMemo(() => {
     const customData = (window as any).__CUSTOM_INITIAL_DATA__;
@@ -305,6 +307,13 @@ export default function App() {
     setIsColumnMapperOpen(true);
   };
 
+  const handleWorksheetVisitLoaded = (newData: RawDataRow[], newHeaders: string[]) => {
+    setRawData(newData);
+    setHeaders(newHeaders);
+    setMapping(resolveColumnMapping(newHeaders));
+    setDataSource('csv');
+  };
+
   // Omni payload is only accepted after endpoint + schema validation and user review.
   // All other existing processing, exclusion rules and KPI calculations stay intact.
   const handleOmniDataLoaded = (dataset: OmniSyncDataset) => {
@@ -409,10 +418,10 @@ export default function App() {
 
   return (
     <div className="modern-shell min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-indigo-600 selection:text-white">
-      <ModernSidebar activeTab={activeTab} onSelect={setActiveTab} />
+      <ModernSidebar activeTab={activeTab} onSelect={tab => { setSelectedWorksheet('visit'); setActiveTab(tab); }} />
 
       {/* Top Navigation */}
-      <Navbar
+      {selectedWorksheet === 'visit' && <Navbar
         totalRecords={rawData.length}
         uniqueVisits={uniqueVisitsCount}
         deduplicateEnabled={filters.deduplicateVisits}
@@ -424,10 +433,12 @@ export default function App() {
         onExportCsv={handleExportCsv}
         onDownloadSingleHtml={handleDownloadSingleHtml}
         onOpenShareModal={() => setIsShareModalOpen(true)}
-      />
+      />}
 
       {/* Main Container */}
       <main className="modern-main flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <WorksheetDashboard selected={selectedWorksheet} onSelect={setSelectedWorksheet} onVisitLoaded={handleWorksheetVisitLoaded} />
+        {selectedWorksheet === 'visit' && <>
         {/* Banner with user options callout */}
         <div className="modern-welcome bg-gradient-to-r from-indigo-50/80 via-white to-purple-50/80 border border-indigo-100 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
           <div className="space-y-1">
@@ -705,6 +716,7 @@ export default function App() {
         {activeTab === 'csat' && (
           <CSATDashboard records={allRecords} filters={filters} />
         )}
+        </>}
       </main>
 
       {/* Modals */}

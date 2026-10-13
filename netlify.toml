@@ -26,3 +26,8 @@
 
 [functions."sync-google-sheet"]
   schedule = "0 */6 * * *"
+
+[[redirects]]
+  from = "/api/worksheets"
+  to = "/.netlify/functions/worksheets"
+  status = 200
