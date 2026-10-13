@@ -20,6 +20,8 @@ import {
 } from 'lucide-react';
 import {
   getDedicatedSupportTeamsForConsultant,
+  DIRECT_SPV_VISIT_PREFIX,
+  SHARED_L2_TEAM_PREFIX,
   isSameSupportMember,
   findConsultantForSupportMember,
   CONSULTANT_DEDICATED_TEAMS,
@@ -104,6 +106,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     return [];
   }, [selectedConsultant]);
 
+  // Do not label an SPV or a shared L2 group as a single consultant's team.
+  const teamLabel = selectedConsultant.startsWith(SHARED_L2_TEAM_PREFIX)
+    ? 'Tim Bersama L2'
+    : selectedConsultant.startsWith(DIRECT_SPV_VISIT_PREFIX)
+      ? 'Visit SPV'
+      : 'Tim ' + selectedConsultant.split(' ')[0];
+
   // Selected Support Member (single selection for dependent dropdown)
   const currentSelectedSupportMember = React.useMemo(() => {
     if (filters.supportTeamMembers && filters.supportTeamMembers.length > 0) {
@@ -132,6 +141,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   // Include the consultant (L2) as a real visitor next to their L1 roster.
   const teamMembers = React.useMemo<DedicatedSupportMember[]>(() => {
     if (!selectedConsultant) return [];
+    // Master roster exceptions use registered L1 or SPV identity, NOT a fake L2.
+    if (selectedConsultant.startsWith(SHARED_L2_TEAM_PREFIX) ||
+        selectedConsultant.startsWith(DIRECT_SPV_VISIT_PREFIX)) return dedicatedMembers;
     return [{
       fullName: selectedConsultant,
       nickname: selectedConsultant.split(' ')[0],
@@ -388,7 +400,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             </span>
             {selectedConsultant && (
               <span className="text-[9px] text-amber-800 font-semibold px-1 rounded bg-amber-50 border border-amber-200">
-                Tim {selectedConsultant.split(' ')[0]}
+                {teamLabel}
               </span>
             )}
           </label>
@@ -401,7 +413,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               className="w-full bg-amber-50/50 border border-amber-300 rounded-lg px-2.5 py-1.5 text-xs text-amber-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-500 font-medium"
             >
               <option value="">
-                Semua Tim {selectedConsultant.split(' ')[0]} ({teamMembers.map((m) => m.nickname).join(', ') || 'Semua'})
+                Semua {teamLabel} ({teamMembers.map((m) => m.nickname).join(', ') || 'Semua'})
               </option>
               {teamMembers.map((m) => {
                 const cnt = memberVisitCountMap.get(m.fullName.toLowerCase()) ?? 0;
@@ -634,7 +646,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                     <div className="flex items-center space-x-2 text-left">
                       <Users className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
                       <span className="font-semibold text-slate-800">
-                        Semua Tim {selectedConsultant.split(' ')[0]}
+                        Semua {teamLabel}
                       </span>
                       <span className="ml-1 px-1.5 py-0.2 rounded bg-indigo-50 border border-indigo-200 text-[10px] font-mono text-indigo-700 font-medium">
                         {teamMembers.length} Personil • {teamVisitCount} Visit
@@ -773,13 +785,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                         </div>
                         <div>
                           <div className="text-xs font-bold flex items-center">
-                            Semua Tim {selectedConsultant.split(' ')[0]}
+                            Semua {teamLabel}
                             {!selectedMemberObj && (
                               <Check className="w-3.5 h-3.5 text-indigo-600 ml-1.5 stroke-[3]" />
                             )}
                           </div>
                           <div className="text-[10px] text-slate-500">
-                            Semua kunjungan tim {selectedConsultant.split(' ')[0]} ({teamMembers.length} personil)
+                            Semua kunjungan {teamLabel} ({teamMembers.length} personil)
                           </div>
                         </div>
                       </div>

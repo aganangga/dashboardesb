@@ -443,6 +443,10 @@ const primarySupportName = (value: string): string =>
 const masterConsultants = Array.from(new Set(MASTER_DATA_TEAM.map((row) => row.l2)));
 const masterSupervisors = Array.from(new Set(MASTER_DATA_TEAM.map((row) => row.spv)));
 
+// These are verified Master Data Team group labels, not invented L2 owners.
+export const SHARED_L2_TEAM_PREFIX = 'Tim Bersama L2: ';
+export const DIRECT_SPV_VISIT_PREFIX = 'Visit SPV: ';
+
 const canonicalConsultantName = (value: string): string | null =>
   masterConsultants.find((name) => normalizeTeamName(name) === normalizeTeamName(value)) || null;
 
@@ -506,24 +510,48 @@ export function resolveSpvAndConsultant(
     };
   }
 
-  // A raw consultant value may be L1, SPV or blank. Resolve strictly via roster.
+  // SPV doing the visit themself is recognized through Master SPV hierarchy,
+  // without inventing an L2 consultant for their attendance.
+  const listedSpv = masterSupervisors.find((spv) =>
+    normalizeTeamName(spv) === normalizeTeamName(rawConsultant)
+  );
+  const visitingSpv = masterSupervisors.find((spv) =>
+    normalizeTeamName(spv) === normalizeTeamName(primarySupport)
+  );
+  if (visitingSpv && (!rawConsultant || listedSpv)) {
+    return {
+      consultantName: DIRECT_SPV_VISIT_PREFIX + visitingSpv,
+      supervisor: visitingSpv,
+    };
+  }
+
+  // If raw consultant is an L1, use its master memberships. Otherwise use
+  // the actual primary support to resolve consultant ownership.
   const exactMember = getMasterAssignmentsForSupport(rawConsultant);
-  const rawIsSpv = masterSupervisors.some((spv) => normalizeTeamName(spv) === normalizeTeamName(rawConsultant));
-  const candidates = (!rawIsSpv && exactMember.length > 0)
+  const candidates = (!listedSpv && exactMember.length)
     ? exactMember
     : getMasterAssignmentsForSupport(primarySupport);
   const selectedSpv = masterSupervisors.find((spv) =>
     normalizeTeamName(spv) === normalizeTeamName(rawSpv)
-  ) || masterSupervisors.find((spv) => normalizeTeamName(spv) === normalizeTeamName(rawConsultant)) || '';
-  const scoped = selectedSpv
-    ? candidates.filter((candidate) => normalizeTeamName(candidate.supervisor) === normalizeTeamName(selectedSpv))
+  ) || listedSpv || '';
+  const matching = selectedSpv
+    ? candidates.filter((item) => normalizeTeamName(item.supervisor) === normalizeTeamName(selectedSpv))
     : candidates;
-  const possible = [...new Set((scoped.length ? scoped : candidates).map((item) => item.consultantName))];
-  // An L1 registered under several L2s remains unassigned unless another field resolves it.
-  const consultantName = possible.length === 1 ? possible[0] : 'Belum Terpetakan';
-  const supervisor = consultantName !== 'Belum Terpetakan'
-    ? (MASTER_DATA_TEAM.find((row) => row.l2 === consultantName)?.spv || 'Belum Terpetakan')
-    : (selectedSpv || 'Belum Terpetakan');
+  const narrowed = matching.length ? matching : candidates;
+  const possible = [...new Set(narrowed.map((item) => item.consultantName))];
+  const possibleSpvs = [...new Set(narrowed.map((item) => item.supervisor))];
+
+  // A support registered under two L2s (Tegar: Ayu/Dika) remains a shared
+  // master group if the source ticket has no explicit consultant owner.
+  // This is not an attribution of the same visit to either L2 individually.
+  const consultantName = possible.length === 1
+    ? possible[0]
+    : possible.length > 1
+      ? SHARED_L2_TEAM_PREFIX + possible.join(' / ')
+      : 'Belum Terpetakan';
+  const supervisor = possibleSpvs.length === 1
+    ? possibleSpvs[0]
+    : selectedSpv || 'Belum Terpetakan';
 
   return { supervisor, consultantName };
 }
@@ -848,6 +876,32 @@ export function getDedicatedSupportTeamsForConsultant(
   records: ProcessedRecord[] = []
 ): DedicatedSupportMember[] {
   if (!consultant) return [];
+  // A shared L2 label maps ONLY to support members registered under every
+  // candidate L2. Do not add all of Ayu/Dika's staff or a fictional L2 visitor.
+  if (consultant.startsWith(SHARED_L2_TEAM_PREFIX)) {
+    const names = consultant.slice(SHARED_L2_TEAM_PREFIX.length).split(' / ');
+    const matchingRows = MASTER_DATA_TEAM.filter((row) => names.includes(row.l2));
+    const byMember = new Map<string, { row: MasterDataTeamItem; l2: Set<string> }>();
+    matchingRows.forEach((row) => {
+      const key = normalizeTeamName(row.l1FullName);
+      if (!byMember.has(key)) byMember.set(key, { row, l2: new Set() });
+      byMember.get(key)!.l2.add(row.l2);
+    });
+    return [...byMember.values()]
+      .filter((member) => names.every((name) => member.l2.has(name)))
+      .map(({ row }) => ({
+        fullName: row.l1FullName,
+        nickname: row.l1Nickname,
+        displayName: row.l1Nickname + ' (' + row.l1FullName + ')',
+      }));
+  }
+
+  if (consultant.startsWith(DIRECT_SPV_VISIT_PREFIX)) {
+    const name = consultant.slice(DIRECT_SPV_VISIT_PREFIX.length);
+    if (!masterSupervisors.some((spv) => normalizeTeamName(spv) === normalizeTeamName(name))) return [];
+    return [{ fullName: name, nickname: name.split(' ')[0], displayName: name + ' (SPV)' }];
+  }
+
 
   // Direct exact match from predefined mapping
   for (const [cName, members] of Object.entries(CONSULTANT_DEDICATED_TEAMS)) {
