@@ -203,6 +203,13 @@ export const VisitTable: React.FC<VisitTableProps> = ({ records, deduplicateEnab
         </table>
       </div>
 
+      {displayedRecords.length > pageSize && (
+        <div className="flex justify-end border-t border-slate-100 pt-3">
+          <PageListPagination currentPage={safePage} pageSize={pageSize}
+            totalItems={displayedRecords.length} onPageChange={setCurrentPage} itemLabel="visit" />
+        </div>
+      )}
+
       {/* Detail Modal */}
       {selectedRecord && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
