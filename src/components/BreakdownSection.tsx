@@ -16,7 +16,7 @@ import {
   Legend,
 } from 'recharts';
 import { Calendar, MapPin, UserCheck, BookOpen, BarChart3, PieChartIcon, Briefcase, Users, Sparkles, ExternalLink, Check, TrendingUp, GitFork, Network, Layers, ShieldCheck, Search, FileSpreadsheet, CheckCircle2, Download } from 'lucide-react';
-import { formatDuration, getDedicatedSupportTeamsForConsultant, buildSpvL2L1Groupings, MASTER_DATA_TEAM } from '../utils/dataProcessor';
+import { formatDuration, buildSpvL2L1Groupings, MASTER_DATA_TEAM } from '../utils/dataProcessor';
 
 interface BreakdownSectionProps {
   records: ProcessedRecord[];
@@ -322,24 +322,11 @@ export const BreakdownSection: React.FC<BreakdownSectionProps> = ({
     }));
 
   // 6. BREAKDOWN SUPPORT & SUPPORT TEAM (Line 1 vs Line 2 Separator)
-  const dedicatedForSelected = selectedConsultant ? getDedicatedSupportTeamsForConsultant(selectedConsultant) : [];
-  const allowedSupportNames =
-    dedicatedForSelected.length > 0
-      ? [
-          selectedConsultant.toLowerCase(),
-          ...dedicatedForSelected.map((m) => m.fullName.toLowerCase()),
-          ...dedicatedForSelected.map((m) => m.nickname.toLowerCase()),
-        ]
-      : null;
-
   const supportMap = new Map<string, { support: string; total: number; withTeam: number; solo: number; completed: number; avgMins: number; countMins: number; totalMins: number }>();
   countableRecords.forEach((r) => {
     const s = r.supportName || 'unname';
-    // If a consultant is selected and has a defined team, only include members of that team
-    if (allowedSupportNames && allowedSupportNames.length > 0) {
-      const isAllowed = allowedSupportNames.some((name) => s.toLowerCase().includes(name));
-      if (!isAllowed) return;
-    }
+    // Include all actual primary support staff on visits attributed to this consultant.
+    // Cross-team visitors stay visible without being placed in the wrong permanent roster.
     if (!supportMap.has(s)) {
       supportMap.set(s, { support: s, total: 0, withTeam: 0, solo: 0, completed: 0, avgMins: 0, countMins: 0, totalMins: 0 });
     }
@@ -540,9 +527,11 @@ export const BreakdownSection: React.FC<BreakdownSectionProps> = ({
               <span className="text-[11px] text-emerald-600 font-medium">Terpetakan Penuh</span>
             </div>
             <div className="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
-              <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Status Data Unname</span>
-              <div className="text-xl font-bold text-emerald-600 mt-0.5">0 Missing</div>
-              <span className="text-[11px] text-emerald-600 font-medium">100% Terisi &amp; Valid</span>
+              <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Consultant Belum Terpetakan</span>
+              <div className="text-xl font-bold text-amber-600 mt-0.5">
+                {countableRecords.filter((record) => record.consultantName === 'Belum Terpetakan').length} Perlu Review
+              </div>
+              <span className="text-[11px] text-amber-700 font-medium">Tidak ditebak jika raw data ambigu</span>
             </div>
           </div>
 
