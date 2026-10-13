@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { ProcessedRecord } from '../types';
 import {
   Clock,
@@ -14,6 +14,7 @@ import {
   ShieldAlert,
 } from 'lucide-react';
 import { formatDuration } from '../utils/dataProcessor';
+import { PageListPagination } from './PageListPagination';
 
 interface CheckInOutComparisonProps {
   records: ProcessedRecord[];
@@ -23,6 +24,8 @@ export const CheckInOutComparison: React.FC<CheckInOutComparisonProps> = ({ reco
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'duration_desc' | 'duration_asc' | 'time_desc'>('duration_desc');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageSize = 15;
 
   // Stats calculation
   const totalRecords = records.length;
@@ -86,6 +89,14 @@ export const CheckInOutComparison: React.FC<CheckInOutComparisonProps> = ({ reco
         return bTime - aTime;
       });
   }, [records, selectedCategory, searchTerm, sortOrder]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [records, selectedCategory, searchTerm, sortOrder]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredList.length / pageSize));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedList = filteredList.slice((safePage - 1) * pageSize, safePage * pageSize);
 
   return (
     <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-6 shadow-xs space-y-6">
@@ -221,6 +232,13 @@ export const CheckInOutComparison: React.FC<CheckInOutComparisonProps> = ({ reco
           </div>
         </div>
 
+        <PageListPagination
+          currentPage={safePage}
+          pageSize={pageSize}
+          totalItems={filteredList.length}
+          onPageChange={setCurrentPage}
+          itemLabel="kunjungan"
+        />
         <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
           <table className="w-full text-left text-xs text-slate-700">
             <thead className="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200">
@@ -235,7 +253,7 @@ export const CheckInOutComparison: React.FC<CheckInOutComparisonProps> = ({ reco
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-sans">
-              {filteredList.map((rec) => {
+              {paginatedList.map((rec) => {
                 const hasDuration = rec.durationMinutes !== null && rec.durationMinutes > 0;
                 const isOvernight = rec.durationCategory === 'overnight';
                 const isMissingCheckout = rec.durationCategory === 'missing_checkout';
@@ -379,6 +397,16 @@ export const CheckInOutComparison: React.FC<CheckInOutComparisonProps> = ({ reco
               })}
             </tbody>
           </table>
+        </div>
+
+        <div className="flex justify-end border-t border-slate-100 pt-3">
+          <PageListPagination
+            currentPage={safePage}
+            pageSize={pageSize}
+            totalItems={filteredList.length}
+            onPageChange={setCurrentPage}
+            itemLabel="kunjungan"
+          />
         </div>
       </div>
     </div>
