@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { DEFAULT_RAW_CSV } from './data/rawCsv';
-import { DEFAULT_COLUMN_MAPPING, parseCsvString, processRawData, resolveColumnMapping, buildConsultantTeamGroupings, getSupportNickname, getAvailableMonthsFromRecords, getDedicatedSupportTeamsForConsultant } from './utils/dataProcessor';
+import { DEFAULT_COLUMN_MAPPING, parseCsvString, processRawData, resolveColumnMapping, buildConsultantTeamGroupings, isSameSupportMember, getAvailableMonthsFromRecords } from './utils/dataProcessor';
 import { ColumnMapping, FilterState, ProcessedRecord, RawDataRow, ConsultantGrouping } from './types';
 import { Navbar } from './components/Navbar';
 import { ModernSidebar } from './components/ModernSidebar';
@@ -145,31 +145,11 @@ export default function App() {
         if (!filters.supervisors.includes(rec.supervisor)) return false;
       }
 
-      // 3. Nama Konsulting (Strict: saat konsultan dipilih, hanya tampilkan tim dari konsultan tersebut)
-      if (filters.consultants && filters.consultants.length > 0) {
-        const matchesConsultant = filters.consultants.some((cons) => {
-          if (!cons) return true;
-
-          const isDirectConsultant = rec.consultantName.toLowerCase() === cons.toLowerCase();
-          const dedicatedMembers = getDedicatedSupportTeamsForConsultant(cons);
-
-          // Jika konsultan memiliki dedicated support team, pastikan record hanya yang ditangani oleh tim konsultan tersebut
-          if (dedicatedMembers.length > 0) {
-            const allowedTeamNames = [
-              cons.toLowerCase(),
-              ...dedicatedMembers.map((m) => m.fullName.toLowerCase()),
-              ...dedicatedMembers.map((m) => m.nickname.toLowerCase()),
-            ];
-
-            // Pastikan penugasan utama (supportName) adalah anggota tim konsultan tersebut
-            const isMainSupportInTeam = allowedTeamNames.some((name) => rec.supportName.toLowerCase().includes(name));
-            return isDirectConsultant && isMainSupportInTeam;
-          }
-
-          return isDirectConsultant;
-        });
-
-        if (!matchesConsultant) return false;
+      // 3. Consultant ownership follows the raw Consultant column (or a uniquely verified mapping).
+      // Never exclude a valid visit only because a different team's support carried it out.
+      if (filters.consultants.length > 0 &&
+          !filters.consultants.some((cons) => rec.consultantName.toLowerCase() === cons.toLowerCase())) {
+        return false;
       }
 
       // 4. Area
@@ -209,18 +189,13 @@ export default function App() {
             const parts = cleanTarget.split(':');
             cleanTarget = parts[2] || cleanTarget;
           }
-          const target = cleanTarget.toLowerCase();
-          const nickname = getSupportNickname(cleanTarget).toLowerCase();
-
-          return (
-            rec.supportName.toLowerCase().includes(target) ||
-            (Boolean(nickname) && rec.supportName.toLowerCase().includes(nickname)) ||
-            rec.supportTeam.toLowerCase().includes(target) ||
-            (Boolean(nickname) && rec.supportTeam.toLowerCase().includes(nickname)) ||
-            rec.supportTeamList.some((stm) => stm.toLowerCase().includes(target) || (Boolean(nickname) && stm.toLowerCase().includes(nickname))) ||
-            rec.teamParticipants.some((p) => p.toLowerCase().includes(target) || (Boolean(nickname) && p.toLowerCase().includes(nickname))) ||
-            rec.jointSupportNames.some((j) => j.toLowerCase().includes(target) || (Boolean(nickname) && j.toLowerCase().includes(nickname)))
-          );
+          const participants = [
+            rec.supportName,
+            ...rec.supportTeamList,
+            ...rec.teamParticipants,
+            ...rec.jointSupportNames,
+          ];
+          return participants.some((person) => isSameSupportMember(person, cleanTarget));
         });
         if (!matchesMember) return false;
       }
