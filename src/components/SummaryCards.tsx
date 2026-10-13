@@ -1,6 +1,6 @@
 import React from 'react';
 import { ProcessedRecord } from '../types';
-import { Users, Building2, Clock, CheckCircle, CalendarCheck, UserX, UserCheck } from 'lucide-react';
+import { Users, Building2, Clock, CheckCircle, CalendarCheck, UserCheck } from 'lucide-react';
 import { formatDuration } from '../utils/dataProcessor';
 import { calculateVisitCheckInMetrics } from '../utils/visitMetrics';
 
@@ -44,10 +44,6 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({
   const recordsWithDuration = records.filter((r) => r.durationMinutes !== null && r.durationMinutes > 0 && r.durationMinutes <= 24 * 60);
   const totalDurationMinutes = recordsWithDuration.reduce((acc, curr) => acc + (curr.durationMinutes || 0), 0);
   const avgDurationMinutes = recordsWithDuration.length > 0 ? Math.round(totalDurationMinutes / recordsWithDuration.length) : null;
-
-  // Supervisor & Consultant unname count
-  const unnameSpvCount = records.filter((r) => r.supervisor.toLowerCase() === 'unname').length;
-  const unnameConsultantCount = records.filter((r) => r.consultantName.toLowerCase() === 'unname').length;
 
   return (
     <div className="modern-kpi-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
@@ -180,27 +176,6 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({
         </div>
       </div>
 
-      {/* 7. Supervisor & Konsulting 'unname' */}
-      <div className="bg-white border border-slate-200/90 hover:border-rose-300 rounded-2xl p-4 shadow-xs hover:shadow-sm flex flex-col justify-between transition-all group">
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-            SPV &amp; Kns "unname"
-          </span>
-          <div className="p-2 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 group-hover:bg-rose-600 group-hover:text-white transition-colors">
-            <UserX className="w-4 h-4" />
-          </div>
-        </div>
-        <div className="mt-2">
-          <div className="text-xl font-black text-rose-600 tracking-tight flex items-baseline space-x-1.5">
-            <span>{unnameSpvCount} SPV</span>
-            <span className="text-slate-400 font-normal">/</span>
-            <span className="text-cyan-700 text-sm font-bold">{unnameConsultantCount} Kns</span>
-          </div>
-          <div className="text-[11px] text-slate-500 mt-0.5 truncate">
-            <span>Baris kosong = "unname"</span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
