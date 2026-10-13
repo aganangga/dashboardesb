@@ -1,0 +1,17 @@
+{
+  "application": "ESB Consultant Dashboard",
+  "release": "2026-10-13-legacy-parity",
+  "source_commit": "61be69c014e4b6601adea5db31b0cd7b472754c7",
+  "features": [
+    "CSAT Dashboard",
+    "Modern Analytics",
+    "floating menu",
+    "consultant self-visit filter",
+    "date-first period Aug 2026",
+    "Check-In Rate unique Ticket ID + Date Visit",
+    "L1 analytics",
+    "visit table sorting and pagination",
+    "AI Insight"
+  ],
+  "deploy_note": "Redeploy requested; app calculations and approved UI source unchanged."
+}
