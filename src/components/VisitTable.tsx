@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { PageListPagination } from './PageListPagination';
+import { VisitParticipationChart } from './VisitParticipationChart';
 import { ProcessedRecord } from '../types';
 import { Eye, MapPin, User, Calendar, X, Building, Clock, Users, Briefcase } from 'lucide-react';
 
@@ -10,6 +11,7 @@ interface VisitTableProps {
 
 export const VisitTable: React.FC<VisitTableProps> = ({ records, deduplicateEnabled }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
   const [selectedRecord, setSelectedRecord] = useState<ProcessedRecord | null>(null);
   const pageSize = 15;
 
@@ -55,16 +57,31 @@ export const VisitTable: React.FC<VisitTableProps> = ({ records, deduplicateEnab
           </p>
         </div>
 
-        {/* Numbered page list: direct jump, Previous/Next, and range indicator. */}
-        <PageListPagination
-          currentPage={safePage}
-          pageSize={pageSize}
-          totalItems={displayedRecords.length}
-          onPageChange={setCurrentPage}
-          itemLabel="visit"
-        />
+        <div className="flex flex-wrap items-center gap-2 justify-end">
+          <div className="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-0.5" role="group" aria-label="Tampilan rincian kunjungan">
+            <button type="button" onClick={() => setViewMode('table')} aria-pressed={viewMode === 'table'}
+              className={'rounded-md px-3 py-1.5 text-xs font-semibold ' +
+                (viewMode === 'table' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600 hover:text-slate-900')}>Tabel</button>
+            <button type="button" onClick={() => setViewMode('chart')} aria-pressed={viewMode === 'chart'}
+              className={'rounded-md px-3 py-1.5 text-xs font-semibold ' +
+                (viewMode === 'chart' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600 hover:text-slate-900')}>Grafik</button>
+          </div>
+          {viewMode === 'table' && (
+            <PageListPagination
+              currentPage={safePage}
+              pageSize={pageSize}
+              totalItems={displayedRecords.length}
+              onPageChange={setCurrentPage}
+              itemLabel="visit"
+            />
+          )}
+        </div>
       </div>
 
+      {viewMode === 'chart' ? (
+        <VisitParticipationChart records={records} />
+      ) : (
+        <>
       {/* Table */}
       <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
         <table className="w-full text-left text-xs text-slate-700">
@@ -208,6 +225,9 @@ export const VisitTable: React.FC<VisitTableProps> = ({ records, deduplicateEnab
           <PageListPagination currentPage={safePage} pageSize={pageSize}
             totalItems={displayedRecords.length} onPageChange={setCurrentPage} itemLabel="visit" />
         </div>
+      )}
+
+        </>
       )}
 
       {/* Detail Modal */}
