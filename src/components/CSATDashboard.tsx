@@ -7,6 +7,8 @@ import { getMasterAssignmentsForSupport, isSameSupportMember } from '../utils/da
 
 type CsAtRow = CsatResponse & {
   matched: boolean;
+  hasTeamVisit: boolean;
+  hasSoloVisit: boolean;
   consultants: string[];
   supervisors: string[];
   areas: string[];
@@ -72,6 +74,8 @@ export const CSATDashboard: React.FC<Props> = ({ records, filters }) => {
         return {
           ...response,
           matched: isMatched,
+          hasTeamVisit: ownerVisits.some((visit) => visit.hasSupportTeam),
+          hasSoloVisit: ownerVisits.some((visit) => !visit.hasSupportTeam),
           consultants: isMatched
             ? unique(ownerVisits.map((v) => v.consultantName))
             : unique(master.map((entry) => entry.consultantName)),
@@ -113,7 +117,8 @@ export const CSATDashboard: React.FC<Props> = ({ records, filters }) => {
         ? value.split(':').slice(-1)[0] : value;
       return isSameSupportMember(row.support, member);
     })) return false;
-    if (filters.supportTeamFilter === 'with_team' && !row.matched) return false;
+    if (filters.supportTeamFilter === 'with_team' && !row.hasTeamVisit) return false;
+    if (filters.supportTeamFilter === 'solo' && !row.hasSoloVisit) return false;
     return true;
   }), [sourceRows, filters]);
 
