@@ -13,6 +13,7 @@ test('approved dashboard modules survive legacy HTML migration', () => {
   const visit = read('src/components/VisitTable.tsx');
   assert.ok(visit.includes('VisitParticipationChart'), 'restore table/chart view');
   assert.ok(visit.includes('PageListPagination'), 'keep list paging');
+  assert.ok(visit.includes('sortableHeading'), 'restore legacy header sorting');
 
   const filter = read('src/components/FilterBar.tsx');
   assert.ok(filter.includes('teamCountRecords'), 'member counts must follow active filters');
