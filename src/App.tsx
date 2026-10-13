@@ -16,6 +16,8 @@ import { CSATDashboard } from './components/CSATDashboard';
 import { AIInsightPanel } from './components/AIInsightPanel';
 import { ColumnMapperModal } from './components/ColumnMapperModal';
 import { UploadModal } from './components/UploadModal';
+import { OmniSyncModal } from './components/OmniSyncModal';
+import type { OmniSyncDataset } from './utils/omniSync';
 import { MultiSupportModal } from './components/MultiSupportModal';
 import { ShareModal } from './components/ShareModal';
 import { SlidersHorizontal, Layers, Clock, Table, BarChart2, CheckCircle2, Calendar, Share2, Sparkles } from 'lucide-react';
@@ -43,6 +45,8 @@ export default function App() {
   // Modals state
   const [isColumnMapperOpen, setIsColumnMapperOpen] = useState<boolean>(false);
   const [isUploadOpen, setIsUploadOpen] = useState<boolean>(false);
+  const [isOmniSyncOpen, setIsOmniSyncOpen] = useState<boolean>(false);
+  const [dataSource, setDataSource] = useState<'csv' | 'omni'>('csv');
   const [isMultiSupportOpen, setIsMultiSupportOpen] = useState<boolean>(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
   const [isAIInsightOpen, setIsAIInsightOpen] = useState<boolean>(false);
@@ -296,8 +300,18 @@ export default function App() {
   const handleDataLoaded = (newData: RawDataRow[], newHeaders: string[]) => {
     setRawData(newData);
     setHeaders(newHeaders);
+    setDataSource('csv');
     // Open column mapper automatically so user can inspect or adjust their specific data columns
     setIsColumnMapperOpen(true);
+  };
+
+  // Omni payload is only accepted after endpoint + schema validation and user review.
+  // All other existing processing, exclusion rules and KPI calculations stay intact.
+  const handleOmniDataLoaded = (dataset: OmniSyncDataset) => {
+    setRawData(dataset.data);
+    setHeaders(dataset.headers);
+    setMapping(resolveColumnMapping(dataset.headers));
+    setDataSource('omni');
   };
 
   const handleResetToDefault = () => {
@@ -305,6 +319,7 @@ export default function App() {
     setRawData(defaultParsed.data);
     setHeaders(defaultParsed.headers);
     setMapping(DEFAULT_COLUMN_MAPPING);
+    setDataSource('csv');
     handleResetFilters();
   };
 
@@ -403,6 +418,8 @@ export default function App() {
         deduplicateEnabled={filters.deduplicateVisits}
         onOpenColumnMapper={() => setIsColumnMapperOpen(true)}
         onOpenUpload={() => setIsUploadOpen(true)}
+        onOpenOmniSync={() => setIsOmniSyncOpen(true)}
+        dataSource={dataSource}
         onResetData={handleResetToDefault}
         onExportCsv={handleExportCsv}
         onDownloadSingleHtml={handleDownloadSingleHtml}
@@ -704,6 +721,12 @@ export default function App() {
         isOpen={isUploadOpen}
         onClose={() => setIsUploadOpen(false)}
         onDataLoaded={handleDataLoaded}
+      />
+
+      <OmniSyncModal
+        isOpen={isOmniSyncOpen}
+        onClose={() => setIsOmniSyncOpen(false)}
+        onApply={handleOmniDataLoaded}
       />
 
       <MultiSupportModal
