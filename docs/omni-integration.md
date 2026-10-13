@@ -40,16 +40,20 @@ React processRawData → master team → KPI/check-in → CSAT/filter/pagination
 ```json
 [
   {"ticket_id":"ESB-001","date_visit":"2026-10-13","nama_support":"Tegar Rangga",
-   "nama_consultant":"Dika Anugerah Pratama","status":"COMPLETED"}
+   "nama_consultant":"Dika Anugerah Pratama","status":"COMPLETED",
+   "jadwal_agenda":"13/10/2026 09:00:00","check_in_time":"13/10/2026 09:10:00",
+   "check_out_time":"13/10/2026 11:00:00"}
 ]
 ```
 
 **JSON berbungkus**:
 ```json
-{"data":{"records":[{"Ticket ID":"ESB-001","Date Visit":"13/10/2026","Nama Support":"Tegar Rangga"}]}}
+{"data":{"records":[{"Ticket ID":"ESB-001","Date Visit":"13/10/2026","Nama Support":"Tegar Rangga",
+"Status":"COMPLETED","Jadwal Agenda":"13/10/2026 09:00:00",
+"Check In Time":"13/10/2026 09:10:00","Check Out Time":"13/10/2026 11:00:00"}]}}
 ```
 
-**CSV**: berisi sekurang-kurangnya kolom `Ticket ID,Date Visit`. Nama berformat `snake_case` umum dinormalisasi otomatis; tanggal `yyyy-mm-dd` dinormalisasi ke `dd/mm/yyyy`. Kolom master ESB lain tetap bisa disesuaikan lewat **Sesuaikan Kolom Data**.
+**CSV**: minimal wajib menyediakan kolom `Ticket ID`, `Date Visit`, `Status`, `Nama Support`, `Jadwal Agenda`, `Check In Time`, dan `Check Out Time`. Nama berformat `snake_case` umum dinormalisasi otomatis; tanggal `yyyy-mm-dd` dinormalisasi ke `dd/mm/yyyy`. Kolom master ESB lain tetap bisa disesuaikan lewat **Sesuaikan Kolom Data**.
 
 Endpoint wajib menyediakan **seluruh data visit yang diminta** dalam satu respons yang tidak melebihi 10 MB/20.000 baris. Jika Omni menggunakan pagination atau nested object field, adapter perlu disesuaikan berdasarkan kontrak API yang sebenarnya; sistem tidak menebak halaman lanjutan atau mengimpor data parsial.
 
