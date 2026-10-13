@@ -31,8 +31,11 @@ Checkout telah diselaraskan dengan pembaruan remote `896d86b`. Dashboard sekaran
 dibangun dari React (`src`) ke `dist`, dengan integrasi Omni yang sudah ada tetap
 terjaga. Dropdown worksheet memuat data langsung dari sumber Google Sheets yang sudah
 bisa dibaca publik, melalui fungsi Netlify `/api/worksheets?sheet=<id>`.
-Pemilihan RAW DATA VISIT memperbarui data analitik kunjungan; tiga worksheet lain
-memiliki tabel, pencarian dan pagination masing-masing. Muat ulang membaca sumber
+Workspace memiliki empat subdashboard. Data Visit mempertahankan analitik kunjungan.
+Data Tiket memiliki KPI tiket/H+0/H+1, tren bulan, departemen, area, dan PIC. CSAT
+memiliki KPI rating/kepuasan/feedback serta tren respons. Team Master memiliki
+komposisi jabatan dan direktori karyawan. Setiap subdashboard memiliki filter sesuai
+kolom sumber; tabel rincian berada dalam bagian yang dapat dibuka. Muat ulang membaca sumber
 terbaru. Bila pembacaan gagal, data sebelumnya tetap tersedia untuk worksheet itu.
 Ini bukan bukti bahwa Supabase telah disinkronkan: jadwal database tetap proses
 terpisah. Pembacaan database dari UI belum diaktifkan; jangan membuka tabel atau
@@ -105,3 +108,17 @@ Versi file:// memakai data visit tersimpan; worksheet online memerlukan koneksi.
 Test importer menggunakan respons jaringan tiruan. Skema juga divalidasi menggunakan
 PostgreSQL embedded (PGlite), termasuk snapshot, pengulangan, rollback dan hak akses.
 Tes ini tidak menggantikan uji end-to-end pada proyek Supabase dan sheet sebenarnya.
+
+## Definisi metrik subdashboard
+
+- Tiket: hanya baris dengan bulan bernomor dan PIC yang dihitung. Baris formula
+  tanpa identitas PIC-periode diabaikan. Total tiket menjumlahkan `Total Ticket`;
+  proporsi H+0 adalah jumlah `Total H+0` dibagi jumlah `Total H+0 + Total H+1`,
+  bukan rata-rata persentase antar-PIC. `Visit Qty` adalah angka pada sheet tiket,
+  terpisah dari deduplikasi kunjungan dashboard Visit.
+- CSAT: rata-rata dan tingkat kepuasan memakai rating valid 1–5; Puas/Sangat Puas
+  masuk respons puas. Respons dengan rating tidak dikenal tidak masuk pembagi.
+  Bulan menggunakan `Created At (Date Created)` tanpa menggeser tanggal sumber.
+- Team Master: jumlah karyawan unik berdasarkan email (fallback nama), dengan
+  klasifikasi supervisor/consultant/implementor dari kolom `Job Tittle`.
+  Tidak diasumsikan ada relasi manajer yang tidak tercantum pada worksheet ini.

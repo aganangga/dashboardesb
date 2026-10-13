@@ -307,6 +307,11 @@ export default function App() {
     setIsColumnMapperOpen(true);
   };
 
+  const handleWorksheetSelect = (id: string) => {
+    setSelectedWorksheet(id);
+    if (id === 'visit' && activeTab === 'csat') setActiveTab('overview');
+  };
+
   const handleWorksheetVisitLoaded = (newData: RawDataRow[], newHeaders: string[]) => {
     setRawData(newData);
     setHeaders(newHeaders);
@@ -418,7 +423,7 @@ export default function App() {
 
   return (
     <div className="modern-shell min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-indigo-600 selection:text-white">
-      <ModernSidebar activeTab={activeTab} onSelect={tab => { setSelectedWorksheet('visit'); setActiveTab(tab); }} />
+      <ModernSidebar activeTab={activeTab} selectedWorksheet={selectedWorksheet} onSelectWorksheet={handleWorksheetSelect} onSelect={tab => { if (tab === 'csat') handleWorksheetSelect('csat'); else { handleWorksheetSelect('visit'); setActiveTab(tab); } }} />
 
       {/* Top Navigation */}
       {selectedWorksheet === 'visit' && <Navbar
@@ -437,7 +442,7 @@ export default function App() {
 
       {/* Main Container */}
       <main className="modern-main flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        <WorksheetDashboard selected={selectedWorksheet} onSelect={setSelectedWorksheet} onVisitLoaded={handleWorksheetVisitLoaded} />
+        <WorksheetDashboard selected={selectedWorksheet} onSelect={handleWorksheetSelect} onVisitLoaded={handleWorksheetVisitLoaded} />
         {selectedWorksheet === 'visit' && <>
         {/* Banner with user options callout */}
         <div className="modern-welcome bg-gradient-to-r from-indigo-50/80 via-white to-purple-50/80 border border-indigo-100 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
@@ -560,7 +565,7 @@ export default function App() {
               <span>Tabel Rincian Data</span>
             </button>
             <button
-              onClick={() => setActiveTab('csat')}
+              onClick={() => handleWorksheetSelect('csat')}
               className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
                 activeTab === 'csat' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
               }`}

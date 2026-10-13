@@ -15,6 +15,8 @@ type DashboardTab = 'overview' | 'monthly' | 'breakdowns' | 'comparison' | 'tabl
 interface ModernSidebarProps {
   activeTab: DashboardTab;
   onSelect: (tab: DashboardTab) => void;
+  selectedWorksheet?: string;
+  onSelectWorksheet?: (id: string) => void;
 }
 
 const navigation: Array<{ id: DashboardTab; label: string; Icon: React.ComponentType<{ className?: string }> }> = [
@@ -26,7 +28,7 @@ const navigation: Array<{ id: DashboardTab; label: string; Icon: React.Component
   { id: 'csat', label: 'CSAT · Penilaian Client', Icon: Star },
 ];
 
-export const ModernSidebar: React.FC<ModernSidebarProps> = ({ activeTab, onSelect }) => {
+export const ModernSidebar: React.FC<ModernSidebarProps> = ({ activeTab, onSelect, selectedWorksheet = 'visit', onSelectWorksheet }) => {
   // Keep sidebar as an overlay on desktop and mobile, not a permanent layout column.
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -106,7 +108,12 @@ export const ModernSidebar: React.FC<ModernSidebarProps> = ({ activeTab, onSelec
               </button>
             </div>
 
-            <div className="modern-sidebar-label">WORKSPACE</div>
+            <div className="modern-sidebar-label">SUBDASHBOARD</div>
+            <nav className="modern-sidebar-nav" aria-label="Pilih subdashboard">
+              {[['visit','Data Visit'],['ticket','Data Tiket'],['team','Team Master'],['csat','CSAT']].map(([id,label])=><button key={id} type="button" className="modern-sidebar-link" data-active={selectedWorksheet===id} aria-current={selectedWorksheet===id?'page':undefined} onClick={()=>{onSelectWorksheet?.(id);setIsOpen(false);}}><LayoutDashboard className="modern-sidebar-icon"/><span>{label}</span></button>)}
+            </nav>
+            {selectedWorksheet === 'visit' && <>
+            <div className="modern-sidebar-label">ANALISIS VISIT</div>
             <nav className="modern-sidebar-nav" aria-label="Menu analisis">
               {navigation.map(({ id, label, Icon }) => (
                 <button
@@ -123,6 +130,7 @@ export const ModernSidebar: React.FC<ModernSidebarProps> = ({ activeTab, onSelec
               ))}
             </nav>
 
+            </>}
             <div className="modern-sidebar-footer">
               <span className="modern-sidebar-footer-icon">ESB</span>
               <span>
