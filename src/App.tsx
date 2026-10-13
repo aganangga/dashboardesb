@@ -13,11 +13,12 @@ import { MonthlyView } from './components/MonthlyView';
 import { CheckInOutComparison } from './components/CheckInOutComparison';
 import { VisitTable } from './components/VisitTable';
 import { CSATDashboard } from './components/CSATDashboard';
+import { AIInsightPanel } from './components/AIInsightPanel';
 import { ColumnMapperModal } from './components/ColumnMapperModal';
 import { UploadModal } from './components/UploadModal';
 import { MultiSupportModal } from './components/MultiSupportModal';
 import { ShareModal } from './components/ShareModal';
-import { SlidersHorizontal, Layers, Clock, Table, BarChart2, CheckCircle2, Calendar, Share2 } from 'lucide-react';
+import { SlidersHorizontal, Layers, Clock, Table, BarChart2, CheckCircle2, Calendar, Share2, Sparkles } from 'lucide-react';
 
 export default function App() {
   // Parse initial dataset (or load pre-injected custom data if running inside downloaded singlefile HTML)
@@ -44,6 +45,7 @@ export default function App() {
   const [isUploadOpen, setIsUploadOpen] = useState<boolean>(false);
   const [isMultiSupportOpen, setIsMultiSupportOpen] = useState<boolean>(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+  const [isAIInsightOpen, setIsAIInsightOpen] = useState<boolean>(false);
 
   // Filters state (deduplication enabled by default as requested)
   const [filters, setFilters] = useState<FilterState>({
@@ -426,7 +428,16 @@ export default function App() {
             </p>
           </div>
 
-          <div className="flex items-center space-x-2 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => setIsAIInsightOpen(true)}
+              className="px-3 py-2 rounded-xl text-xs font-semibold text-violet-700 border border-violet-200 bg-violet-50 hover:bg-violet-100 flex items-center gap-1.5 shadow-2xs"
+              title="Analisis agregat sesuai filter dashboard"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>AI Insight</span>
+            </button>
             <button
               onClick={() => setIsShareModalOpen(true)}
               className="px-3 py-2 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-indigo-700 border border-indigo-200 shadow-2xs transition-all flex items-center space-x-1.5 cursor-pointer"
@@ -706,6 +717,8 @@ export default function App() {
         onClose={() => setIsShareModalOpen(false)}
         onDownloadHtml={handleDownloadSingleHtml}
       />
+
+      <AIInsightPanel isOpen={isAIInsightOpen} onClose={() => setIsAIInsightOpen(false)} records={filteredRecords} />
 
       {/* Footer */}
       <footer className="border-t border-slate-200 bg-white py-4 text-center text-xs text-slate-500">

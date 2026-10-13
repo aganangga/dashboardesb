@@ -1,3 +1,11 @@
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/api/insights"
+  to = "/.netlify/functions/insights"
+  status = 200
+
 [build]
   command = "npm install --no-audit --no-fund && npm run build"
   publish = "dist"

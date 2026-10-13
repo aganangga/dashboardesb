@@ -2,6 +2,7 @@ import React from 'react';
 import { ProcessedRecord } from '../types';
 import { Users, Building2, Clock, CheckCircle, CalendarCheck, UserX, UserCheck } from 'lucide-react';
 import { formatDuration } from '../utils/dataProcessor';
+import { calculateVisitCheckInMetrics } from '../utils/visitMetrics';
 
 interface SummaryCardsProps {
   records: ProcessedRecord[];
@@ -35,10 +36,9 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({
   const completedCount = records.filter((r) => r.status.toUpperCase() === 'COMPLETED').length;
   const cancelledCount = records.filter((r) => r.status.toUpperCase() === 'CANCEL').length;
 
-  // Check In and Check Out rates
-  const checkedInRecords = records.filter((r) => r.checkInDateObj !== null);
-  const checkedInCount = checkedInRecords.length;
-  const checkInRate = totalRecords > 0 ? Math.round((checkedInCount / totalRecords) * 100) : 0;
+  // Rate is based on unique Ticket ID + Date Visit, consistent with Total Visit.
+  const { checkedInVisits: checkedInCount, totalVisits: checkInTotalVisits, checkInRate } =
+    calculateVisitCheckInMetrics(records);
 
   // Duration
   const recordsWithDuration = records.filter((r) => r.durationMinutes !== null && r.durationMinutes > 0 && r.durationMinutes <= 24 * 60);
@@ -175,7 +175,7 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({
         <div className="mt-2">
           <div className="text-2xl font-black text-emerald-700 tracking-tight">{checkInRate}%</div>
           <div className="text-[11px] text-slate-500 mt-0.5 truncate">
-            <span>{checkedInCount} dari {totalRecords} row</span>
+            <span>{checkedInCount} dari {checkInTotalVisits} visit unik</span>
           </div>
         </div>
       </div>

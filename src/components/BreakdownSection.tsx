@@ -17,6 +17,7 @@ import {
 } from 'recharts';
 import { Calendar, MapPin, UserCheck, BookOpen, BarChart3, PieChartIcon, Briefcase, Users, Sparkles, ExternalLink, Check, TrendingUp, GitFork, Network, Layers, ShieldCheck, Search, FileSpreadsheet, CheckCircle2, Download } from 'lucide-react';
 import { formatDuration, buildSpvL2L1Groupings, MASTER_DATA_TEAM } from '../utils/dataProcessor';
+import { SpvL1Analytics } from './SpvL1Analytics';
 
 interface BreakdownSectionProps {
   records: ProcessedRecord[];
@@ -829,6 +830,12 @@ export const BreakdownSection: React.FC<BreakdownSectionProps> = ({
               );
             })}
           </div>
+
+          <SpvL1Analytics
+            records={records}
+            visibleSupervisors={filteredSpvGroupings.map((group) => group.supervisor)}
+            onSelectSpvGrouping={onSelectSpvGrouping}
+          />
 
           {/* Detailed Tabular Matrix: SPV - L2 - L1 */}
           <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white shadow-2xs mt-4">
