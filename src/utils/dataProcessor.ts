@@ -369,7 +369,6 @@ export const CONSULTANT_TO_SPV_MAP: Record<string, string> = {
 export const MASTER_DATA_TEAM: MasterDataTeamItem[] = [
   // SPV 1: Jane Margareth Widjaja (4 Konsultan Lead)
   { no: 1, spv: 'Jane Margareth Widjaja', l2: 'Ayu Febrina Sianturi', l1FullName: 'Fera Eka Waty N', l1Nickname: 'Fera', role: 'L1 Support', status: 'Aktif' },
-  { no: 2, spv: 'Jane Margareth Widjaja', l2: 'Ayu Febrina Sianturi', l1FullName: 'Tegar Rangga', l1Nickname: 'Tegar', role: 'L1 Support', status: 'Aktif' },
   { no: 3, spv: 'Jane Margareth Widjaja', l2: 'Ayu Febrina Sianturi', l1FullName: 'Rafi Mahasin', l1Nickname: 'Rafi', role: 'L1 Support', status: 'Aktif' },
   { no: 4, spv: 'Jane Margareth Widjaja', l2: 'Ayu Febrina Sianturi', l1FullName: 'Nabila Aprilia Nugrahany', l1Nickname: 'Nabila', role: 'L1 Support', status: 'Aktif' },
 
@@ -541,8 +540,8 @@ export function resolveSpvAndConsultant(
   const possible = [...new Set(narrowed.map((item) => item.consultantName))];
   const possibleSpvs = [...new Set(narrowed.map((item) => item.supervisor))];
 
-  // A support registered under two L2s (Tegar: Ayu/Dika) remains a shared
-  // master group if the source ticket has no explicit consultant owner.
+  // A support registered under multiple L2s remains a shared master group
+  // only when the source ticket has no explicit consultant owner.
   // This is not an attribution of the same visit to either L2 individually.
   const consultantName = possible.length === 1
     ? possible[0]
@@ -554,6 +553,13 @@ export function resolveSpvAndConsultant(
     : selectedSpv || 'Belum Terpetakan';
 
   return { supervisor, consultantName };
+}
+
+// Operational exclusion requested: Jane's direct SPV visit only.
+// Preserve the immutable raw CSV and all Jane SPV team memberships.
+const EXCLUDED_DIRECT_VISIT_TICKET_IDS = new Set(['ESB-S28QBG']);
+export function isIncludedDashboardVisit(record: Pick<ProcessedRecord, 'ticketId'>): boolean {
+  return !EXCLUDED_DIRECT_VISIT_TICKET_IDS.has(record.ticketId.trim().toUpperCase());
 }
 
 export function processRawData(
