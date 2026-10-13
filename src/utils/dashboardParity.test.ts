@@ -10,6 +10,9 @@ test('approved dashboard modules survive legacy HTML migration', () => {
     assert.ok(app.includes('<' + module), module + ' must be rendered');
   }
 
+  assert.ok(app.includes('<OmniSyncModal'), 'Omni sync modal must be mounted');
+  assert.ok(read('src/components/Navbar.tsx').includes('btn-omni-sync'), 'Omni sync button must be available');
+
   const visit = read('src/components/VisitTable.tsx');
   assert.ok(visit.includes('VisitParticipationChart'), 'restore table/chart view');
   assert.ok(visit.includes('PageListPagination'), 'keep list paging');
@@ -26,6 +29,16 @@ test('Check-In Rate is derived from the unique-visit shared metric', () => {
   assert.ok(summary.includes('{checkInTotalVisits} − {anomalyVisits} anomali'));
   assert.ok(read('src/utils/visitMetrics.ts').includes('nonAnomalousVisits / totalVisits'));
   assert.ok(!summary.includes('checkedInCount / totalRecords'));
+});
+
+test('Omni API uses Netlify proxy, never stores API token in browser bundle', () => {
+  const server = read('netlify/functions/omni-visits.mjs');
+  assert.ok(server.includes('process.env.OMNI_API_TOKEN'));
+  assert.ok(server.includes('OMNI_DASHBOARD_ACCESS_KEY'));
+  const ui = read('src/components/OmniSyncModal.tsx');
+  assert.ok(!ui.includes('OMNI_API_TOKEN'));
+  assert.ok(ui.includes('x-dashboard-access-key'));
+  assert.ok(read('netlify.toml').includes('"/api/omni/visits"'));
 });
 
 test('AI endpoint does not expose secret key through the Vite client', () => {

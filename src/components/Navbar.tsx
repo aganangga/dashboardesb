@@ -1,5 +1,5 @@
 import React from 'react';
-import { SlidersHorizontal, UploadCloud, RefreshCw, Download, FileCode, ShieldCheck, Share2 } from 'lucide-react';
+import { SlidersHorizontal, UploadCloud, RefreshCw, Download, FileCode, ShieldCheck, Share2, CloudDownload } from 'lucide-react';
 
 interface NavbarProps {
   totalRecords: number;
@@ -7,6 +7,8 @@ interface NavbarProps {
   deduplicateEnabled: boolean;
   onOpenColumnMapper: () => void;
   onOpenUpload: () => void;
+  onOpenOmniSync: () => void;
+  dataSource: 'csv' | 'omni';
   onResetData: () => void;
   onExportCsv: () => void;
   onDownloadSingleHtml: () => void;
@@ -19,6 +21,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   deduplicateEnabled,
   onOpenColumnMapper,
   onOpenUpload,
+  onOpenOmniSync,
+  dataSource,
   onResetData,
   onExportCsv,
   onDownloadSingleHtml,
@@ -40,7 +44,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </h1>
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                   <ShieldCheck className="w-3 h-3 mr-1" />
-                  Live Sync
+                  {dataSource === 'omni' ? 'Omni API' : 'Data CSV'}
                 </span>
               </div>
               <p className="text-xs text-slate-500">
@@ -84,6 +88,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Share2 className="w-3.5 h-3.5 mr-1.5 text-indigo-600" />
               Bagikan / Link Publik
+            </button>
+
+            <button
+              id="btn-omni-sync"
+              type="button"
+              onClick={onOpenOmniSync}
+              className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 shadow-2xs transition-all"
+              title="Tarik dan verifikasi data visit dari Omni Internal (API)">
+              <CloudDownload className="w-3.5 h-3.5 mr-1.5"/>
+              Sync Omni
             </button>
 
             <button
