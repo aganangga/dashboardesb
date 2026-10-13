@@ -33,6 +33,7 @@ export default async function handler(request) {
     totalVisits: Number(c.totalVisits) || 0,
     totalRows: Number(c.totalRows) || 0,
     checkedInVisits: Number(c.checkedInVisits) || 0,
+    anomalyVisits: Number(c.anomalyVisits) || 0,
     checkInRate: Number(c.checkInRate) || 0,
     missingCheckouts: Number(c.missingCheckouts) || 0,
     lateVisits: Number(c.lateVisits) || 0,
@@ -47,7 +48,7 @@ export default async function handler(request) {
   const prompt = [
     'Berperan sebagai analis operasional ESB dalam bahasa Indonesia yang ringkas.',
     'Gunakan hanya data agregat yang tersedia; jangan mengarang atau menebak.',
-    'Definisi Check-In Rate = visit unik Ticket ID + Date Visit dengan check-in valid / seluruh visit unik.',
+    'Definisi Check-In Rate (KPI yang disetujui) = (Total Visit unik - Anomali Menginap unik) / Total Visit unik × 100%.',
     'Tawarkan tindak lanjut operasional bila relevan.',
     'Pertanyaan: ' + question,
     'Data agregat: ' + JSON.stringify(data),
