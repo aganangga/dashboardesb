@@ -847,6 +847,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                               <div className="text-[10px] text-slate-500 truncate max-w-[170px] sm:max-w-[190px]">
                                 {m.fullName}
                               </div>
+                              {m.isConsultant && (
+                                <span className="inline-flex rounded px-1.5 py-0.5 bg-blue-50 border border-blue-100 text-[9px] font-semibold text-blue-700">
+                                  Konsultan L2 · ikut visit
+                                </span>
+                              )}
                             </div>
                           </div>
 
