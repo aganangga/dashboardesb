@@ -507,7 +507,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                     : 'bg-slate-50 border-slate-200/90 text-slate-800'
                 }`}
               >
-                <option value="">Semua Bulan (Kustom)</option>
+                <option value="">Semua Bulan (mulai Agustus 2026)</option>
                 {availableMonths.map((m) => (
                   <option key={m.key} value={m.key}>
                     {m.label} ({m.visitCount} visit)
@@ -517,7 +517,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
               <div className="flex items-center space-x-1">
                 <input
-                  type="date"
+                  type="date" min="2026-08-01"
                   value={filters.dateRangeStart}
                   onChange={(e) => onFilterChange({ dateRangeStart: e.target.value, selectedMonth: '' })}
                   className="w-1/2 bg-slate-50 border border-slate-200/90 rounded-lg px-1 py-0.5 text-[10px] text-slate-800 focus:bg-white focus:outline-none"
@@ -525,7 +525,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 />
                 <span className="text-slate-400 text-[10px]">-</span>
                 <input
-                  type="date"
+                  type="date" min="2026-08-01"
                   value={filters.dateRangeEnd}
                   onChange={(e) => onFilterChange({ dateRangeEnd: e.target.value, selectedMonth: '' })}
                   className="w-1/2 bg-slate-50 border border-slate-200/90 rounded-lg px-1 py-0.5 text-[10px] text-slate-800 focus:bg-white focus:outline-none"
@@ -536,7 +536,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           ) : (
             <div className="flex items-center space-x-1">
               <input
-                type="date"
+                type="date" min="2026-08-01"
                 value={filters.dateRangeStart}
                 onChange={(e) => onFilterChange({ dateRangeStart: e.target.value })}
                 className="w-1/2 bg-slate-50 border border-slate-200/90 rounded-lg px-1.5 py-1 text-[11px] text-slate-800 focus:bg-white focus:outline-none"
@@ -544,7 +544,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               />
               <span className="text-slate-400 text-xs">-</span>
               <input
-                type="date"
+                type="date" min="2026-08-01"
                 value={filters.dateRangeEnd}
                 onChange={(e) => onFilterChange({ dateRangeEnd: e.target.value })}
                 className="w-1/2 bg-slate-50 border border-slate-200/90 rounded-lg px-1.5 py-1 text-[11px] text-slate-800 focus:bg-white focus:outline-none"
