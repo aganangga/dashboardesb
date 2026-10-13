@@ -2,6 +2,11 @@
   directory = "netlify/functions"
 
 [[redirects]]
+  from = "/api/omni/visits"
+  to = "/.netlify/functions/omni-visits"
+  status = 200
+
+[[redirects]]
   from = "/api/insights"
   to = "/.netlify/functions/insights"
   status = 200
