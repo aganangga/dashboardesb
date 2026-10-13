@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { DEFAULT_RAW_CSV } from './data/rawCsv';
-import { DEFAULT_COLUMN_MAPPING, parseCsvString, processRawData, resolveColumnMapping, buildConsultantTeamGroupings, isSameSupportMember, getAvailableMonthsFromRecords } from './utils/dataProcessor';
+import { DEFAULT_COLUMN_MAPPING, parseCsvString, processRawData, resolveColumnMapping, buildConsultantTeamGroupings, isSameSupportMember, getAvailableMonthsFromRecords, isIncludedDashboardVisit } from './utils/dataProcessor';
 import { ColumnMapping, FilterState, ProcessedRecord, RawDataRow, ConsultantGrouping } from './types';
 import { Navbar } from './components/Navbar';
 import { ModernSidebar } from './components/ModernSidebar';
@@ -68,7 +68,7 @@ export default function App() {
 
   // Process data with active column mapping
   const allRecords: ProcessedRecord[] = useMemo(() => {
-    return processRawData(rawData, mapping);
+    return processRawData(rawData, mapping).filter(isIncludedDashboardVisit);
   }, [rawData, mapping]);
 
   // Unique filter dropdown options derived from processed records
