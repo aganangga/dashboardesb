@@ -50,7 +50,7 @@ export const MonthlyView: React.FC<MonthlyViewProps> = ({
 }) => {
   // Extract all available months from the full dataset
   const availableMonths = useMemo(() => {
-    return getAvailableMonthsFromRecords(allRecords);
+    return getAvailableMonthsFromRecords(allRecords).filter((item) => item.key >= '2026-08');
   }, [allRecords]);
 
   // Selected month key ('all' or 'YYYY-MM')
