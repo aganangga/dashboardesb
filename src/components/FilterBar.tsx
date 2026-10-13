@@ -78,7 +78,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
   const hasActiveFilters =
     filters.search !== '' ||
-    filters.dateRangeStart !== '' ||
+    (filters.dateRangeStart !== '' && filters.dateRangeStart !== '2026-08-01') ||
     filters.dateRangeEnd !== '' ||
     filters.supervisors.length > 0 ||
     filters.consultants.length > 0 ||
