@@ -1,5 +1,5 @@
 import React from 'react';
-import { FilterState, ConsultantGrouping, DedicatedSupportMember } from '../types';
+import { FilterState, ConsultantGrouping, DedicatedSupportMember, ProcessedRecord } from '../types';
 import {
   Search,
   Calendar,
@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import {
   getDedicatedSupportTeamsForConsultant,
+  isSameSupportMember,
   findConsultantForSupportMember,
   CONSULTANT_DEDICATED_TEAMS,
   AvailableMonthInfo,
@@ -37,6 +38,7 @@ interface FilterBarProps {
   availableStatuses: string[];
   availableMonths?: AvailableMonthInfo[];
   consultantGroupings?: ConsultantGrouping[];
+  teamCountRecords: ProcessedRecord[];
   totalFilteredRecords: number;
   totalFilteredVisits: number;
   supportTeamVisitsCount: number;
@@ -54,6 +56,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   availableBookTypes,
   availableMonths = [],
   consultantGroupings = [],
+  teamCountRecords,
   totalFilteredRecords,
   totalFilteredVisits,
   supportTeamVisitsCount,
@@ -126,65 +129,65 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     return undefined;
   }, [selectedConsultant, consultantGroupings]);
 
-  // Mapping of member visit counts from consultant group
+  // Include the consultant (L2) as a real visitor next to their L1 roster.
+  const teamMembers = React.useMemo<DedicatedSupportMember[]>(() => {
+    if (!selectedConsultant) return [];
+    return [{
+      fullName: selectedConsultant,
+      nickname: selectedConsultant.split(' ')[0],
+      displayName: selectedConsultant + ' (Konsultan L2)',
+    }, ...dedicatedMembers.filter((member) => member.fullName.toLowerCase() !== selectedConsultant.toLowerCase())];
+  }, [selectedConsultant, dedicatedMembers]);
+
+  const teamVisitCount = React.useMemo(
+    () => new Set(teamCountRecords.map((record) => record.primaryVisitKey)).size,
+    [teamCountRecords]
+  );
+
+  // Unique ticket+date for actual participants; consultant ownership alone is
+  // not proof that they personally visited an outlet.
   const memberVisitCountMap = React.useMemo(() => {
-    const map = new Map<string, number>();
-    if (activeGroup?.supportMembers) {
-      activeGroup.supportMembers.forEach((sm) => {
-        map.set(sm.fullName.toLowerCase(), sm.count);
-        if (sm.nickname) {
-          map.set(sm.nickname.toLowerCase(), sm.count);
+    const memberVisitKeys = new Map<string, Set<string>>();
+    teamMembers.forEach((member) => memberVisitKeys.set(member.fullName.toLowerCase(), new Set()));
+    teamCountRecords.forEach((record) => {
+      const participants = [
+        record.supportName,
+        ...record.supportTeamList,
+        ...record.teamParticipants,
+        ...record.jointSupportNames,
+      ];
+      teamMembers.forEach((member) => {
+        if (participants.some((name) => isSameSupportMember(name, member.fullName))) {
+          memberVisitKeys.get(member.fullName.toLowerCase())!.add(record.primaryVisitKey);
         }
       });
-    }
-    return map;
-  }, [activeGroup]);
+    });
+    return new Map([...memberVisitKeys.entries()].map(([name, visits]) => [name, visits.size]));
+  }, [teamCountRecords, teamMembers]);
 
-  // Detailed support team members with visits count, percentage, sorting, and search
   const detailedTeamList = React.useMemo(() => {
-    const totalConsultantVisits = activeGroup?.totalVisits || totalFilteredVisits || 1;
-
-    const list = dedicatedMembers.map((m) => {
-      const count =
-        memberVisitCountMap.get(m.fullName.toLowerCase()) ||
-        memberVisitCountMap.get(m.nickname.toLowerCase()) ||
-        0;
-      const percentage = totalConsultantVisits > 0 ? Math.round((count / totalConsultantVisits) * 100) : 0;
+    const list = teamMembers.map((member) => {
+      const count = memberVisitCountMap.get(member.fullName.toLowerCase()) ?? 0;
       return {
-        ...m,
+        ...member,
+        isConsultant: member.fullName.toLowerCase() === selectedConsultant.toLowerCase(),
         count,
-        percentage,
+        percentage: teamVisitCount ? Math.round((count / teamVisitCount) * 100) : 0,
       };
     });
-
-    // Filter by search query if user types in dropdown search
-    const filtered = teamSearchQuery.trim()
-      ? list.filter(
-          (m) =>
-            m.nickname.toLowerCase().includes(teamSearchQuery.toLowerCase()) ||
-            m.fullName.toLowerCase().includes(teamSearchQuery.toLowerCase())
-        )
+    const searched = teamSearchQuery.trim()
+      ? list.filter((member) =>
+          member.fullName.toLowerCase().includes(teamSearchQuery.trim().toLowerCase()) ||
+          member.nickname.toLowerCase().includes(teamSearchQuery.trim().toLowerCase()))
       : list;
-
-    // Apply sorting
-    return [...filtered].sort((a, b) => {
-      if (teamSortBy === 'visit_desc') {
-        if (b.count !== a.count) return b.count - a.count;
-        return a.nickname.localeCompare(b.nickname);
-      }
-      if (teamSortBy === 'visit_asc') {
-        if (a.count !== b.count) return a.count - b.count;
-        return a.nickname.localeCompare(b.nickname);
-      }
-      if (teamSortBy === 'name_asc') {
-        return a.nickname.localeCompare(b.nickname);
-      }
-      if (teamSortBy === 'name_desc') {
-        return b.nickname.localeCompare(a.nickname);
-      }
+    return [...searched].sort((a, b) => {
+      if (teamSortBy === 'visit_desc') return b.count - a.count || a.nickname.localeCompare(b.nickname);
+      if (teamSortBy === 'visit_asc') return a.count - b.count || a.nickname.localeCompare(b.nickname);
+      if (teamSortBy === 'name_asc') return a.nickname.localeCompare(b.nickname);
+      if (teamSortBy === 'name_desc') return b.nickname.localeCompare(a.nickname);
       return 0;
     });
-  }, [dedicatedMembers, memberVisitCountMap, activeGroup, totalFilteredVisits, teamSearchQuery, teamSortBy]);
+  }, [teamMembers, memberVisitCountMap, selectedConsultant, teamVisitCount, teamSearchQuery, teamSortBy]);
 
   // Currently selected member detail object
   const selectedMemberObj = React.useMemo(() => {
@@ -398,13 +401,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               className="w-full bg-amber-50/50 border border-amber-300 rounded-lg px-2.5 py-1.5 text-xs text-amber-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-500 font-medium"
             >
               <option value="">
-                Semua Tim {selectedConsultant.split(' ')[0]} ({dedicatedMembers.map((m) => m.nickname).join(', ') || 'Semua'})
+                Semua Tim {selectedConsultant.split(' ')[0]} ({teamMembers.map((m) => m.nickname).join(', ') || 'Semua'})
               </option>
-              {dedicatedMembers.map((m) => {
-                const cnt = memberVisitCountMap.get(m.fullName.toLowerCase()) || memberVisitCountMap.get(m.nickname.toLowerCase()) || 0;
+              {teamMembers.map((m) => {
+                const cnt = memberVisitCountMap.get(m.fullName.toLowerCase()) ?? 0;
                 return (
                   <option key={m.fullName} value={m.fullName}>
-                    {m.nickname} ({m.fullName}) {cnt > 0 ? `— ${cnt} visit` : ''}
+                    {m.nickname} ({m.fullName}) {m.fullName === selectedConsultant ? '[Konsultan]' : ''} — {cnt} visit
                   </option>
                 );
               })}
@@ -419,7 +422,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               <option value="">Semua Support Team (Pilih Konsulting dahulu)</option>
               {Object.entries(CONSULTANT_DEDICATED_TEAMS).map(([consName, members]) => (
                 <optgroup key={consName} label={`Tim Konsultan: ${consName}`}>
-                  {members.map((m) => (
+                  {[{ fullName: consName, nickname: consName.split(' ')[0], displayName: consName + ' (Konsultan L2)' }, ...members].map((m) => (
                     <option key={`${consName}-${m.fullName}`} value={`AUTO:${consName}:${m.fullName}`}>
                       {m.nickname} ({m.fullName}) — Tim {consName.split(' ')[0]}
                     </option>
@@ -634,7 +637,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                         Semua Tim {selectedConsultant.split(' ')[0]}
                       </span>
                       <span className="ml-1 px-1.5 py-0.2 rounded bg-indigo-50 border border-indigo-200 text-[10px] font-mono text-indigo-700 font-medium">
-                        {dedicatedMembers.length} Personil • {activeGroup?.totalVisits || totalFilteredVisits} Visit
+                        {teamMembers.length} Personil • {teamVisitCount} Visit
                       </span>
                     </div>
                   )}
@@ -720,7 +723,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                   </div>
 
                   {/* Search inside dropdown if more than 3 members */}
-                  {dedicatedMembers.length > 3 && (
+                  {teamMembers.length > 3 && (
                     <div className="relative">
                       <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
                       <input
@@ -776,13 +779,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                             )}
                           </div>
                           <div className="text-[10px] text-slate-500">
-                            Semua kunjungan tim {selectedConsultant.split(' ')[0]} ({dedicatedMembers.length} personil)
+                            Semua kunjungan tim {selectedConsultant.split(' ')[0]} ({teamMembers.length} personil)
                           </div>
                         </div>
                       </div>
                       <div className="text-right shrink-0">
                         <span className="px-2 py-0.5 rounded-md bg-indigo-100 border border-indigo-200 text-[10px] font-mono text-indigo-800 font-bold">
-                          {activeGroup?.totalVisits || totalFilteredVisits} Visit
+                          {teamVisitCount} Visit
                         </span>
                       </div>
                     </button>
@@ -844,6 +847,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                               <div className="text-[10px] text-slate-500 truncate max-w-[170px] sm:max-w-[190px]">
                                 {m.fullName}
                               </div>
+                              {m.isConsultant && (
+                                <span className="inline-flex rounded px-1.5 py-0.5 bg-blue-50 border border-blue-100 text-[9px] font-semibold text-blue-700">
+                                  Konsultan L2 · ikut visit
+                                </span>
+                              )}
                             </div>
                           </div>
 
@@ -886,7 +894,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
                   {/* Popover Footer Info */}
                   <div className="pt-2 border-t border-slate-100 text-[10px] text-slate-500 flex items-center justify-between">
-                    <span>{dedicatedMembers.length} Personil Dedicated Team</span>
+                    <span>{teamMembers.length} Personil Dedicated Team</span>
                     <span className="text-amber-700 font-semibold">
                       {selectedMemberObj
                         ? `Filter Aktif: ${selectedMemberObj.nickname}`
