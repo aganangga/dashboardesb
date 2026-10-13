@@ -423,20 +423,47 @@ export const MASTER_DATA_TEAM: MasterDataTeamItem[] = [
   { no: 42, spv: 'ERP Advisor (Tim Khusus)', l2: 'ERP Advisor', l1FullName: 'Irma Laura Siregar', l1Nickname: 'Irma', role: 'ERP Advisor', status: 'Aktif', notes: 'Tim Khusus ERP Advisor (Non-Hierarki, Tanpa SPV/L2/L1)' },
 ];
 
+// Resolve consultant ownership strictly: explicit source value first, then uniquely mapped roster.
+// Never assign a default consultant or choose the first match for shared support members.
+const normalizeTeamName = (value: string): string =>
+  (value || '').trim().replace(/\s+/g, ' ').toLowerCase();
+
+const normalizeSpvName = (value: string): string => {
+  const name = (value || '').trim();
+  if (normalizeTeamName(name) === 'muhammad rimaduddin') return 'Muhamad Rimaduddin';
+  if (normalizeTeamName(name) === 'erp advisor') return 'ERP Advisor (Tim Khusus)';
+  return name;
+};
+
+const primarySupportName = (value: string): string =>
+  (value || '').split(/[,;\n\r/]+/).map((name) => name.trim()).find(Boolean) || '';
+
+const canonicalConsultantName = (value: string): string | null =>
+  Object.keys(CONSULTANT_TO_SPV_MAP).find((name) => normalizeTeamName(name) === normalizeTeamName(value)) || null;
+
 export function findMasterMappingForSupport(supportName: string): MasterDataTeamItem | null {
-  if (!supportName) return null;
-  const target = supportName.toLowerCase().trim();
-  for (const item of MASTER_DATA_TEAM) {
-    if (
-      item.l1FullName.toLowerCase() === target ||
-      item.l1Nickname.toLowerCase() === target ||
-      target.includes(item.l1FullName.toLowerCase()) ||
-      item.l1FullName.toLowerCase().includes(target)
-    ) {
-      return item;
-    }
-  }
-  return null;
+  const primary = normalizeTeamName(primarySupportName(supportName));
+  if (!primary) return null;
+  const matches = MASTER_DATA_TEAM.filter(
+    (item) => normalizeTeamName(item.l1FullName) === primary || normalizeTeamName(item.l1Nickname) === primary
+  );
+  // Rafi, Tegar and other shared personnel do not have a single consultant owner.
+  if (new Set(matches.map((item) => item.l2)).size !== 1) return null;
+  return matches[0] || null;
+}
+
+// Match a support selected in the team filter without substring/nickname collisions.
+export function isSameSupportMember(person: string, selectedName: string): boolean {
+  const personKey = normalizeTeamName(person);
+  const selectedKey = normalizeTeamName(selectedName);
+  if (!personKey || !selectedKey) return false;
+  if (personKey === selectedKey) return true;
+
+  const matches = MASTER_DATA_TEAM.filter(
+    (item) => normalizeTeamName(item.l1FullName) === selectedKey || normalizeTeamName(item.l1Nickname) === selectedKey
+  );
+  const fullNames = [...new Set(matches.map((item) => normalizeTeamName(item.l1FullName)))];
+  return fullNames.length === 1 && fullNames[0] === personKey;
 }
 
 export function resolveSpvAndConsultant(
@@ -444,59 +471,38 @@ export function resolveSpvAndConsultant(
   consultantRaw?: string,
   supervisorRaw?: string
 ): { supervisor: string; consultantName: string } {
-  let con = (consultantRaw || '').trim();
-  let spv = (supervisorRaw || '').trim();
-  const sup = (supportRaw || '').trim();
+  const primarySupport = primarySupportName(supportRaw);
+  const rawConsultant = (consultantRaw || '').trim();
+  const hasConsultant = Boolean(rawConsultant && rawConsultant !== '-' && normalizeTeamName(rawConsultant) !== 'unname');
+  let consultant = hasConsultant ? (canonicalConsultantName(rawConsultant) || rawConsultant) : '';
+  let supervisor = normalizeSpvName(supervisorRaw || '');
 
-  // Aturan Khusus: Pernandes & Irma adalah Tim ERP Advisor (tanpa SPV, L2, L1)
-  if (sup.toLowerCase().includes('pernandes') || sup.toLowerCase().includes('irma')) {
-    return {
-      supervisor: 'ERP Advisor (Tim Khusus)',
-      consultantName: con && con !== '-' && con !== 'ERP Advisor' && con.toLowerCase() !== 'unname' ? con : 'ERP Advisor',
-    };
-  }
-
-  // Normalize spelling of SPV
-  if (spv.toLowerCase() === 'muhammad rimaduddin') spv = 'Muhamad Rimaduddin';
-
-  // 1. If consultant is already known, resolve SPV if missing or unname
-  if (con && con.toLowerCase() !== 'unname' && con !== '-') {
-    const matchedSpv = CONSULTANT_TO_SPV_MAP[con];
-    if (matchedSpv && (!spv || spv.toLowerCase() === 'unname' || spv === '-')) {
-      spv = matchedSpv;
+  if (hasConsultant && !canonicalConsultantName(consultant)) {
+    // An L1 occasionally appears in the Consultant column. Reassign only when
+    // the same person is primary support AND exactly one roster owner is known.
+    if (normalizeTeamName(primarySupport) === normalizeTeamName(rawConsultant)) {
+      const uniqueRoster = findMasterMappingForSupport(primarySupport);
+      if (uniqueRoster) consultant = uniqueRoster.l2;
     }
   }
 
-  // 2. If consultant is missing or unname, resolve from support member
-  if (!con || con.toLowerCase() === 'unname' || con === '-') {
-    const mapping = findMasterMappingForSupport(sup);
-    if (mapping) {
-      con = mapping.l2;
-      if (!spv || spv.toLowerCase() === 'unname' || spv === '-') {
-        spv = mapping.spv;
-      }
-    }
+  if (!hasConsultant) {
+    // Direct L2 visits (including consultants doing the visit themselves) are counted.
+    consultant = canonicalConsultantName(primarySupport) ||
+      findMasterMappingForSupport(primarySupport)?.l2 ||
+      'Belum Terpetakan';
   }
 
-  // 3. If supervisor is still missing or unname
-  if (!spv || spv.toLowerCase() === 'unname' || spv === '-') {
-    if (con && CONSULTANT_TO_SPV_MAP[con]) {
-      spv = CONSULTANT_TO_SPV_MAP[con];
-    } else {
-      const mapping = findMasterMappingForSupport(sup);
-      spv = mapping ? mapping.spv : 'Jane Margareth Widjaja';
-    }
+  if (!supervisor || normalizeTeamName(supervisor) === 'unname' || supervisor === '-') {
+    // A canonical consultant has a canonical SPV. Never guess 'Jane' for unknowns.
+    supervisor = CONSULTANT_TO_SPV_MAP[consultant] ||
+      (Object.values(CONSULTANT_TO_SPV_MAP).find((name) =>
+        normalizeTeamName(name) === normalizeTeamName(primarySupport)
+      )) ||
+      'Belum Terpetakan';
   }
 
-  // 4. If consultant is still missing, fallback to default consultant under that SPV
-  if (!con || con.toLowerCase() === 'unname' || con === '-') {
-    if (spv === 'Muhamad Rimaduddin') con = 'Cherly Vitaloka';
-    else if (spv === 'M. Iriansyah Suhendar') con = 'Agung Setiawan';
-    else if (spv.includes('ERP Advisor')) con = 'ERP Advisor';
-    else con = 'Ayu Febrina Sianturi';
-  }
-
-  return { supervisor: spv, consultantName: con };
+  return { supervisor, consultantName: consultant };
 }
 
 export function processRawData(
@@ -914,24 +920,16 @@ export function getDedicatedSupportTeamsForConsultant(
 }
 
 // Find which consultant a support member belongs to
+// Ambiguous support members must not be silently assigned to the first roster.
 export function findConsultantForSupportMember(memberName: string): string | null {
-  if (!memberName) return null;
-  const target = memberName.toLowerCase().trim();
-
-  for (const [consultant, members] of Object.entries(CONSULTANT_DEDICATED_TEAMS)) {
-    if (
-      members.some(
-        (m) =>
-          m.fullName.toLowerCase() === target ||
-          m.nickname.toLowerCase() === target ||
-          target.includes(m.fullName.toLowerCase()) ||
-          target.includes(m.nickname.toLowerCase())
-      )
-    ) {
-      return consultant;
-    }
-  }
-  return null;
+  const primary = normalizeTeamName(memberName);
+  if (!primary) return null;
+  const consultants = [...new Set(
+    MASTER_DATA_TEAM.filter((item) =>
+      normalizeTeamName(item.l1FullName) === primary || normalizeTeamName(item.l1Nickname) === primary
+    ).map((item) => item.l2)
+  )];
+  return consultants.length === 1 ? consultants[0] : null;
 }
 
 // Build structured grouping of Nama Consulting -> Area -> Support Team
@@ -940,7 +938,8 @@ export function buildConsultantTeamGroupings(records: ProcessedRecord[]): Consul
     string,
     {
       areas: Map<string, number>;
-      supports: Map<string, number>;
+      supports: Map<string, Set<string>>;
+      visitKeys: Set<string>;
       totalVisits: number;
     }
   >();
@@ -955,11 +954,13 @@ export function buildConsultantTeamGroupings(records: ProcessedRecord[]): Consul
       consultantMap.set(c, {
         areas: new Map(),
         supports: new Map(),
+        visitKeys: new Set(),
         totalVisits: 0,
       });
     }
     const data = consultantMap.get(c)!;
     data.totalVisits += 1;
+    data.visitKeys.add(rec.primaryVisitKey);
 
     // Tally area
     const area = rec.area || 'Lainnya';
@@ -975,7 +976,8 @@ export function buildConsultantTeamGroupings(records: ProcessedRecord[]): Consul
     });
 
     members.forEach((m) => {
-      data.supports.set(m, (data.supports.get(m) || 0) + 1);
+      if (!data.supports.has(m)) data.supports.set(m, new Set());
+      data.supports.get(m)!.add(rec.primaryVisitKey);
     });
   });
 
@@ -1005,7 +1007,7 @@ export function buildConsultantTeamGroupings(records: ProcessedRecord[]): Consul
 
     if (dedicated.length > 0) {
       supportMembers = dedicated.map((d) => {
-        const cnt = data.supports.get(d.fullName) || 0;
+        const cnt = data.supports.get(d.fullName)?.size || 0;
         return {
           fullName: d.fullName,
           displayName: d.displayName,
@@ -1015,30 +1017,29 @@ export function buildConsultantTeamGroupings(records: ProcessedRecord[]): Consul
       });
     } else {
       supportMembers = Array.from(data.supports.entries())
-        .filter(([fullName, count]) => count >= 2 && fullName.toLowerCase() !== consultant.toLowerCase())
-        .map(([fullName, count]) => {
+        .filter(([fullName, visitKeys]) => visitKeys.size >= 2 && fullName.toLowerCase() !== consultant.toLowerCase())
+        .map(([fullName, visitKeys]) => {
           const nickname = getSupportNickname(fullName);
           const displayName = nickname ? `${fullName} (${nickname})` : fullName;
           return {
             fullName,
             displayName,
             nickname,
-            count,
+            count: visitKeys.size,
           };
         })
         .sort((a, b) => b.count - a.count);
     }
 
-    const teamTotal = dedicated.length > 0
-      ? supportMembers.reduce((acc, m) => acc + m.count, 0) + (data.supports.get(consultant) || 0)
-      : data.totalVisits;
+    // Ticket ID + Date Visit is the unique visit count; personnel participation is separate.
+    const visitTotal = data.visitKeys.size;
 
     groupings.push({
       consultant,
       primaryArea,
       allAreas,
       supportMembers,
-      totalVisits: teamTotal || data.totalVisits,
+      totalVisits: visitTotal,
     });
   });
 
