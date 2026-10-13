@@ -828,70 +828,19 @@ export function getSupportNickname(name: string): string {
 }
 
 // Dedicated support teams assigned to each consultant
-export const CONSULTANT_DEDICATED_TEAMS: Record<string, DedicatedSupportMember[]> = {
-  'Airlangga Aziz': [
-    { fullName: 'Alian Alfin Nuha', nickname: 'Alfin', displayName: 'Alfin (Alian Alfin Nuha)' },
-    { fullName: 'Febri Dwi Putra', nickname: 'Febri', displayName: 'Febri (Febri Dwi Putra)' },
-  ],
-  'David Prima Putra': [
-    { fullName: 'Yessi Tiyastanti', nickname: 'Yessi', displayName: 'Yessi (Yessi Tiyastanti)' },
-    { fullName: 'Febrianto Puji Waskito', nickname: 'Febrianto', displayName: 'Febrianto (Febrianto Puji Waskito)' },
-    { fullName: 'Syafiz Amiero', nickname: 'Syafiz', displayName: 'Syafiz (Syafiz Amiero)' },
-    { fullName: 'Nika Rullyta Khairunnisa', nickname: 'Nika', displayName: 'Nika (Nika Rullyta Khairunnisa)' },
-    { fullName: 'Muhammad Rimaduddin', nickname: 'Rimad', displayName: 'Rimad (Muhammad Rimaduddin)' },
-    { fullName: 'Yoan Fefi Berliani', nickname: 'Yoan', displayName: 'Yoan (Yoan Fefi Berliani)' },
-  ],
-  'Agung Setiawan': [
-    { fullName: 'Anisa Lucky', nickname: 'Anisa', displayName: 'Anisa (Anisa Lucky)' },
-    { fullName: 'Christopher Patrick Djuanda', nickname: 'Patrick', displayName: 'Patrick (Christopher Patrick Djuanda)' },
-    { fullName: 'Risky Ramadhan', nickname: 'Risky', displayName: 'Risky (Risky Ramadhan)' },
-    { fullName: 'Yayang Putri Suwondo', nickname: 'Yayang', displayName: 'Yayang (Yayang Putri Suwondo)' },
-  ],
-  'Ayu Febrina Sianturi': [
-    { fullName: 'Fera Eka Waty N', nickname: 'Fera', displayName: 'Fera (Fera Eka Waty N)' },
-    { fullName: 'Tegar Rangga', nickname: 'Tegar', displayName: 'Tegar (Tegar Rangga)' },
-    { fullName: 'Rafi Mahasin', nickname: 'Rafi', displayName: 'Rafi (Rafi Mahasin)' },
-    { fullName: 'Nabila Aprilia Nugrahany', nickname: 'Nabila', displayName: 'Nabila (Nabila Aprilia Nugrahany)' },
-  ],
-  'Cherly Vitaloka': [
-    { fullName: 'Vinna Maharani', nickname: 'Vinna', displayName: 'Vinna (Vinna Maharani)' },
-    { fullName: 'Alif Izzuddin Ramadhan', nickname: 'Alif', displayName: 'Alif (Alif Izzuddin Ramadhan)' },
-    { fullName: 'Melati Cantika', nickname: 'Melati', displayName: 'Melati (Melati Cantika)' },
-    { fullName: 'Nurul Huda', nickname: 'Nurul', displayName: 'Nurul (Nurul Huda)' },
-    { fullName: 'Rafi Mahasin', nickname: 'Rafi', displayName: 'Rafi (Rafi Mahasin)' },
-  ],
-  'ERP Advisor': [
-    { fullName: 'Pernandes Paindo Tua', nickname: 'Pernandes', displayName: 'Pernandes (Pernandes Paindo Tua)' },
-    { fullName: 'Irma Laura Siregar', nickname: 'Irma', displayName: 'Irma (Irma Laura Siregar)' },
-  ],
-  'Dika Anugerah Pratama': [
-    { fullName: 'Imam Wicaksono', nickname: 'Imam', displayName: 'Imam (Imam Wicaksono)' },
-    { fullName: 'Agita Putri Kusumaningtyas', nickname: 'Agita', displayName: 'Agita (Agita Putri Kusumaningtyas)' },
-    { fullName: 'Syahrul Zulvan', nickname: 'Syahrul', displayName: 'Syahrul (Syahrul Zulvan)' },
-    { fullName: 'Tegar Rangga', nickname: 'Tegar', displayName: 'Tegar (Tegar Rangga)' },
-    { fullName: 'Fauzi Yuda Ariyanto', nickname: 'Fauzi', displayName: 'Fauzi (Fauzi Yuda Ariyanto)' },
-  ],
-  'Kiki Tri Utari': [
-    { fullName: 'Ardiansyah Hendardi', nickname: 'Ardi', displayName: 'Ardi (Ardiansyah Hendardi)' },
-    { fullName: 'Rafi Mahasin', nickname: 'Rafi', displayName: 'Rafi (Rafi Mahasin)' },
-    { fullName: 'Nurul Huda', nickname: 'Nurul', displayName: 'Nurul (Nurul Huda)' },
-    { fullName: 'Melati Cantika', nickname: 'Melati', displayName: 'Melati (Melati Cantika)' },
-    { fullName: 'Yoan Fefi Berliani', nickname: 'Yoan', displayName: 'Yoan (Yoan Fefi Berliani)' },
-  ],
-  'Rezi Rizki Raedini': [
-    { fullName: 'Yoga Astita Ade', nickname: 'Yoga', displayName: 'Yoga (Yoga Astita Ade)' },
-    { fullName: 'Noviyanti Nadia', nickname: 'Nadia', displayName: 'Nadia (Noviyanti Nadia)' },
-    { fullName: 'Kevin Reynaldi', nickname: 'Kevin', displayName: 'Kevin (Kevin Reynaldi)' },
-    { fullName: 'Abi Muhammad Alfarezy', nickname: 'Abi', displayName: 'Abi (Abi Muhammad Alfarezy)' },
-    { fullName: 'Teddi Ari Tama', nickname: 'Teddi', displayName: 'Teddi (Teddi Ari Tama)' },
-  ],
-  'Tri Hastuti Wulandari': [
-    { fullName: 'Margaretha Agrivani', nickname: 'Margaretha', displayName: 'Margaretha (Margaretha Agrivani)' },
-    { fullName: 'Bintang Guntoro', nickname: 'Bintang', displayName: 'Bintang (Bintang Guntoro)' },
-    { fullName: 'Teddi Ari Tama', nickname: 'Teddi', displayName: 'Teddi (Teddi Ari Tama)' },
-    { fullName: 'Larezza Murda Gaharni', nickname: 'Larezza', displayName: 'Larezza (Larezza Murda Gaharni)' },
-  ],
-};
+// Keep dropdown membership synchronized with the one authoritative MASTER_DATA_TEAM.
+export const CONSULTANT_DEDICATED_TEAMS: Record<string, DedicatedSupportMember[]> =
+  MASTER_DATA_TEAM.reduce<Record<string, DedicatedSupportMember[]>>((teams, row) => {
+    if (!teams[row.l2]) teams[row.l2] = [];
+    if (!teams[row.l2].some((person) => person.fullName === row.l1FullName)) {
+      teams[row.l2].push({
+        fullName: row.l1FullName,
+        nickname: row.l1Nickname,
+        displayName: row.l1Nickname + ' (' + row.l1FullName + ')',
+      });
+    }
+    return teams;
+  }, {});
 
 // Retrieve support team members for a consultant
 export function getDedicatedSupportTeamsForConsultant(
@@ -1016,11 +965,6 @@ export function buildConsultantTeamGroupings(records: ProcessedRecord[]): Consul
         primaryArea = area;
       }
     });
-
-    // Special operational domain matching: Airlangga Aziz territory is Bali
-    if (consultant.toLowerCase().includes('airlangga')) {
-      primaryArea = 'Bali';
-    }
 
     const allAreas = Array.from(data.areas.keys()).filter(Boolean);
 
