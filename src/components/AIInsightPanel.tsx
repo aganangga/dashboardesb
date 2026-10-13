@@ -7,6 +7,7 @@ type InsightContext = {
   totalVisits: number;
   totalRows: number;
   checkedInVisits: number;
+  anomalyVisits: number;
   checkInRate: number;
   missingCheckouts: number;
   lateVisits: number;
@@ -42,7 +43,9 @@ function localSummary(metrics: InsightContext, question: string): string {
     .map(([name, count]) => name + ' (' + count + ' visit)').join(', ') || '-';
 
   let answer = 'Periode/filter aktif: ' + metrics.totalVisits + ' visit unik, ' +
-    metrics.checkedInVisits + ' tercatat check-in (' + metrics.checkInRate + '%).';
+    metrics.anomalyVisits + ' visit anomali menginap. Check-In Rate: ' +
+    metrics.checkInRate + '% = (Total Visit - Anomali) / Total Visit. ' +
+    'Check-in tercatat: ' + metrics.checkedInVisits + ' visit (indikator terpisah).';
   if (question.toLowerCase().includes('area')) answer += '\nArea teratas: ' + top(metrics.breakdowns.area) + '.';
   else if (question.toLowerCase().includes('book')) answer += '\nBook type teratas: ' + top(metrics.breakdowns.bookType) + '.';
   else answer += '\nArea: ' + top(metrics.breakdowns.area) + '.\nBook type: ' + top(metrics.breakdowns.bookType) + '.';

@@ -23,7 +23,8 @@ test('approved dashboard modules survive legacy HTML migration', () => {
 test('Check-In Rate is derived from the unique-visit shared metric', () => {
   const summary = read('src/components/SummaryCards.tsx');
   assert.ok(summary.includes('calculateVisitCheckInMetrics(records)'));
-  assert.ok(summary.includes('dari {checkInTotalVisits} visit unik'));
+  assert.ok(summary.includes('{checkInTotalVisits} − {anomalyVisits} anomali'));
+  assert.ok(read('src/utils/visitMetrics.ts').includes('nonAnomalousVisits / totalVisits'));
   assert.ok(!summary.includes('checkedInCount / totalRecords'));
 });
 
