@@ -38,7 +38,7 @@ test('validates upstream same-origin HTTPS and rejects redirects to attacker hos
   assert.equal(omniEndpoint('https://omni.example.org', '/v1/visits'), 'https://omni.example.org/v1/visits');
   assert.throws(() => omniEndpoint('http://omni.example.org', '/v1/visits'));
   assert.throws(() => omniEndpoint('https://omni.example.org', '//other.example/steal'));
-  assert.throws(() => omniEndpoint('https://omni.example.org', '/https://wrong.example'));
+  assert.throws(() => omniEndpoint('https://omni.example.org', '/\\other.example'));
 });
 
 test('method and absent/mismatched access key never trigger Omni fetch', async () => {
