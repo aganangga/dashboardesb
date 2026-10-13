@@ -84,8 +84,14 @@ export function parseOmniSyncResponse(message: unknown): OmniSyncDataset {
   }
 
   if (rows.length === 0) throw Error('Endpoint Omni tidak mengembalikan visit; data dashboard tidak diubah.');
-  if (!headers.includes('Ticket ID') || !headers.includes('Date Visit')) {
-    throw Error('Data Omni harus memiliki Ticket ID dan Date Visit. Sesuaikan mapping respons Omni terlebih dahulu.');
+  // Fail closed: missing operational columns would silently corrupt check-in,
+  // anomaly, punctuality, consultant support and status-based analytics.
+  const mandatory = ['Ticket ID', 'Date Visit', 'Status', 'Nama Support',
+    'Jadwal Agenda', 'Check In Time', 'Check Out Time'];
+  const missing = mandatory.filter((header) => !headers.includes(header));
+  if (missing.length) {
+    throw Error('Kolom Omni belum lengkap: ' + missing.join(', ') +
+      '. Sesuaikan mapping API sebelum menerapkan data.');
   }
   if (rows.some((row) => !row['Ticket ID']?.trim() || !row['Date Visit']?.trim() ||
       !/^\d{2}\/\d{2}\/\d{4}$/.test(row['Date Visit'] || ''))) {
