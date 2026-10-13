@@ -284,6 +284,12 @@ export const CSATDashboard: React.FC<Props> = ({ records, filters }) => {
             </tbody>
           </table>
         </div>
+        {filtered.length > 10 && (
+          <div className="flex justify-end border-t border-slate-100 p-3">
+            <PageListPagination currentPage={safePage} pageSize={10}
+              totalItems={filtered.length} onPageChange={setPage} itemLabel="respons" />
+          </div>
+        )}
       </div>
     </section>
   );
