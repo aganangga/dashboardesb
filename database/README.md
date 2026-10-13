@@ -122,3 +122,46 @@ Tes ini tidak menggantikan uji end-to-end pada proyek Supabase dan sheet sebenar
 - Team Master: jumlah karyawan unik berdasarkan email (fallback nama), dengan
   klasifikasi supervisor/consultant/implementor dari kolom `Job Tittle`.
   Tidak diasumsikan ada relasi manajer yang tidak tercantum pada worksheet ini.
+
+## Omni dan penggabungan CSAT
+
+Omni dihitung dari seluruh baris RAW DATA VISIT, termasuk baris yang tidak masuk
+aturan khusus dashboard Visit, dengan status Cancel/Canceled/Cancelled dikecualikan.
+Pencocokan memakai kata pertama PIC (kata utuh, tanpa membedakan huruf besar/kecil)
+dan nomor bulan Date Visit. Bulan rekap tiket tidak mengandung tahun, sehingga
+pencocokan mengikuti bulan seperti COUNTIFS yang diberikan pengguna.
+
+H+0 berarti tanggal check-out sama dengan check-in; H+1 berarti tanggal check-out
+lebih besar. Ini perbandingan hari kalender, bukan batas durasi 24 jam. Check-in dan
+check-out kosong dihitung secara independen, sehingga keduanya dapat mencakup baris
+yang sama. Rata-rata durasi H+0 memakai selisih menit yang valid, disimpan pada
+kolom `Durasi H+0 OmnI` sebagai pecahan hari (menit / 1440), ditampilkan dalam jam
+serta menit. Durasi negatif/format waktu tidak valid tidak masuk rata-rata.
+
+Nilai Omni dihitung per PIC-bulan untuk rincian. KPI keseluruhan menghitung setiap
+baris report sekali pada gabungan PIC-bulan yang terpilih, agar pencocokan kata
+pertama yang tumpang tindih tidak mendobelkan report yang sama. Baris duplikat nyata
+dari report tetap merupakan baris terpisah sesuai logika COUNTIFS.
+
+CSAT: Sangat Puas=5, Puas=4, Cukup=3, Tidak Puas=2, Sangat Tidak Puas=1.
+Kunci penggabungan adalah Agenda ID/ID Agenda bila tersedia, atau Ticket ID bersama
+Jadwal Agenda. Jadwal kosong hanya dikaitkan bila report visit menunjukkan satu
+agenda yang jelas. Tanggal submit CSAT tidak dipakai untuk menebak jadwal agenda.
+Respons ambigu tetap menjadi unit penilaian terpisah. Respons dengan rating tidak
+dikenal tidak menjadi nol; hanya rating valid yang dirata-ratakan.
+
+Contoh: satu agenda mendapat nilai 4 dan 5, sehingga nilainya 4,5. Bila agenda lain
+mendapat 3, rata-rata dua agenda adalah (4,5 + 3) / 2 = 3,75. Filter diterapkan dahulu
+sebelum penggabungan respons. Distribusi nilai memakai rentang 4–<5 untuk nilai 4,5;
+tingkat kepuasan memakai rata-rata nilai minimal 4.
+
+Saat diperiksa, 1.018 respons CSAT memiliki Jadwal Agenda kosong dan Ticket ID tidak
+beririsan dengan report visit. Data itu masih dinilai sebagai respons individual.
+Isi Agenda ID atau Jadwal Agenda yang benar (dengan Ticket ID yang konsisten) agar
+penggabungan data nyata dapat diverifikasi. Penanda agenda terhubung menampilkan
+ketidaktersediaan kaitan dengan `—`, bukan menyatakan jumlah agenda nol.
+
+Team Master dimuat otomatis untuk menampilkan nama lengkap pada filter Visit,
+Tiket dan CSAT. Identitas filter Visit yang sudah ada tetap digunakan di balik label.
+Nama yang ambigu atau belum terdaftar tidak dipaksakan menjadi orang lain; relasi
+SPV/L2 mengikuti mapping yang sudah diverifikasi, bukan ditebak dari job title.

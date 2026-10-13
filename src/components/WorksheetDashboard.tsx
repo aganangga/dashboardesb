@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { WORKSHEETS } from '../utils/worksheetCsv.mjs';
+import { sheetNumber } from '../utils/worksheetMetrics';
+import { formatOmniDuration } from '../utils/omniMetrics';
 import { WorksheetAnalytics } from './WorksheetAnalytics';
 import type { ProcessedRecord, RawDataRow } from '../types';
 
@@ -7,10 +9,18 @@ type Dataset = { headers: string[]; records: RawDataRow[]; fetchedAt: string; so
 interface Props {
   selected: string;
   visits?: ProcessedRecord[];
+  omniVisits?: ProcessedRecord[];
+  teamMasterRows?: RawDataRow[];
+  onTeamLoaded?: (rows: RawDataRow[]) => void;
   onSelect: (id: string) => void;
   onVisitLoaded: (data: RawDataRow[], headers: string[]) => void;
 }
 
+function worksheetCell(header:string,value:string|undefined):string {
+  if(header==='H+0 % OMNI'){const number=sheetNumber(value);return number===null?'—':(number*100).toLocaleString('id-ID',{maximumFractionDigits:1})+'%';}
+  if(header==='Durasi H+0 OmnI'){const days=sheetNumber(value);return formatOmniDuration(days===null?null:days*1440);}
+  return value||'—';
+}
 function WorksheetTable({ dataset }: { dataset: Dataset }) {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -34,7 +44,7 @@ function WorksheetTable({ dataset }: { dataset: Dataset }) {
       </tr></thead><tbody>
         {filtered.slice((current - 1) * 50, current * 50).map((row, index) => <tr key={(current - 1) * 50 + index} className="border-t border-slate-100 odd:bg-white even:bg-slate-50">
           <td className="px-3 py-2">{(current - 1) * 50 + index + 1}</td>
-          {dataset.headers.map(header => <td key={header} className="max-w-sm whitespace-pre-wrap px-3 py-2 align-top">{row[header] || '—'}</td>)}
+          {dataset.headers.map(header => <td key={header} className="max-w-sm whitespace-pre-wrap px-3 py-2 align-top">{worksheetCell(header,row[header])}</td>)}
         </tr>)}
       </tbody></table>
       {!filtered.length && <p className="p-6 text-center text-slate-500">Tidak ada data yang cocok.</p>}
@@ -47,7 +57,7 @@ function WorksheetTable({ dataset }: { dataset: Dataset }) {
   </div>;
 }
 
-export function WorksheetDashboard({ selected, onSelect, onVisitLoaded, visits = [] }: Props) {
+export function WorksheetDashboard({ selected, onSelect, onVisitLoaded, visits = [], omniVisits = visits, teamMasterRows = [], onTeamLoaded }: Props) {
   const [datasets, setDatasets] = useState<Record<string, Dataset>>({});
   const [reload, setReload] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -71,6 +81,7 @@ export function WorksheetDashboard({ selected, onSelect, onVisitLoaded, visits =
         if (controller.signal.aborted) return;
         setDatasets(previous => ({ ...previous, [selected]: data }));
         if (selected === 'visit') onVisitLoaded(data.records, data.headers);
+        if (selected === 'team') onTeamLoaded?.(data.records);
       } catch (error) {
         if (!controller.signal.aborted) setError(error instanceof Error ? error.message : 'Worksheet belum dapat dimuat.');
       } finally { if (!controller.signal.aborted) setLoading(false); }
@@ -92,7 +103,7 @@ export function WorksheetDashboard({ selected, onSelect, onVisitLoaded, visits =
     </div>
     {error && <p role="alert" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">{error}{selected === 'visit' && ' Data kunjungan sebelumnya tetap ditampilkan.'}</p>}
     </section>
-    {selected !== 'visit' && dataset && <WorksheetAnalytics id={selected} rows={dataset.records} visits={visits} renderDetails={records=><WorksheetTable dataset={{...dataset, records}}/>} />}
+    {selected !== 'visit' && dataset && <WorksheetAnalytics id={selected} rows={dataset.records} visits={visits} omniVisits={omniVisits} teamMasterRows={teamMasterRows} renderDetails={records=><WorksheetTable dataset={{...dataset, records}}/>} />}
     {selected !== 'visit' && !dataset && !error && <p role="status" className="text-sm text-slate-500">Memuat data {sheet.title}…</p>}
   </div>;
 }

@@ -1,5 +1,6 @@
 import type { ProcessedRecord, RawDataRow } from '../types';
 import { getMasterAssignmentsForSupport, isSameSupportMember, MASTER_DATA_TEAM } from './dataProcessor';
+import { displayTeamName } from './teamDirectory';
 import { sheetDate } from './worksheetMetrics';
 
 type Assignment = { supervisor: string; consultantName: string; supportName: string };
@@ -20,7 +21,7 @@ export function assignmentsForPerson(person: string): Assignment[] {
   return candidates.length===1 ? getMasterAssignmentsForSupport(candidates[0]) : [];
 }
 
-export function enrichWorksheetRows(id: string, rows: RawDataRow[], visits: ProcessedRecord[]): WorksheetFilterRow[] {
+export function enrichWorksheetRows(id: string, rows: RawDataRow[], visits: ProcessedRecord[], roster:RawDataRow[]=[]): WorksheetFilterRow[] {
   const byTicket = new Map<string,ProcessedRecord[]>();
   for (const visit of visits) {
     const key = clean(visit.ticketId);
@@ -34,7 +35,7 @@ export function enrichWorksheetRows(id: string, rows: RawDataRow[], visits: Proc
     if(!assignments.length) assignments = [{supervisor:UNMAPPED,consultantName:UNMAPPED,supportName:person}];
     const areas = id==='ticket' ? [row.Area?.trim() || UNMAPPED] : [...new Set((owned.length?owned:matching).map(visit=>visit.area).filter(Boolean))];
     const date = id==='csat' ? sheetDate(row['Created At (Date Created)']) : '';
-    return {row,assignments,person,areas:areas.length?areas:[UNMAPPED],date,period:id==='ticket'?row.Month?.trim()||'':date.slice(0,7)};
+    return {row,assignments,person:displayTeamName(person,roster),areas:areas.length?areas:[UNMAPPED],date,period:id==='ticket'?row.Month?.trim()||'':date.slice(0,7)};
   });
 }
 

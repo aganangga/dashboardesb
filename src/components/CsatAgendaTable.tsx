@@ -1,0 +1,8 @@
+import React, {useEffect,useState} from 'react';
+import type {AgendaRating} from '../utils/csatAgenda';
+import {PageListPagination} from './PageListPagination';
+export function CsatAgendaTable({agendas}:{agendas:AgendaRating[]}){
+  const [page,setPage]=useState(1);useEffect(()=>setPage(1),[agendas]);
+  const resolved=agendas;const safe=Math.min(page,Math.max(1,Math.ceil(resolved.length/20)));
+  return <details className="rounded-2xl border border-slate-200 bg-white p-5"><summary className="cursor-pointer font-semibold text-slate-900">Nilai CSAT per Agenda · {resolved.length.toLocaleString('id-ID')} unit penilaian</summary><div className="mt-4 overflow-auto"><table className="w-full text-left text-sm"><thead><tr className="border-b border-slate-200 text-xs text-slate-500"><th className="p-2">Ticket ID</th><th className="p-2">Agenda</th><th className="p-2">Jumlah respons</th><th className="p-2">Rating valid</th><th className="p-2">Rata-rata / 5</th></tr></thead><tbody>{resolved.slice((safe-1)*20,safe*20).map(item=><tr key={item.key} className="border-b border-slate-100"><td className="p-2">{item.ticketId}</td><td className="p-2">{item.resolved?(item.key.split('|')[1]||item.key).replace('T',' '):'Belum terhubung ke agenda'}</td><td className="p-2">{item.responses}</td><td className="p-2">{item.validResponses}</td><td className="p-2 font-semibold">{item.score===null?'—':item.score.toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})}</td></tr>)}</tbody></table></div><div className="mt-4"><PageListPagination currentPage={safe} pageSize={20} totalItems={resolved.length} onPageChange={setPage} itemLabel="agenda CSAT"/></div></details>;
+}

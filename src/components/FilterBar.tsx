@@ -29,6 +29,7 @@ import {
 } from '../utils/dataProcessor';
 
 interface FilterBarProps {
+  displayName?: (name: string) => string;
   filters: FilterState;
   onFilterChange: (newFilters: Partial<FilterState>) => void;
   onResetFilters: () => void;
@@ -62,6 +63,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   totalFilteredRecords,
   totalFilteredVisits,
   supportTeamVisitsCount,
+  displayName = (name) => name,
 }) => {
   const [isTeamDropdownOpen, setIsTeamDropdownOpen] = React.useState(false);
   const [teamSortBy, setTeamSortBy] = React.useState<TeamSortOption>('visit_desc');
@@ -363,7 +365,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               .filter((spv) => spv && spv.toLowerCase() !== 'unname')
               .map((spv) => (
                 <option key={spv} value={spv}>
-                  {spv}
+                  {displayName(spv)}
                 </option>
               ))}
           </select>
@@ -385,7 +387,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               .filter((c) => c && c.toLowerCase() !== 'unname')
               .map((c) => (
                 <option key={c} value={c}>
-                  {c}
+                  {displayName(c)}
                 </option>
               ))}
           </select>
@@ -419,7 +421,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 const cnt = memberVisitCountMap.get(m.fullName.toLowerCase()) ?? 0;
                 return (
                   <option key={m.fullName} value={m.fullName}>
-                    {m.nickname} ({m.fullName}) {m.fullName === selectedConsultant ? '[Konsultan]' : ''} — {cnt} visit
+                    {displayName(m.fullName)} {m.fullName === selectedConsultant ? '[Konsultan]' : ''} — {cnt} visit
                   </option>
                 );
               })}
@@ -436,7 +438,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <optgroup key={consName} label={`Tim Konsultan: ${consName}`}>
                   {[{ fullName: consName, nickname: consName.split(' ')[0], displayName: consName + ' (Konsultan L2)' }, ...members].map((m) => (
                     <option key={`${consName}-${m.fullName}`} value={`AUTO:${consName}:${m.fullName}`}>
-                      {m.nickname} ({m.fullName}) — Tim {consName.split(' ')[0]}
+                      {displayName(m.fullName)} — Tim {consName.split(' ')[0]}
                     </option>
                   ))}
                 </optgroup>
@@ -857,7 +859,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                                 )}
                               </div>
                               <div className="text-[10px] text-slate-500 truncate max-w-[170px] sm:max-w-[190px]">
-                                {m.fullName}
+                                {displayName(m.fullName)}
                               </div>
                               {m.isConsultant && (
                                 <span className="inline-flex rounded px-1.5 py-0.5 bg-blue-50 border border-blue-100 text-[9px] font-semibold text-blue-700">

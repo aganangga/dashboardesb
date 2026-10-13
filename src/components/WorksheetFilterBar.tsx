@@ -4,7 +4,7 @@ import { emptyWorksheetFilter, type WorksheetFilter, type WorksheetFilterRow } f
 
 const selectStyle='mt-1.5 block w-full min-w-0 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-normal text-slate-800 disabled:opacity-60';
 const values=(items:string[])=>[...new Set(items.filter(Boolean))].sort();
-export function WorksheetFilterBar({id,items,filter,onChange,count}:{id:string;items:WorksheetFilterRow[];filter:WorksheetFilter;onChange:(filter:WorksheetFilter)=>void;count:number}) {
+export function WorksheetFilterBar({id,items,filter,onChange,count,displayName=(name:string)=>name}:{id:string;displayName?:(name:string)=>string;items:WorksheetFilterRow[];filter:WorksheetFilter;onChange:(filter:WorksheetFilter)=>void;count:number}) {
   const supervisor=values(items.flatMap(item=>item.assignments.map(a=>a.supervisor)));
   const consultant=values(items.flatMap(item=>item.assignments.filter(a=>!filter.supervisor||a.supervisor===filter.supervisor).map(a=>a.consultantName)));
   const supporters=values(items.filter(item=>item.assignments.some(a=>(!filter.supervisor||a.supervisor===filter.supervisor)&&(!filter.consultant||a.consultantName===filter.consultant))).map(item=>item.person));
@@ -12,7 +12,7 @@ export function WorksheetFilterBar({id,items,filter,onChange,count}:{id:string;i
   const books=id==='csat'?values(items.map(item=>item.row['Book Type']?.trim()||'')):[];
   const periods=values(items.map(item=>item.period));
   const update=(key:keyof WorksheetFilter,value:string)=>onChange({...filter,[key]:value,...(key==='supervisor'?{consultant:'',support:''}:key==='consultant'?{support:''}:{})});
-  const dropdown=(label:string,key:keyof WorksheetFilter,options:string[],disabled=false)=><label className="min-w-0 text-[11px] font-bold uppercase tracking-wide text-slate-500">{label}<select aria-label={label} disabled={disabled} value={filter[key]} onChange={e=>update(key,e.target.value)} className={selectStyle}><option value="">{disabled?'Tidak tersedia':'Semua '+label.toLocaleLowerCase()}</option>{options.map(value=><option key={value} value={value}>{value}</option>)}</select></label>;
+  const dropdown=(label:string,key:keyof WorksheetFilter,options:string[],disabled=false)=><label className="min-w-0 text-[11px] font-bold uppercase tracking-wide text-slate-500">{label}<select aria-label={label} disabled={disabled} value={filter[key]} onChange={e=>update(key,e.target.value)} className={selectStyle}><option value="">{disabled?'Tidak tersedia':'Semua '+label.toLocaleLowerCase()}</option>{options.map(value=><option key={value} value={value}>{displayName(value)}</option>)}</select></label>;
   return <section className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm" aria-label={'Filter '+(id==='csat'?'CSAT':'Data Tiket')}>
     <div className="relative mb-4"><Search className="absolute left-3 top-3 h-4 w-4 text-slate-400"/><input aria-label="Cari di subdashboard" type="search" value={filter.search} onChange={e=>update('search',e.target.value)} placeholder="Cari support / PIC, konsultan, SPV, area, atau tiket…" className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm"/></div>
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">

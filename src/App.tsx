@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { DEFAULT_RAW_CSV } from './data/rawCsv';
 import { DEFAULT_COLUMN_MAPPING, parseCsvString, processRawData, resolveColumnMapping, buildConsultantTeamGroupings, isSameSupportMember, getAvailableMonthsFromRecords, isIncludedDashboardVisit } from './utils/dataProcessor';
 import { ColumnMapping, FilterState, ProcessedRecord, RawDataRow, ConsultantGrouping } from './types';
+import { displayTeamName } from './utils/teamDirectory';
 import { WorksheetDashboard } from './components/WorksheetDashboard';
 import { Navbar } from './components/Navbar';
 import { ModernSidebar } from './components/ModernSidebar';
@@ -25,6 +26,18 @@ import { SlidersHorizontal, Layers, Clock, Table, BarChart2, CheckCircle2, Calen
 
 export default function App() {
   const [selectedWorksheet, setSelectedWorksheet] = useState('visit');
+  const [teamMasterRows, setTeamMasterRows] = useState<RawDataRow[]>((window as any).__CUSTOM_TEAM_MASTER__ || []);
+  const [teamMasterError, setTeamMasterError] = useState('');
+  useEffect(() => {
+    if (window.location.protocol === 'file:') return;
+    const controller = new AbortController();
+    fetch('/api/worksheets?sheet=team', {signal:controller.signal})
+      .then(async response => { if (!response.ok) throw new Error('Team Master belum dapat dimuat; nama filter memakai mapping yang tersedia.'); return response.json(); })
+      .then(data => { if (!Array.isArray(data.records) || !data.records.length) throw new Error('Team Master kosong.'); setTeamMasterRows(data.records); })
+      .catch(error => { if (!controller.signal.aborted) setTeamMasterError(error.message); });
+    return () => controller.abort();
+  }, []);
+  const nameFromTeamMaster = (value: string) => displayTeamName(value, teamMasterRows);
   // Parse initial dataset (or load pre-injected custom data if running inside downloaded singlefile HTML)
   const initialParsed = useMemo(() => {
     const customData = (window as any).__CUSTOM_INITIAL_DATA__;
@@ -73,9 +86,8 @@ export default function App() {
   });
 
   // Process data with active column mapping
-  const allRecords: ProcessedRecord[] = useMemo(() => {
-    return processRawData(rawData, mapping).filter(isIncludedDashboardVisit);
-  }, [rawData, mapping]);
+  const reportRecords: ProcessedRecord[] = useMemo(() => processRawData(rawData, mapping), [rawData, mapping]);
+  const allRecords: ProcessedRecord[] = useMemo(() => reportRecords.filter(isIncludedDashboardVisit), [reportRecords]);
 
   // Unique filter dropdown options derived from processed records
   const availableSupervisors = useMemo(() => {
@@ -396,6 +408,7 @@ export default function App() {
     window.__CUSTOM_INITIAL_DATA__ = ${JSON.stringify(rawData)};
     window.__CUSTOM_INITIAL_HEADERS__ = ${JSON.stringify(headers)};
     window.__CUSTOM_INITIAL_MAPPING__ = ${JSON.stringify(mapping)};
+    window.__CUSTOM_TEAM_MASTER__ = ${JSON.stringify(teamMasterRows).replace(/</g, '\\u003c')};
   </script>
 `;
         if (htmlContent.includes('</body>')) {
@@ -442,7 +455,7 @@ export default function App() {
 
       {/* Main Container */}
       <main className="modern-main flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        <WorksheetDashboard selected={selectedWorksheet} onSelect={handleWorksheetSelect} onVisitLoaded={handleWorksheetVisitLoaded} visits={allRecords} />
+        <WorksheetDashboard selected={selectedWorksheet} onSelect={handleWorksheetSelect} onVisitLoaded={handleWorksheetVisitLoaded} visits={allRecords} omniVisits={reportRecords} teamMasterRows={teamMasterRows} onTeamLoaded={rows => { setTeamMasterRows(rows); setTeamMasterError(''); }} />
         {selectedWorksheet === 'visit' && <>
         {/* Banner with user options callout */}
         <div className="modern-welcome bg-gradient-to-r from-indigo-50/80 via-white to-purple-50/80 border border-indigo-100 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
@@ -489,8 +502,10 @@ export default function App() {
           </div>
         </div>
 
+        {teamMasterError && <p role="status" className="text-xs text-amber-700">{teamMasterError}</p>}
         {/* Global Filter Bar */}
         <FilterBar
+          displayName={nameFromTeamMaster}
           filters={filters}
           onFilterChange={handleFilterChange}
           onResetFilters={handleResetFilters}
