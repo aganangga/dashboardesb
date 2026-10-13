@@ -23,3 +23,6 @@
   to = "/index.html"
   status = 200
   force = true
+
+[functions."sync-google-sheet"]
+  schedule = "0 */6 * * *"
