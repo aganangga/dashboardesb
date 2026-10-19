@@ -60,8 +60,8 @@ test('raw CSV intact, dashboard displays 1,568 visits and September displays 884
   const september = visible.filter((rec) => rec.dateVisit.endsWith('/09/2026'));
   assert.equal(september.length, 884);
   const byTicket = new Map(september.map((rec) => [rec.ticketId, rec]));
-  assert.equal(byTicket.get('ESB-5M5BBP')?.consultantName, 'Dika Anugerah Pratama');
-  assert.equal(byTicket.get('ESB-4NRR2Y')?.consultantName, 'Dika Anugerah Pratama');
+  assert.equal(byTicket.get('ESB-5M5BBP')?.consultantName, 'Agung Setiawan');
+  assert.equal(byTicket.get('ESB-4NRR2Y')?.consultantName, 'Agung Setiawan');
   assert.equal(byTicket.has('ESB-S28QBG'), false);
   assert.ok(september.every((rec) => rec.consultantName !== 'Belum Terpetakan'));
   assert.equal(new Set(september.map((rec) => rec.primaryVisitKey)).size, 884);
