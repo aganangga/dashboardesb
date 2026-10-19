@@ -3,6 +3,7 @@ import { WORKSHEETS } from '../utils/worksheetCsv.mjs';
 import { sheetNumber } from '../utils/worksheetMetrics';
 import { formatOmniDuration } from '../utils/omniMetrics';
 import { WorksheetAnalytics } from './WorksheetAnalytics';
+import { TeamMasterEditor } from './TeamMasterEditor';
 import type { ProcessedRecord, RawDataRow } from '../types';
 
 type Dataset = { headers: string[]; records: RawDataRow[]; fetchedAt: string; source: string };
@@ -103,6 +104,7 @@ export function WorksheetDashboard({ selected, onSelect, onVisitLoaded, visits =
     </div>
     {error && <p role="alert" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">{error}{selected === 'visit' && ' Data kunjungan sebelumnya tetap ditampilkan.'}</p>}
     </section>
+    {selected === 'team' && <TeamMasterEditor />}
     {selected !== 'visit' && dataset && <WorksheetAnalytics id={selected} rows={dataset.records} visits={visits} omniVisits={omniVisits} teamMasterRows={teamMasterRows} renderDetails={records=><WorksheetTable dataset={{...dataset, records}}/>} />}
     {selected !== 'visit' && !dataset && !error && <p role="status" className="text-sm text-slate-500">Memuat data {sheet.title}…</p>}
   </div>;
