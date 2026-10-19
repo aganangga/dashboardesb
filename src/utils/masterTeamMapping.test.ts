@@ -12,15 +12,25 @@ import {
 
 const tegarRoster = MASTER_DATA_TEAM.filter((row) => row.l1FullName === 'Tegar Rangga');
 
-test('Tegar is exclusively in Dika master team, not Ayu or shared L2', () => {
+test('Tegar belongs to Agung from August 2026 while historical ownership is retained', () => {
   assert.equal(tegarRoster.length, 1);
-  assert.equal(tegarRoster[0].l2, 'Dika Anugerah Pratama');
-  assert.equal(tegarRoster[0].spv, 'Jane Margareth Widjaja');
+  assert.equal(tegarRoster[0].l2, 'Agung Setiawan');
+  assert.equal(tegarRoster[0].spv, 'M. Iriansyah Suhendar');
   assert.deepEqual(resolveSpvAndConsultant('Tegar Rangga', '', ''), {
+    supervisor: 'M. Iriansyah Suhendar',
+    consultantName: 'Agung Setiawan',
+  });
+  assert.ok(getDedicatedSupportTeamsForConsultant('Agung Setiawan')
+    .some((row) => row.fullName === 'Tegar Rangga'));
+  assert.deepEqual(resolveSpvAndConsultant('Tegar Rangga', '', '', new Date(2026, 6, 31)), {
     supervisor: 'Jane Margareth Widjaja',
     consultantName: 'Dika Anugerah Pratama',
   });
-  assert.ok(getDedicatedSupportTeamsForConsultant('Dika Anugerah Pratama')
+  assert.deepEqual(resolveSpvAndConsultant('Tegar Rangga', '', '', new Date(2026, 7, 1)), {
+    supervisor: 'M. Iriansyah Suhendar',
+    consultantName: 'Agung Setiawan',
+  });
+  assert.ok(!getDedicatedSupportTeamsForConsultant('Dika Anugerah Pratama')
     .some((row) => row.fullName === 'Tegar Rangga'));
   assert.ok(!getDedicatedSupportTeamsForConsultant('Ayu Febrina Sianturi')
     .some((row) => row.fullName === 'Tegar Rangga'));
