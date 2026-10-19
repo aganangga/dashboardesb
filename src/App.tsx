@@ -15,6 +15,7 @@ import { MonthlyView } from './components/MonthlyView';
 import { CheckInOutComparison } from './components/CheckInOutComparison';
 import { VisitTable } from './components/VisitTable';
 import { CSATDashboard } from './components/CSATDashboard';
+import { VisitQualityInsights } from './components/VisitQualityInsights';
 import { AIInsightPanel } from './components/AIInsightPanel';
 import { ColumnMapperModal } from './components/ColumnMapperModal';
 import { UploadModal } from './components/UploadModal';
@@ -55,7 +56,7 @@ export default function App() {
   );
 
   // Active view tab: 'overview' | 'monthly' | 'breakdowns' | 'comparison' | 'table'
-  const [activeTab, setActiveTab] = useState<'overview' | 'monthly' | 'breakdowns' | 'comparison' | 'table' | 'csat'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'monthly' | 'breakdowns' | 'comparison' | 'table' | 'csat' | 'quality'>('overview');
 
   // Modals state
   const [isColumnMapperOpen, setIsColumnMapperOpen] = useState<boolean>(false);
@@ -579,6 +580,11 @@ export default function App() {
               <Table className="w-3.5 h-3.5" />
               <span>Tabel Rincian Data</span>
             </button>
+            <button onClick={() => setActiveTab('quality')}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${activeTab === 'quality' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>
+              <BarChart2 className="w-3.5 h-3.5" />
+              <span>SLA &amp; Repeat Company</span>
+            </button>
             <button
               onClick={() => handleWorksheetSelect('csat')}
               className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
@@ -733,6 +739,9 @@ export default function App() {
           <VisitTable records={filteredRecords} deduplicateEnabled={filters.deduplicateVisits} />
         )}
 
+        {activeTab === 'quality' && (
+          <VisitQualityInsights records={filteredRecords} />
+        )}
         {activeTab === 'csat' && (
           <CSATDashboard records={allRecords} filters={filters} />
         )}

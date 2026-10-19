@@ -31,3 +31,8 @@
   from = "/api/worksheets"
   to = "/.netlify/functions/worksheets"
   status = 200
+
+[[redirects]]
+  from = "/api/team-assignments"
+  to = "/.netlify/functions/team-assignments"
+  status = 200

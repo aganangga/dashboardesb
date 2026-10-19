@@ -380,7 +380,7 @@ export const MASTER_DATA_TEAM: MasterDataTeamItem[] = [
   { no: 9, spv: 'Jane Margareth Widjaja', l2: 'Dika Anugerah Pratama', l1FullName: 'Imam Wicaksono', l1Nickname: 'Imam', role: 'L1 Support', status: 'Aktif' },
   { no: 10, spv: 'Jane Margareth Widjaja', l2: 'Dika Anugerah Pratama', l1FullName: 'Agita Putri Kusumaningtyas', l1Nickname: 'Agita', role: 'L1 Support', status: 'Aktif' },
   { no: 11, spv: 'Jane Margareth Widjaja', l2: 'Dika Anugerah Pratama', l1FullName: 'Syahrul Zulvan', l1Nickname: 'Syahrul', role: 'L1 Support', status: 'Aktif' },
-  { no: 12, spv: 'Jane Margareth Widjaja', l2: 'Dika Anugerah Pratama', l1FullName: 'Tegar Rangga', l1Nickname: 'Tegar', role: 'L1 Support', status: 'Aktif' },
+  { no: 12, spv: 'M. Iriansyah Suhendar', l2: 'Agung Setiawan', l1FullName: 'Tegar Rangga', l1Nickname: 'Tegar', role: 'L1 Support', status: 'Aktif', notes: 'Efektif 01/08/2026; sebelumnya under Dika' },
   { no: 13, spv: 'Jane Margareth Widjaja', l2: 'Dika Anugerah Pratama', l1FullName: 'Fauzi Yuda Ariyanto', l1Nickname: 'Fauzi', role: 'L1 Support', status: 'Aktif' },
 
   { no: 14, spv: 'Jane Margareth Widjaja', l2: 'Rezi Rizki Raedini', l1FullName: 'Yoga Astita Ade', l1Nickname: 'Yoga', role: 'L1 Support', status: 'Aktif' },
@@ -493,9 +493,15 @@ export function isSameSupportMember(person: string, selectedName: string): boole
 export function resolveSpvAndConsultant(
   supportRaw: string,
   consultantRaw?: string,
-  supervisorRaw?: string
+  supervisorRaw?: string,
+  visitDate?: Date | null
 ): { supervisor: string; consultantName: string } {
   const primarySupport = primarySupportName(supportRaw);
+  // Historical assignment: through July 2026 Tegar belongs to Dika;
+  // from August 2026 onward the master assignment is Agung.
+  // Explicit ticket L2 ownership remains authoritative.
+  const isHistoricalTegar = !!visitDate && visitDate.getTime() < new Date(2026, 7, 1).getTime()
+    && normalizeTeamName(primarySupport) === 'tegar rangga';
   const rawConsultant = (consultantRaw || '').trim();
   const rawSpv = normalizeSpvName(supervisorRaw || '');
 
@@ -527,7 +533,8 @@ export function resolveSpvAndConsultant(
   // If raw consultant is an L1, use its master memberships. Otherwise use
   // the actual primary support to resolve consultant ownership.
   const exactMember = getMasterAssignmentsForSupport(rawConsultant);
-  const candidates = (!listedSpv && exactMember.length)
+  const historicalAssignment = [{ supervisor: 'Jane Margareth Widjaja', consultantName: 'Dika Anugerah Pratama', supportName: 'Tegar Rangga' }];
+  const candidates = isHistoricalTegar && (!rawConsultant || normalizeTeamName(rawConsultant) === 'tegar rangga') ? historicalAssignment : (!listedSpv && exactMember.length)
     ? exactMember
     : getMasterAssignmentsForSupport(primarySupport);
   const selectedSpv = masterSupervisors.find((spv) =>
@@ -579,8 +586,9 @@ export function processRawData(
     const rawConsultant = (row[mapping.consultantName] || '').trim();
     const rawSupervisor = (row[mapping.supervisor] || '').trim();
 
-    // Resolve supervisor and consultant automatically via Master Data Team mapping (no unname)
-    const resolved = resolveSpvAndConsultant(rawSupport, rawConsultant, rawSupervisor);
+    // Resolve ownership using the visit date, not today's roster for historical visits.
+    const visitDateForMapping = parseCustomDate((row[mapping.agendaSchedule] || row['Date Visit'] || createdAt).trim());
+    const resolved = resolveSpvAndConsultant(rawSupport, rawConsultant, rawSupervisor, visitDateForMapping);
     const supervisor = resolved.supervisor;
     const consultantName = resolved.consultantName;
 

@@ -12,15 +12,25 @@ import {
 
 const tegarRoster = MASTER_DATA_TEAM.filter((row) => row.l1FullName === 'Tegar Rangga');
 
-test('Tegar is exclusively in Dika master team, not Ayu or shared L2', () => {
+test('Tegar belongs to Agung from August 2026 while historical ownership is retained', () => {
   assert.equal(tegarRoster.length, 1);
-  assert.equal(tegarRoster[0].l2, 'Dika Anugerah Pratama');
-  assert.equal(tegarRoster[0].spv, 'Jane Margareth Widjaja');
+  assert.equal(tegarRoster[0].l2, 'Agung Setiawan');
+  assert.equal(tegarRoster[0].spv, 'M. Iriansyah Suhendar');
   assert.deepEqual(resolveSpvAndConsultant('Tegar Rangga', '', ''), {
+    supervisor: 'M. Iriansyah Suhendar',
+    consultantName: 'Agung Setiawan',
+  });
+  assert.ok(getDedicatedSupportTeamsForConsultant('Agung Setiawan')
+    .some((row) => row.fullName === 'Tegar Rangga'));
+  assert.deepEqual(resolveSpvAndConsultant('Tegar Rangga', '', '', new Date(2026, 6, 31)), {
     supervisor: 'Jane Margareth Widjaja',
     consultantName: 'Dika Anugerah Pratama',
   });
-  assert.ok(getDedicatedSupportTeamsForConsultant('Dika Anugerah Pratama')
+  assert.deepEqual(resolveSpvAndConsultant('Tegar Rangga', '', '', new Date(2026, 7, 1)), {
+    supervisor: 'M. Iriansyah Suhendar',
+    consultantName: 'Agung Setiawan',
+  });
+  assert.ok(!getDedicatedSupportTeamsForConsultant('Dika Anugerah Pratama')
     .some((row) => row.fullName === 'Tegar Rangga'));
   assert.ok(!getDedicatedSupportTeamsForConsultant('Ayu Febrina Sianturi')
     .some((row) => row.fullName === 'Tegar Rangga'));
@@ -50,8 +60,8 @@ test('raw CSV intact, dashboard displays 1,568 visits and September displays 884
   const september = visible.filter((rec) => rec.dateVisit.endsWith('/09/2026'));
   assert.equal(september.length, 884);
   const byTicket = new Map(september.map((rec) => [rec.ticketId, rec]));
-  assert.equal(byTicket.get('ESB-5M5BBP')?.consultantName, 'Dika Anugerah Pratama');
-  assert.equal(byTicket.get('ESB-4NRR2Y')?.consultantName, 'Dika Anugerah Pratama');
+  assert.equal(byTicket.get('ESB-5M5BBP')?.consultantName, 'Agung Setiawan');
+  assert.equal(byTicket.get('ESB-4NRR2Y')?.consultantName, 'Agung Setiawan');
   assert.equal(byTicket.has('ESB-S28QBG'), false);
   assert.ok(september.every((rec) => rec.consultantName !== 'Belum Terpetakan'));
   assert.equal(new Set(september.map((rec) => rec.primaryVisitKey)).size, 884);
