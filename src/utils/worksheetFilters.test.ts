@@ -31,7 +31,7 @@ test('unrelated support on a matched ticket does not invent CSAT team ownership'
   assert.equal(item.date,'2026-08-15');
 });
 
-test('confirmed master ownership is reused for Tegar in both datasets',()=>{
+test('current master ownership is reused for Tegar in worksheet mapping',()=>{
   const assignments=assignmentsForPerson('Tegar');
-  assert(assignments.length>0);assert(assignments.every(a=>a.consultantName==='Dika Anugerah Pratama'));
+  assert(assignments.length>0);assert(assignments.every(a=>a.consultantName==='Agung Setiawan'));
 });
