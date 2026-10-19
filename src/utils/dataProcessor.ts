@@ -534,7 +534,7 @@ export function resolveSpvAndConsultant(
   // the actual primary support to resolve consultant ownership.
   const exactMember = getMasterAssignmentsForSupport(rawConsultant);
   const historicalAssignment = [{ supervisor: 'Jane Margareth Widjaja', consultantName: 'Dika Anugerah Pratama', supportName: 'Tegar Rangga' }];
-  const candidates = isHistoricalTegar && !rawConsultant ? historicalAssignment : (!listedSpv && exactMember.length)
+  const candidates = isHistoricalTegar && (!rawConsultant || normalizeTeamName(rawConsultant) === 'tegar rangga') ? historicalAssignment : (!listedSpv && exactMember.length)
     ? exactMember
     : getMasterAssignmentsForSupport(primarySupport);
   const selectedSpv = masterSupervisors.find((spv) =>
