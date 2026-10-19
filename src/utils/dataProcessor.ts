@@ -1098,54 +1098,49 @@ export function buildSpvL2L1Groupings(records: ProcessedRecord[]): SpvL2L1Groupi
   >();
 
   records.forEach((rec) => {
-    let spv = (rec.supervisor || '').trim();
-    if (!spv || spv === '-' || spv.toLowerCase() === 'unname') {
-      const resolved = resolveSpvAndConsultant(rec.supportName, rec.consultantName, spv);
-      spv = resolved.supervisor;
-    } else if (spv.toLowerCase() === 'muhammad rimaduddin') {
-      spv = 'Muhamad Rimaduddin';
-    }
+    // Master Team is the only authority for SPV/L2/L1 grouping. Never create
+    // a supervisor from raw blank/'unname' spreadsheet cells.
+    const visitDate = parseCustomDate(rec.dateVisit || '');
+    const supportAssignments = getMasterAssignmentsForSupport(rec.supportName || '');
+    const normalizedL2 = canonicalConsultantName(rec.consultantName || '');
+    const ownership = resolveSpvAndConsultant(
+      rec.supportName || '', normalizedL2 || '', '', visitDate
+    );
+    const canonicalL2 = canonicalConsultantName(ownership.consultantName);
+    const canonicalSpv = canonicalL2
+      ? MASTER_DATA_TEAM.find(item => item.l2 === canonicalL2)?.spv
+      : null;
+    const validSpv = masterSupervisors.find(name =>
+      normalizeTeamName(name) === normalizeTeamName(canonicalSpv || '')
+    );
+
+    // Unknown memberships remain in raw visit/QA datasets; do not fabricate
+    // "unname (Baris Kosong)" or "Solo (Tanpa L2)" hierarchy nodes.
+    if (!validSpv || !canonicalL2) return;
+
+    const rawL1 = (rec.supportName || '').trim();
+    const canonicalL1 = supportAssignments.find(item =>
+      normalizeTeamName(item.consultantName) === normalizeTeamName(canonicalL2)
+    )?.supportName || (canonicalConsultantName(rawL1) ? rawL1 : '');
+    if (!canonicalL1) return;
+    const spv = validSpv;
 
     if (!spvMap.has(spv)) {
       spvMap.set(spv, {
-        totalVisits: 0,
-        soloVisits: 0,
-        teamVisits: 0,
-        l2Map: new Map(),
-        allL1Map: new Map(),
+        totalVisits: 0, soloVisits: 0, teamVisits: 0,
+        l2Map: new Map(), allL1Map: new Map(),
       });
     }
-
     const spvEntry = spvMap.get(spv)!;
     spvEntry.totalVisits += 1;
-
-    const l1Name = rec.supportName && rec.supportName !== 'Support Unnamed' && rec.supportName.toLowerCase() !== 'unname'
-      ? rec.supportName
-      : rec.consultantName || 'Support Lapangan';
-    spvEntry.allL1Map.set(l1Name, (spvEntry.allL1Map.get(l1Name) || 0) + 1);
-
-    const l2List = rec.supportTeamList.filter((m) => m && m.trim().length > 0 && m.toLowerCase() !== 'unname');
-
-    if (l2List.length === 0) {
-      spvEntry.soloVisits += 1;
-      const soloKey = 'Solo (Tanpa L2)';
-      if (!spvEntry.l2Map.has(soloKey)) {
-        spvEntry.l2Map.set(soloKey, { isSolo: true, count: 0, l1Map: new Map() });
-      }
-      const l2Entry = spvEntry.l2Map.get(soloKey)!;
-      l2Entry.count += 1;
-      l2Entry.l1Map.set(l1Name, (l2Entry.l1Map.get(l1Name) || 0) + 1);
-    } else {
-      spvEntry.teamVisits += 1;
-      l2List.forEach((l2) => {
-        if (!spvEntry.l2Map.has(l2)) {
-          spvEntry.l2Map.set(l2, { isSolo: false, count: 0, l1Map: new Map() });
-        }
-        const l2Entry = spvEntry.l2Map.get(l2)!;
-        l2Entry.count += 1;
-        l2Entry.l1Map.set(l1Name, (l2Entry.l1Map.get(l1Name) || 0) + 1);
-      });
+    spvEntry.allL1Map.set(canonicalL1, (spvEntry.allL1Map.get(canonicalL1) || 0) + 1);
+    spvEntry.teamVisits += 1;
+    if (!spvEntry.l2Map.has(canonicalL2)) {
+      spvEntry.l2Map.set(canonicalL2, {isSolo:false,count:0,l1Map:new Map()});
     }
+    const l2Entry = spvEntry.l2Map.get(canonicalL2)!;
+    l2Entry.count += 1;
+    l2Entry.l1Map.set(canonicalL1,(l2Entry.l1Map.get(canonicalL1)||0)+1);
   });
 
   const groupings: SpvL2L1Grouping[] = [];
