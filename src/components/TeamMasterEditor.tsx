@@ -8,7 +8,7 @@ export function TeamMasterEditor() {
  const [history,setHistory]=useState<Assignment[]>([]);
  const [employee,setEmployee]=useState('Tegar Rangga');
  const [l2,setL2]=useState('Agung Setiawan');
- const [date,setDate]=useState('2026-08-01');
+ const [date,setDate]=useState('2026-10-19');
  const [busy,setBusy]=useState(false);
  const [message,setMessage]=useState('');
  const consultants=Object.keys(CONSULTANT_TO_SPV_MAP).filter(name=>name!=='ERP Advisor');
