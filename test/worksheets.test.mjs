@@ -7,7 +7,7 @@ import { syncAllSheets } from '../netlify/functions/sync-google-sheet.mjs';
 const fixtures = {
   visit: 'Ticket ID,Status\n001,Done',
   ticket: 'L2,L2,Phase\n,,\n,,\nL2,L2,Phase\nfirst,second,Training',
-  team: ',,\n,,\n,Nama Karyawan,Email User\n,A,a@example.test',
+  team: ',Nama Karyawan,Email User,Job Tittle\n,A,a@example.test,Consultant\n,B,b@example.test,Supervisor',
   csat: 'Ticket ID,Rating\n001,5',
 };
 
@@ -21,10 +21,10 @@ test('ticket repeated headers retain both columns and skip header metadata rows'
   assert.deepEqual(p.records, [{ L2:'first', 'L2 (2)':'second', Phase:'Training' }]);
 });
 
-test('team skips blank preamble and completely empty columns', () => {
+test('team uses the first row as headers and retains the first employee', () => {
   const p = parseWorksheet(fixtures.team, WORKSHEETS[2]);
-  assert.deepEqual(p.headers, ['Nama Karyawan','Email User']);
-  assert.equal(p.records.length, 1);
+  assert.deepEqual(p.headers, ['Nama Karyawan','Email User','Job Tittle']);
+  assert.deepEqual(p.records.map(row => row['Nama Karyawan']), ['A', 'B']);
 });
 
 test('worksheet endpoint fetches only the selected approved sheet', async () => {

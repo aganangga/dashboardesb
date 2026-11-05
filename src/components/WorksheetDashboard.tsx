@@ -66,14 +66,23 @@ export function WorksheetDashboard({ selected, onSelect, onVisitLoaded, visits =
   const sheet = WORKSHEETS.find(sheet => sheet.id === selected)!;
   useEffect(() => {
     const controller = new AbortController();
+    let refreshTimer: number | undefined;
     setError('');
     if (window.location.protocol === 'file:') {
       setLoading(false);
       setError('Versi offline memakai data tersimpan. Buka dashboard online untuk memuat worksheet.');
       return;
     }
-    setLoading(true);
+    const refreshIntervalMs = 5 * 60 * 1000;
+    function scheduleRefresh() {
+      refreshTimer = window.setTimeout(() => {
+        if (document.visibilityState === 'visible') void load();
+        else scheduleRefresh();
+      }, refreshIntervalMs);
+    }
     async function load() {
+      setLoading(true);
+      setError('');
       try {
         const response = await fetch(`/api/worksheets?sheet=${encodeURIComponent(selected)}`, { signal: controller.signal });
         const data = await response.json();
@@ -85,10 +94,18 @@ export function WorksheetDashboard({ selected, onSelect, onVisitLoaded, visits =
         if (selected === 'team') onTeamLoaded?.(data.records);
       } catch (error) {
         if (!controller.signal.aborted) setError(error instanceof Error ? error.message : 'Worksheet belum dapat dimuat.');
-      } finally { if (!controller.signal.aborted) setLoading(false); }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+          scheduleRefresh();
+        }
+      }
     }
     void load();
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+      window.clearTimeout(refreshTimer);
+    };
   }, [selected, reload]);
   const dataset = datasets[selected];
   const titles: Record<string,string> = {visit:'Dashboard Data Visit',ticket:'Dashboard Data Tiket',team:'Dashboard Team Master',csat:'Dashboard CSAT'};
