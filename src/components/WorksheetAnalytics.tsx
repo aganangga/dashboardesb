@@ -125,6 +125,7 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
       <Metrics items={[
         { title: 'Total Visit', value: number(scopedVisits.length), note: 'Baris visit sesuai filter, termasuk tiket dan tanggal yang berulang' },
         { title: 'CSAT Submitted', value: number(filtered.length), note: 'Respons CSAT sesuai filter, termasuk beberapa respons untuk satu visit' },
+        { title: 'CSAT vs Visit', value: percentage(scopedVisits.length ? filtered.length / scopedVisits.length * 100 : null), note: 'CSAT Submitted ÷ Total Visit × 100%' },
         ...metrics,
       ]}/>
       <details className={panel}>
