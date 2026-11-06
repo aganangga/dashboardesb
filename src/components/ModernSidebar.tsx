@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { LayoutDashboard, CalendarDays, ChartNoAxesCombined, Clock3, Table2, Star, Menu, X, Ticket, Users } from 'lucide-react';
+import { LayoutDashboard, CalendarDays, ChartNoAxesCombined, Clock3, Table2, Star, Menu, X, Ticket, Users, Mail } from 'lucide-react';
 
 export type DashboardTab = 'overview' | 'outlets' | 'trend' | 'planned' | 'monthly' | 'breakdowns' | 'comparison' | 'table' | 'quality';
 interface ModernSidebarProps {
@@ -12,6 +12,7 @@ const modules = [
   {id:'visit',label:'Data Visit',short:'Visit',Icon:LayoutDashboard},
   {id:'ticket',label:'Data Tiket',short:'Tiket',Icon:Ticket},
   {id:'team',label:'Team Master',short:'Tim',Icon:Users},
+  {id:'sending-email',label:'Sending Email',short:'Email',Icon:Mail},
   {id:'csat',label:'CSAT',short:'CSAT',Icon:Star},
 ];
 const navigation: Array<{id:DashboardTab;label:string;Icon:React.ComponentType<{className?:string}>}> = [

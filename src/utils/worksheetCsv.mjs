@@ -6,6 +6,11 @@ export const WORKSHEETS = [
   { id: 'team', title: 'TEAM MASTER', gid: '2104832140', headerRow: 0, dataRow: 1, sourceKey: 'dashboardesb-team' },
   { id: 'csat', title: 'CSAT', gid: '1457583822', headerRow: 0, dataRow: 1, sourceKey: 'dashboardesb-csat' },
 ];
+export const LIVE_WORKSHEETS = [
+  ...WORKSHEETS,
+  { id: 'sending-email', title: 'SEND EMAIL', gid: '651248965', headerRow: 0, dataRow: 1 },
+  { id: 'timeline-omni', title: 'TIMELINE OMNI', gid: '1792577101', headerRow: 0, dataRow: 1 },
+];
 export const spreadsheetId = '1SoNn_O4JurYhG-GFIa7-5XtA-90TgDzqeLTPgehFHmI';
 export const sheetUrl = sheet => `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${sheet.gid}`;
 

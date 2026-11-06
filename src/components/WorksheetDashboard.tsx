@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { WORKSHEETS } from '../utils/worksheetCsv.mjs';
+import { LIVE_WORKSHEETS } from '../utils/worksheetCsv.mjs';
 import { sheetNumber } from '../utils/worksheetMetrics';
 import { formatOmniDuration } from '../utils/omniMetrics';
 import { WorksheetAnalytics } from './WorksheetAnalytics';
+import { SendingEmailDashboard } from './SendingEmailDashboard';
 import { TeamMasterEditor } from './TeamMasterEditor';
 import type { ProcessedRecord, RawDataRow } from '../types';
 
@@ -63,7 +64,7 @@ export function WorksheetDashboard({ selected, onSelect, onVisitLoaded, visits =
   const [reload, setReload] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const sheet = WORKSHEETS.find(sheet => sheet.id === selected)!;
+  const sheet = LIVE_WORKSHEETS.find(sheet => sheet.id === selected)!;
   useEffect(() => {
     const controller = new AbortController();
     let refreshTimer: number | undefined;
@@ -108,7 +109,7 @@ export function WorksheetDashboard({ selected, onSelect, onVisitLoaded, visits =
     };
   }, [selected, reload]);
   const dataset = datasets[selected];
-  const titles: Record<string,string> = {visit:'Dashboard Data Visit',ticket:'Dashboard Data Tiket',team:'Dashboard Team Master',csat:'Dashboard CSAT'};
+  const titles: Record<string,string> = {visit:'Dashboard Data Visit',ticket:'Dashboard Data Tiket',team:'Dashboard Team Master',csat:'Dashboard CSAT','sending-email':'Sending Email'};
   const descriptions: Record<string,string> = {visit:'Kunjungan, check-in/out, dan aktivitas lapangan',ticket:'Volume tiket dan performa per PIC',team:'Komposisi dan direktori anggota tim',csat:'Rating, respons, dan feedback pelanggan'};
   return <div className="space-y-5" aria-label="Workspace dashboard">
     <section className="flex-shrink-0">
@@ -122,7 +123,8 @@ export function WorksheetDashboard({ selected, onSelect, onVisitLoaded, visits =
     {error && <p role="alert" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">{error}{selected === 'visit' && ' Data kunjungan sebelumnya tetap ditampilkan.'}</p>}
     </section>
     {selected === 'team' && <TeamMasterEditor />}
-    {selected !== 'visit' && dataset && <WorksheetAnalytics id={selected} rows={dataset.records} visits={visits} omniVisits={omniVisits} teamMasterRows={teamMasterRows} renderDetails={records=><WorksheetTable dataset={{...dataset, records}}/>} />}
+    {selected === 'sending-email' && dataset && <SendingEmailDashboard rows={dataset.records} refresh={reload} />}
+    {selected !== 'visit' && selected !== 'sending-email' && dataset && <WorksheetAnalytics id={selected} rows={dataset.records} visits={visits} omniVisits={omniVisits} teamMasterRows={teamMasterRows} renderDetails={records=><WorksheetTable dataset={{...dataset, records}}/>} />}
     {selected !== 'visit' && !dataset && !error && <p role="status" className="text-sm text-slate-500">Memuat data {sheet.title}…</p>}
   </div>;
 }
