@@ -115,7 +115,7 @@ export function WorksheetDashboard({ selected, onSelect, onVisitLoaded, visits =
     <div className="flex flex-wrap items-end justify-between gap-4">
       <div>
         <h1 className="text-2xl font-bold text-slate-900">{titles[selected]}</h1>
-        <p className="mt-1 text-xs text-slate-500">{dataset ? `${dataset.records.length.toLocaleString('id-ID')} baris · Google Sheets · Dimuat ${new Date(dataset.fetchedAt).toLocaleString('id-ID')}` : 'Sumber: Google Sheets'}</p>
+        <p className="mt-1 text-xs text-slate-500">{dataset ? `${dataset.records.length.toLocaleString('id-ID')} baris sumber · Google Sheets · Dimuat ${new Date(dataset.fetchedAt).toLocaleString('id-ID')}` : selected === 'visit' ? (error ? 'Data cadangan · Google Sheets gagal dimuat' : 'Data cadangan · Menunggu Google Sheets') : 'Sumber: Google Sheets'}</p>
       </div>
       <button onClick={() => setReload(value => value + 1)} disabled={loading} className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">{loading ? 'Memuat…' : 'Muat ulang data'}</button>
     </div>

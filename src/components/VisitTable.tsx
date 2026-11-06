@@ -161,7 +161,7 @@ export const VisitTable: React.FC<VisitTableProps> = ({ records, deduplicateEnab
                   {/* Outlet & Company */}
                   <td className="py-2.5 px-3 max-w-[180px]">
                     <div className="font-semibold text-slate-900 truncate" title={rec.outletName}>{rec.outletName}</div>
-                    <div className="text-[10px] text-slate-500 truncate" title={rec.companyName || rec.title}>{rec.companyName || rec.title}</div>
+                    {(rec.companyName || rec.title).trim().toLowerCase() !== rec.outletName.trim().toLowerCase() && <div className="text-[10px] text-slate-500 truncate" title={rec.companyName || rec.title}>{rec.companyName || rec.title}</div>}
                     <div className="text-[10px] text-slate-400 flex items-center mt-0.5">
                       <MapPin className="w-2.5 h-2.5 mr-0.5 shrink-0 text-slate-400" />
                       <span className="truncate">{rec.area}</span>
@@ -222,7 +222,7 @@ export const VisitTable: React.FC<VisitTableProps> = ({ records, deduplicateEnab
                   {/* Book Type */}
                   <td className="py-2.5 px-3 whitespace-nowrap">
                     <span className="capitalize text-slate-800 font-medium">{rec.bookType}</span>
-                    <span className="block text-[10px] text-slate-500">{rec.visitType}</span>
+                    {rec.visitType.trim().toLowerCase() !== rec.bookType.trim().toLowerCase() && <span className="block text-[10px] text-slate-500">{rec.visitType}</span>}
                   </td>
 
                   {/* Durasi */}

@@ -6,7 +6,7 @@ const read = (path: string) => readFileSync(path, 'utf8');
 
 test('approved dashboard modules survive legacy HTML migration', () => {
   const app = read('src/App.tsx');
-  for (const module of ['CSATDashboard', 'AIInsightPanel', 'ModernSidebar', 'VisitTable', 'CheckInOutComparison']) {
+  for (const module of ['WorksheetDashboard', 'AIInsightPanel', 'ModernSidebar', 'VisitTable', 'CheckInOutComparison']) {
     assert.ok(app.includes('<' + module), module + ' must be rendered');
   }
 

@@ -57,7 +57,7 @@ export const PlannedVsActualBarChart: React.FC<PlannedVsActualBarChartProps> = (
   dateRangeStart,
   dateRangeEnd,
 }) => {
-  const [dimension, setDimension] = useState<GroupingDimension>('date');
+  const [dimension, setDimension] = useState<GroupingDimension>('month');
   const [actualMode, setActualMode] = useState<ActualMetricMode>('checkin');
   const [chartLayout, setChartLayout] = useState<'grouped' | 'stacked'>('grouped');
   const [showTable, setShowTable] = useState<boolean>(false);
@@ -495,7 +495,7 @@ export const PlannedVsActualBarChart: React.FC<PlannedVsActualBarChartProps> = (
         {/* Actual */}
         <div className="p-3.5 rounded-xl bg-emerald-50/50 border border-emerald-200/80 flex flex-col justify-between">
           <div className="flex items-center justify-between text-xs text-emerald-800 font-medium">
-            <span>Total Actual Visits</span>
+            <span>{actualMode === 'checkin' ? 'Check-in tercatat' : 'Kunjungan selesai'}</span>
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
           </div>
           <div className="mt-2">
@@ -503,7 +503,7 @@ export const PlannedVsActualBarChart: React.FC<PlannedVsActualBarChartProps> = (
               {summary.totalActual}
             </div>
             <div className="text-[11px] text-emerald-600 mt-0.5">
-              {actualMode === 'checkin' ? 'Check-in tercatat di outlet' : 'Tiket bertatus Selesai'}
+              {actualMode === 'checkin' ? 'Check-in tercatat di outlet' : 'Tiket berstatus Selesai'}
             </div>
           </div>
         </div>
@@ -511,13 +511,13 @@ export const PlannedVsActualBarChart: React.FC<PlannedVsActualBarChartProps> = (
         {/* Realization Rate */}
         <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between">
           <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
-            <span>Fulfillment Rate</span>
+            <span>{actualMode === 'checkin' ? 'Persentase check-in' : 'Persentase selesai'}</span>
             <Percent className="w-3.5 h-3.5 text-indigo-600" />
           </div>
           <div className="mt-2">
             <div className="text-2xl font-black text-slate-900 tracking-tight flex items-baseline gap-1">
               <span>{summary.achievementRate}%</span>
-              <span className="text-xs font-semibold text-slate-500">terealisasi</span>
+              <span className="text-xs font-semibold text-slate-500">{summary.totalActual} dari {summary.totalPlanned}</span>
             </div>
             <div className="w-full bg-slate-200 h-1.5 rounded-full mt-1.5 overflow-hidden">
               <div
@@ -537,7 +537,7 @@ export const PlannedVsActualBarChart: React.FC<PlannedVsActualBarChartProps> = (
         {/* Gap (Unfulfilled) */}
         <div className="p-3.5 rounded-xl bg-rose-50/40 border border-rose-200/70 flex flex-col justify-between">
           <div className="flex items-center justify-between text-xs text-rose-800 font-medium">
-            <span>Selisih / Belum Selesai</span>
+            <span>{actualMode === 'checkin' ? 'Belum Check-in' : 'Belum berstatus Selesai'}</span>
             <AlertCircle className="w-3.5 h-3.5 text-rose-500" />
           </div>
           <div className="mt-2">
@@ -545,7 +545,7 @@ export const PlannedVsActualBarChart: React.FC<PlannedVsActualBarChartProps> = (
               {summary.gap}
             </div>
             <div className="text-[11px] text-rose-600 mt-0.5">
-              {summary.gap === 0 ? 'Semua kunjungan terlaksana!' : 'Kunjungan belum terealisasi'}
+              Dari {summary.totalPlanned} kunjungan terjadwal
             </div>
           </div>
         </div>
