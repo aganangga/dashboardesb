@@ -4,6 +4,7 @@ import { Ticket, Star, Users } from 'lucide-react';
 import { CsatAgendaTable } from './CsatAgendaTable';
 import { summarizeCsatAgendas, summarizeVisitCsatCoverage } from '../utils/csatAgenda';
 import { attachOmniColumns, buildOmniIndex, formatOmniDuration, omniForTicketRows } from '../utils/omniMetrics';
+import { MASTER_DATA_TEAM } from '../utils/dataProcessor';
 import { displayTeamName } from '../utils/teamDirectory';
 import { WorksheetFilterBar } from './WorksheetFilterBar';
 import { enrichWorksheetRows, matchesWorksheetFilter, emptyWorksheetFilter } from '../utils/worksheetFilters';
@@ -102,6 +103,14 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
       ).map(a => a.consultantName));
       count(teams.size === 1 ? [...teams][0] : 'Belum terpetakan', 'responses', [item.person]);
     }
+    const consultants = new Set(MASTER_DATA_TEAM.filter(row => row.l2 !== 'ERP Advisor').map(row => row.l2));
+    for (const [team, row] of totals) {
+      if (!consultants.has(team)) continue;
+      const lead = displayTeamName(team, teamMasterRows);
+      if ((!primary.support || primary.support === lead) && !row.members.has(lead)) {
+        row.members.set(lead, { visits: 0, responses: 0 });
+      }
+    }
     return [...totals].sort(([a], [b]) => a.localeCompare(b, 'id'));
   }, [id, scopedVisits, filtered, enriched, primary.supervisor, primary.consultant, primary.support, teamMasterRows]);
   const omni = useMemo(()=>omniForTicketRows(id==='ticket'?filtered:[],omniVisits,omniIndex),[id,filtered,omniVisits,omniIndex]);
@@ -175,9 +184,9 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
               <td className="p-3 text-right tabular-nums">{number(counts.responses)}</td>
               <td className="p-3 text-right font-semibold tabular-nums">{percentage(counts.visits ? counts.responses / counts.visits * 100 : null)}</td>
             </tr>
-            {[...counts.members].sort(([a], [b]) => a.localeCompare(b, 'id')).map(([person, member]) =>
+            {[...counts.members].sort(([a], [b]) => Number(b === displayTeamName(team, teamMasterRows)) - Number(a === displayTeamName(team, teamMasterRows)) || a.localeCompare(b, 'id')).map(([person, member]) =>
               <tr key={person} className="border-t border-slate-100">
-                <th scope="row" className="py-2 pl-8 pr-3 text-left font-normal text-slate-700">{person}</th>
+                <th scope="row" className="py-2 pl-8 pr-3 text-left font-normal text-slate-700">{person}{person === displayTeamName(team, teamMasterRows) ? ' (L2)' : ''}</th>
                 <td className="p-3 text-right tabular-nums">{number(member.visits)}</td>
                 <td className="p-3 text-right tabular-nums">{number(member.responses)}</td>
                 <td className="p-3 text-right tabular-nums">{percentage(member.visits ? member.responses / member.visits * 100 : null)}</td>
