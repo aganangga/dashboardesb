@@ -74,6 +74,27 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
     (!choices['Visit Type'] || visit.visitType === choices['Visit Type'])
   ) : [], [id, visits, primary, teamMasterRows, choices]);
   const coverage = useMemo(() => id === 'csat' ? summarizeVisitCsatCoverage(filtered, scopedVisits, visits) : null, [id, filtered, scopedVisits, visits]);
+  const teamBreakdown = useMemo(() => {
+    if (id !== 'csat') return [];
+    const totals = new Map<string, { visits: number; responses: number }>();
+    const count = (name: string, metric: 'visits' | 'responses') => {
+      const team = !name || name.toLowerCase() === 'belum terpetakan' ? 'Belum terpetakan' : name;
+      const row = totals.get(team) ?? { visits: 0, responses: 0 };
+      row[metric]++;
+      totals.set(team, row);
+    };
+    for (const visit of scopedVisits) count(visit.consultantName, 'visits');
+    const included = new Set(filtered);
+    for (const item of enriched) {
+      if (!included.has(item.row)) continue;
+      const teams = new Set<string>(item.assignments.filter(a =>
+        (!primary.supervisor || a.supervisor === primary.supervisor) &&
+        (!primary.consultant || a.consultantName === primary.consultant)
+      ).map(a => a.consultantName));
+      count(teams.size === 1 ? [...teams][0] : 'Belum terpetakan', 'responses');
+    }
+    return [...totals].sort(([a], [b]) => a.localeCompare(b, 'id'));
+  }, [id, scopedVisits, filtered, enriched, primary.supervisor, primary.consultant]);
   const omni = useMemo(()=>omniForTicketRows(id==='ticket'?filtered:[],omniVisits,omniIndex),[id,filtered,omniVisits,omniIndex]);
   const roles = groupCounts(filtered,row=>teamRole(row['Job Tittle']));
   const roleCount = (name:string)=>roles.find(role=>role.name===name)?.total || 0;
@@ -128,6 +149,26 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
         { title: 'CSAT vs Visit', value: percentage(scopedVisits.length ? filtered.length / scopedVisits.length * 100 : null), note: 'CSAT Submitted ÷ Total Visit × 100%' },
         ...metrics,
       ]}/>
+      <section className={panel} aria-label="CSAT vs Visit per Tim">
+        <h4 className="font-semibold text-slate-900">CSAT vs Visit per Tim</h4>
+        <p className="mt-1 text-sm text-slate-600">Respons dengan tim yang belum pasti masuk ke Belum terpetakan.</p>
+        {teamBreakdown.length ? <div className="mt-3 overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50"><tr>
+              <th scope="col" className="p-3 text-left">Tim Konsultan</th>
+              <th scope="col" className="p-3 text-right">Total Visit</th>
+              <th scope="col" className="p-3 text-right">CSAT Submitted</th>
+              <th scope="col" className="p-3 text-right">CSAT vs Visit</th>
+            </tr></thead>
+            <tbody>{teamBreakdown.map(([team, counts]) => <tr key={team} className="border-t border-slate-100">
+              <th scope="row" className="p-3 text-left font-medium">{displayTeamName(team, teamMasterRows)}</th>
+              <td className="p-3 text-right tabular-nums">{number(counts.visits)}</td>
+              <td className="p-3 text-right tabular-nums">{number(counts.responses)}</td>
+              <td className="p-3 text-right font-semibold tabular-nums">{percentage(counts.visits ? counts.responses / counts.visits * 100 : null)}</td>
+            </tr>)}</tbody>
+          </table>
+        </div> : <p className="mt-3 text-sm text-slate-600">Tidak ada data sesuai filter.</p>}
+      </section>
       <details className={panel}>
         <summary className="cursor-pointer text-sm font-semibold text-slate-700">Rincian pencocokan visit unik</summary>
         <div className="mt-4"><Metrics items={[
