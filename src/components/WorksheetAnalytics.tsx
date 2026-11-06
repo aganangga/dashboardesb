@@ -95,11 +95,16 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
       <h2 className="text-xl font-bold text-slate-900">{id==='ticket'?'Performa Tiket':id==='csat'?'Kepuasan Pelanggan':'Struktur & Direktori Tim'}</h2>
       <p className="mt-1 text-sm text-slate-500">{id==='ticket'?'Pantau volume tiket dan penyelesaian per periode, departemen, area, dan PIC.':id==='csat'?'Pantau penilaian pelanggan, tren respons, dan feedback layanan.':'Kenali komposisi jabatan dan temukan anggota tim.'}</p>
     </div></div>
-    {coverage && <section className="space-y-3" aria-label="Total Visit vs CSAT">
+    {coverage && <section className="space-y-3" aria-label="Total Visit vs CSAT Submitted">
       <div>
-        <h3 className="font-semibold text-slate-900">Total Visit vs CSAT</h3>
+        <h3 className="font-semibold text-slate-900">Total Visit vs CSAT Submitted</h3>
         <p className="mt-1 text-sm text-slate-600">Ringkasan seluruh data visit yang dimuat. Filter respons CSAT di bawah berlaku untuk rincian respons.</p>
       </div>
+      <Metrics items={[
+        { title: 'Total Visit', value: number(visits.length), note: 'Seluruh baris visit yang masuk dashboard, termasuk tiket dan tanggal yang berulang' },
+        { title: 'CSAT Submitted', value: number(rows.length), note: 'Seluruh respons CSAT, termasuk beberapa respons untuk satu visit' },
+      ]}/>
+      <h4 className="text-sm font-semibold text-slate-700">Cakupan berdasarkan visit unik</h4>
       <Metrics items={[
         { title: 'Total visit unik', value: number(coverage.totalVisits), note: 'Tiket ID + tanggal visit' },
         { title: 'Visit dengan CSAT', value: number(coverage.coveredVisits), note: 'Visit unik dengan respons yang berhasil dicocokkan' },
