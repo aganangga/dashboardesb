@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import type { RawDataRow } from '../types';
+import { MASTER_DATA_TEAM, isSameSupportMember, parseCustomDate, resolveSpvAndConsultant } from '../utils/dataProcessor';
 import { matchSendingEmailRows } from '../utils/sendingEmail';
 
 const number = new Intl.NumberFormat('id-ID', { maximumFractionDigits: 1 });
@@ -30,17 +31,26 @@ export function SendingEmailDashboard({ rows, refresh }: { rows: RawDataRow[]; r
 
   const data = useMemo(() => matchSendingEmailRows(rows, timeline ?? []), [rows, timeline]);
   const months = [...new Set(data.map(item => item.scheduled.slice(0, 7)).filter(Boolean))].sort().reverse();
-  const consultantName = (row: RawDataRow) => row['Nama Consultant']?.trim() || 'Belum tercatat';
-  const supervisorName = (row: RawDataRow) => row.Supervisor?.trim() || 'Belum tercatat';
-  const implementorNames = (row: RawDataRow) => (row['Nama Support'] || '').split(/[,;\r\n]+/).map(name => name.trim()).filter(Boolean);
+  const assignedRows = useMemo(() => data.map(item => ({
+    ...item,
+    ...resolveSpvAndConsultant(
+      item.row['Nama Support'], item.row['Nama Consultant'], item.row.Supervisor,
+      parseCustomDate(item.row['Jadwal Agenda']),
+    ),
+  })), [data]);
   const uniqueNames = (names: string[]) => [...new Set(names)].sort((a, b) => a.localeCompare(b, 'id'));
-  const supervisors = uniqueNames(data.map(({ row }) => supervisorName(row)));
-  const spvRows = data.filter(({ row }) => !supervisor || supervisorName(row) === supervisor);
-  const consultants = uniqueNames(spvRows.map(({ row }) => consultantName(row)));
-  const consultantRows = spvRows.filter(({ row }) => !consultant || consultantName(row) === consultant);
-  const implementors = uniqueNames(consultantRows.flatMap(({ row }) => implementorNames(row)));
-  const filtered = consultantRows.filter(({ row, scheduled }) => (!month || scheduled.startsWith(month)) &&
-    (!implementor || implementorNames(row).includes(implementor)) &&
+  const supervisors = uniqueNames(MASTER_DATA_TEAM.map(member => member.spv));
+  const roster = MASTER_DATA_TEAM.filter(member => !supervisor || member.spv === supervisor);
+  const consultants = uniqueNames(roster.map(member => member.l2));
+  const selectedRoster = roster.filter(member => !consultant || member.l2 === consultant);
+  const implementors = uniqueNames(selectedRoster.flatMap(member =>
+    member.l2 === 'ERP Advisor' ? [member.l1FullName] : [member.l2, member.l1FullName]
+  ));
+  const filtered = assignedRows.filter(({ row, scheduled, supervisor: rowSpv, consultantName }) =>
+    (!supervisor || rowSpv === supervisor) && (!consultant || consultantName === consultant) &&
+    (!month || scheduled.startsWith(month)) &&
+    (!implementor || (row['Nama Support'] || '').split(/[,;\r\n/]+/).some(value =>
+      isSameSupportMember(value.trim(), implementor) || isSameSupportMember(implementor, value.trim()))) &&
     [row['Ticket ID'], row['Nama Consultant'], row['Nama Support'], row['Nama Outlet']]
       .some(value => (value || '').toLowerCase().includes(query.trim().toLowerCase())));
   const sent = filtered.filter(item => item.emailDays !== null && item.emailDays <= 1).length;
@@ -94,7 +104,7 @@ export function SendingEmailDashboard({ rows, refresh }: { rows: RawDataRow[]; r
         <thead className="bg-slate-50"><tr>{['Tiket', 'Konsultan', 'Status tiket', 'Jadwal', 'COMPLETED', 'SEND EMAIL', 'Selisih email', 'Keterangan'].map(label => <th key={label} scope="col" className="p-2">{label}</th>)}</tr></thead>
         <tbody>{filtered.slice((currentPage - 1) * 15, currentPage * 15).map((item, index) =>
           <tr key={index} className="border-t border-slate-100">{[
-            item.row['Ticket ID'], consultantName(item.row), item.row.Status, item.scheduled, item.completed, item.sent,
+            item.row['Ticket ID'], item.consultantName, item.row.Status, item.scheduled, item.completed, item.sent,
             item.emailDays === null ? '' : 'H+' + item.emailDays,
             !item.scheduled ? 'Jadwal belum tercatat' : !timeline ? 'Timeline belum tersedia' : [
               item.emailDays === null ? 'Email: belum ada jejak kirim' : item.emailDays <= 1 ? 'Email: tepat waktu' : 'Email: lewat H+1',
