@@ -76,14 +76,23 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
   const coverage = useMemo(() => id === 'csat' ? summarizeVisitCsatCoverage(filtered, scopedVisits, visits) : null, [id, filtered, scopedVisits, visits]);
   const teamBreakdown = useMemo(() => {
     if (id !== 'csat') return [];
-    const totals = new Map<string, { visits: number; responses: number }>();
-    const count = (name: string, metric: 'visits' | 'responses') => {
+    type Counts = { visits: number; responses: number };
+    const totals = new Map<string, Counts & { members: Map<string, Counts> }>();
+    const count = (name: string, metric: keyof Counts, people: string[]) => {
       const team = !name || name.toLowerCase() === 'belum terpetakan' ? 'Belum terpetakan' : name;
-      const row = totals.get(team) ?? { visits: 0, responses: 0 };
+      const row = totals.get(team) ?? { visits: 0, responses: 0, members: new Map<string, Counts>() };
       row[metric]++;
+      for (const person of new Set(people.map(name => displayTeamName(name.trim(), teamMasterRows)))) {
+        if (!person || person === '-' || (primary.support && person !== primary.support)) continue;
+        const member = row.members.get(person) ?? { visits: 0, responses: 0 };
+        member[metric]++;
+        row.members.set(person, member);
+      }
       totals.set(team, row);
     };
-    for (const visit of scopedVisits) count(visit.consultantName, 'visits');
+    for (const visit of scopedVisits) count(visit.consultantName, 'visits', [
+      visit.supportName, ...visit.supportTeamList, ...visit.jointSupportNames,
+    ]);
     const included = new Set(filtered);
     for (const item of enriched) {
       if (!included.has(item.row)) continue;
@@ -91,10 +100,10 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
         (!primary.supervisor || a.supervisor === primary.supervisor) &&
         (!primary.consultant || a.consultantName === primary.consultant)
       ).map(a => a.consultantName));
-      count(teams.size === 1 ? [...teams][0] : 'Belum terpetakan', 'responses');
+      count(teams.size === 1 ? [...teams][0] : 'Belum terpetakan', 'responses', [item.person]);
     }
     return [...totals].sort(([a], [b]) => a.localeCompare(b, 'id'));
-  }, [id, scopedVisits, filtered, enriched, primary.supervisor, primary.consultant]);
+  }, [id, scopedVisits, filtered, enriched, primary.supervisor, primary.consultant, primary.support, teamMasterRows]);
   const omni = useMemo(()=>omniForTicketRows(id==='ticket'?filtered:[],omniVisits,omniIndex),[id,filtered,omniVisits,omniIndex]);
   const roles = groupCounts(filtered,row=>teamRole(row['Job Tittle']));
   const roleCount = (name:string)=>roles.find(role=>role.name===name)?.total || 0;
@@ -151,7 +160,7 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
       ]}/>
       <section className={panel} aria-label="CSAT vs Visit per Tim">
         <h4 className="font-semibold text-slate-900">CSAT vs Visit per Tim</h4>
-        <p className="mt-1 text-sm text-slate-600">Respons dengan tim yang belum pasti masuk ke Belum terpetakan.</p>
+        <p className="mt-1 text-sm text-slate-600">Rincian per orang tampil di bawah timnya. Satu visit dapat dihitung untuk beberapa peserta, jadi angka anggota bisa melebihi total tim. Respons tanpa tim yang pasti masuk ke Belum terpetakan.</p>
         {teamBreakdown.length ? <div className="mt-3 overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-slate-50"><tr>
@@ -160,12 +169,20 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
               <th scope="col" className="p-3 text-right">CSAT Submitted</th>
               <th scope="col" className="p-3 text-right">CSAT vs Visit</th>
             </tr></thead>
-            <tbody>{teamBreakdown.map(([team, counts]) => <tr key={team} className="border-t border-slate-100">
+            <tbody>{teamBreakdown.map(([team, counts]) => <React.Fragment key={team}><tr className="border-t border-slate-200 bg-slate-50">
               <th scope="row" className="p-3 text-left font-medium">{displayTeamName(team, teamMasterRows)}</th>
               <td className="p-3 text-right tabular-nums">{number(counts.visits)}</td>
               <td className="p-3 text-right tabular-nums">{number(counts.responses)}</td>
               <td className="p-3 text-right font-semibold tabular-nums">{percentage(counts.visits ? counts.responses / counts.visits * 100 : null)}</td>
-            </tr>)}</tbody>
+            </tr>
+            {[...counts.members].sort(([a], [b]) => a.localeCompare(b, 'id')).map(([person, member]) =>
+              <tr key={person} className="border-t border-slate-100">
+                <th scope="row" className="py-2 pl-8 pr-3 text-left font-normal text-slate-700">{person}</th>
+                <td className="p-3 text-right tabular-nums">{number(member.visits)}</td>
+                <td className="p-3 text-right tabular-nums">{number(member.responses)}</td>
+                <td className="p-3 text-right tabular-nums">{percentage(member.visits ? member.responses / member.visits * 100 : null)}</td>
+              </tr>)}
+            </React.Fragment>)}</tbody>
           </table>
         </div> : <p className="mt-3 text-sm text-slate-600">Tidak ada data sesuai filter.</p>}
       </section>
