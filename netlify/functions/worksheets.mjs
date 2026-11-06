@@ -14,7 +14,7 @@ export async function getWorksheet(id, fetchImpl = fetch) {
       .map(row => Object.fromEntries(fields.map(field => [field, row[field]])));
   }
   if (id === 'sending-email') {
-    const fields = ['Ticket ID', 'Status', 'Jadwal Agenda', 'Nama Consultant', 'Nama Support', 'Nama Outlet'];
+    const fields = ['Ticket ID', 'Status', 'Jadwal Agenda', 'Supervisor', 'Nama Consultant', 'Nama Support', 'Nama Outlet'];
     parsed.headers = fields;
     parsed.records = parsed.records.map(row => Object.fromEntries(fields.map(field => [field, row[field]])));
   }

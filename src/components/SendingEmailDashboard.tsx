@@ -8,6 +8,8 @@ const panel = 'rounded-2xl border border-slate-200 bg-white p-4';
 export function SendingEmailDashboard({ rows, refresh }: { rows: RawDataRow[]; refresh: number }) {
   const [timeline, setTimeline] = useState<RawDataRow[] | null>(null);
   const [error, setError] = useState(false);
+  const [supervisor, setSupervisor] = useState('');
+  const [implementor, setImplementor] = useState('');
   const [consultant, setConsultant] = useState('');
   const [month, setMonth] = useState('');
   const [query, setQuery] = useState('');
@@ -29,9 +31,16 @@ export function SendingEmailDashboard({ rows, refresh }: { rows: RawDataRow[]; r
   const data = useMemo(() => matchSendingEmailRows(rows, timeline ?? []), [rows, timeline]);
   const months = [...new Set(data.map(item => item.scheduled.slice(0, 7)).filter(Boolean))].sort().reverse();
   const consultantName = (row: RawDataRow) => row['Nama Consultant']?.trim() || 'Belum tercatat';
-  const consultants = [...new Set<string>(data.map(({ row }) => consultantName(row)))].sort((a, b) => a.localeCompare(b, 'id'));
-  const filtered = data.filter(({ row, scheduled }) => (!month || scheduled.startsWith(month)) &&
-    (!consultant || consultantName(row) === consultant) &&
+  const supervisorName = (row: RawDataRow) => row.Supervisor?.trim() || 'Belum tercatat';
+  const implementorNames = (row: RawDataRow) => (row['Nama Support'] || '').split(/[,;\r\n]+/).map(name => name.trim()).filter(Boolean);
+  const uniqueNames = (names: string[]) => [...new Set(names)].sort((a, b) => a.localeCompare(b, 'id'));
+  const supervisors = uniqueNames(data.map(({ row }) => supervisorName(row)));
+  const spvRows = data.filter(({ row }) => !supervisor || supervisorName(row) === supervisor);
+  const consultants = uniqueNames(spvRows.map(({ row }) => consultantName(row)));
+  const consultantRows = spvRows.filter(({ row }) => !consultant || consultantName(row) === consultant);
+  const implementors = uniqueNames(consultantRows.flatMap(({ row }) => implementorNames(row)));
+  const filtered = consultantRows.filter(({ row, scheduled }) => (!month || scheduled.startsWith(month)) &&
+    (!implementor || implementorNames(row).includes(implementor)) &&
     [row['Ticket ID'], row['Nama Consultant'], row['Nama Support'], row['Nama Outlet']]
       .some(value => (value || '').toLowerCase().includes(query.trim().toLowerCase())));
   const sent = filtered.filter(item => item.emailDays !== null && item.emailDays <= 1).length;
@@ -49,9 +58,19 @@ export function SendingEmailDashboard({ rows, refresh }: { rows: RawDataRow[]; r
           <option value="">Semua bulan</option>{months.map(value => <option key={value}>{value}</option>)}
         </select>
       </label>
+      <label className="text-sm">SPV
+        <select aria-label="SPV" className="ml-2 rounded border p-2" value={supervisor} onChange={event => { setSupervisor(event.target.value); setConsultant(''); setImplementor(''); setPage(1); }}>
+          <option value="">Semua SPV</option>{supervisors.map(name => <option key={name}>{name}</option>)}
+        </select>
+      </label>
       <label className="text-sm">Konsultan
-        <select className="ml-2 rounded border p-2" value={consultant} onChange={event => { setConsultant(event.target.value); setPage(1); }}>
+        <select className="ml-2 rounded border p-2" value={consultant} onChange={event => { setConsultant(event.target.value); setImplementor(''); setPage(1); }}>
           <option value="">Semua konsultan</option>{consultants.map(name => <option key={name}>{name}</option>)}
+        </select>
+      </label>
+      <label className="text-sm">Implementor
+        <select aria-label="Implementor" className="ml-2 rounded border p-2" value={implementor} onChange={event => { setImplementor(event.target.value); setPage(1); }}>
+          <option value="">Semua implementor</option>{implementors.map(name => <option key={name}>{name}</option>)}
         </select>
       </label>
       <input className="rounded border p-2 text-sm" aria-label="Cari tiket, tim, atau outlet" placeholder="Cari tiket, tim, atau outlet" value={query}
