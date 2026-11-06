@@ -50,3 +50,38 @@ export function summarizeCsatAgendas(rows:RawDataRow[],visits:ProcessedRecord[])
     average:valid.length?valid.reduce((sum,a)=>sum+a.score!,0)/valid.length:null,
     satisfaction:valid.length?valid.filter(a=>a.score!>=4).length/valid.length*100:null};
 }
+
+// Coverage uses the same ticket + visit-date unit as the Visit dashboard.
+export function summarizeVisitCsatCoverage(rows: RawDataRow[], visits: ProcessedRecord[]) {
+  const visitKeys = new Set<string>();
+  const keysByAgenda = new Map<string, Set<string>>();
+  for (const visit of visits) {
+    const ticket = clean(visit.ticketId);
+    const day = sheetDate(visit.dateVisit);
+    if (!ticket || !day) continue;
+    const visitKey = ticket + '|' + day;
+    visitKeys.add(visitKey);
+    const schedule = scheduleKey(visit.raw?.['Jadwal Agenda'] || '');
+    const agendaId = clean(visit.raw?.['Agenda ID'] || visit.raw?.['ID Agenda'] || '');
+    const agendaKeys = [ticket + '|' + day];
+    if (schedule) agendaKeys.push(ticket + '|' + schedule, ticket + '|' + schedule.slice(0, 10));
+    if (agendaId) agendaKeys.push('id:' + agendaId);
+    for (const agendaKey of agendaKeys) {
+      const keys = keysByAgenda.get(agendaKey) ?? new Set<string>();
+      keys.add(visitKey);
+      keysByAgenda.set(agendaKey, keys);
+    }
+  }
+
+  const covered = new Set<string>();
+  for (const agenda of aggregateCsatAgendas(rows, visits)) {
+    if (!agenda.resolved) continue;
+    const matches = keysByAgenda.get(agenda.key);
+    if (matches?.size === 1) covered.add([...matches][0]);
+  }
+  return {
+    totalVisits: visitKeys.size,
+    coveredVisits: covered.size,
+    coverage: visitKeys.size ? covered.size / visitKeys.size * 100 : null,
+  };
+}
