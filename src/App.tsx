@@ -5,7 +5,7 @@ import { ColumnMapping, FilterState, ProcessedRecord, RawDataRow, ConsultantGrou
 import { displayTeamName } from './utils/teamDirectory';
 import { WorksheetDashboard } from './components/WorksheetDashboard';
 import { Navbar } from './components/Navbar';
-import { ModernSidebar } from './components/ModernSidebar';
+import { ModernSidebar, type DashboardTab } from './components/ModernSidebar';
 import { FilterBar } from './components/FilterBar';
 import { OutletVisitSummary } from './components/OutletVisitSummary';
 import { SummaryCards } from './components/SummaryCards';
@@ -15,7 +15,6 @@ import { BreakdownSection } from './components/BreakdownSection';
 import { MonthlyView } from './components/MonthlyView';
 import { CheckInOutComparison } from './components/CheckInOutComparison';
 import { VisitTable } from './components/VisitTable';
-import { CSATDashboard } from './components/CSATDashboard';
 import { VisitQualityInsights } from './components/VisitQualityInsights';
 import { AIInsightPanel } from './components/AIInsightPanel';
 import { ColumnMapperModal } from './components/ColumnMapperModal';
@@ -24,7 +23,7 @@ import { OmniSyncModal } from './components/OmniSyncModal';
 import type { OmniSyncDataset } from './utils/omniSync';
 import { MultiSupportModal } from './components/MultiSupportModal';
 import { ShareModal } from './components/ShareModal';
-import { Layers, Clock, Table, BarChart2, CheckCircle2, Calendar, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 export default function App() {
   const [selectedWorksheet, setSelectedWorksheet] = useState('visit');
@@ -57,7 +56,7 @@ export default function App() {
   );
 
   // Active view tab: 'overview' | 'monthly' | 'breakdowns' | 'comparison' | 'table'
-  const [activeTab, setActiveTab] = useState<'overview' | 'monthly' | 'breakdowns' | 'comparison' | 'table' | 'csat' | 'quality'>('overview');
+  const [activeTab, setActiveTab] = useState<DashboardTab>('overview');
 
   // Modals state
   const [isColumnMapperOpen, setIsColumnMapperOpen] = useState<boolean>(false);
@@ -346,7 +345,6 @@ export default function App() {
 
   const handleWorksheetSelect = (id: string) => {
     setSelectedWorksheet(id);
-    if (id === 'visit' && activeTab === 'csat') setActiveTab('overview');
   };
 
   const handleWorksheetVisitLoaded = (newData: RawDataRow[], newHeaders: string[]) => {
@@ -458,7 +456,7 @@ export default function App() {
 
   return (
     <div className="modern-shell min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-indigo-600 selection:text-white">
-      <ModernSidebar activeTab={activeTab} selectedWorksheet={selectedWorksheet} onSelectWorksheet={handleWorksheetSelect} onSelect={tab => { if (tab === 'csat') handleWorksheetSelect('csat'); else { handleWorksheetSelect('visit'); setActiveTab(tab); } }} />
+      <ModernSidebar activeTab={activeTab} selectedWorksheet={selectedWorksheet} onSelectWorksheet={handleWorksheetSelect} onSelect={setActiveTab} />
 
       {/* Top Navigation */}
       {selectedWorksheet === 'visit' && <Navbar
@@ -504,138 +502,22 @@ export default function App() {
           supportTeamVisitsCount={supportTeamVisitsCount}
         />
 
-        {/* Top Summary Metrics */}
-        <SummaryCards
-          records={filteredRecords}
-          uniqueVisitsCount={uniqueVisitsCount}
-          deduplicateEnabled={filters.deduplicateVisits}
-          onOpenMultiSupportDetails={() => setIsMultiSupportOpen(true)}
-        />
-
-        {/* View Switcher Tabs */}
-        <div className="modern-view-switcher flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2">
-          <div className="modern-tab-buttons flex bg-white p-1 rounded-xl border border-slate-200 text-xs shadow-2xs">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
-                activeTab === 'overview' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Layers className="w-3.5 h-3.5" />
-              <span>Ringkasan Dashboard</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('monthly')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
-                activeTab === 'monthly' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Calendar className="w-3.5 h-3.5" />
-              <span>Tampilan Bulanan (By Month)</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('breakdowns')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
-                activeTab === 'breakdowns' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <BarChart2 className="w-3.5 h-3.5" />
-              <span>Breakdown (Date, Area, SPV, Book, Grouping)</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('comparison')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
-                activeTab === 'comparison' ? 'bg-purple-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Clock className="w-3.5 h-3.5" />
-              <span>Komparasi Check In - Out &amp; Durasi</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('table')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
-                activeTab === 'table' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Table className="w-3.5 h-3.5" />
-              <span>Tabel Rincian Data</span>
-            </button>
-            <button onClick={() => setActiveTab('quality')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${activeTab === 'quality' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>
-              <BarChart2 className="w-3.5 h-3.5" />
-              <span>SLA &amp; Repeat Company</span>
-            </button>
-            <button
-              onClick={() => handleWorksheetSelect('csat')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
-                activeTab === 'csat' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>CSAT · Penilaian Client</span>
-            </button>
-          </div>
-
-          <button
-            onClick={() => setIsMultiSupportOpen(true)}
-            className="text-xs text-amber-700 hover:text-amber-800 underline font-medium flex items-center space-x-1 cursor-pointer"
-          >
-            <span>Lihat Kasus Multi-Support Outlet</span>
-          </button>
-        </div>
-
-        {/* Content sections based on active tab */}
         {activeTab === 'overview' && (
-          <div className="space-y-6">
-            <OutletVisitSummary records={filteredRecords} />
-
-            {/* Grafik Garis Tren Kunjungan Harian (Daily Visit Trend Line Chart) */}
-            <DailyVisitTrendChart
-              records={filteredRecords}
-              deduplicateEnabled={filters.deduplicateVisits}
-              dateRangeStart={filters.dateRangeStart}
-              dateRangeEnd={filters.dateRangeEnd}
-            />
-
-            {/* Grafik Batang Perbandingan Planned Visits vs Actual Visits */}
-            <PlannedVsActualBarChart
-              records={filteredRecords}
-              deduplicateEnabled={filters.deduplicateVisits}
-              dateRangeStart={filters.dateRangeStart}
-              dateRangeEnd={filters.dateRangeEnd}
-            />
-
-            {/* 1. Breakdowns */}
-            <BreakdownSection
-              records={filteredRecords}
-              deduplicateEnabled={filters.deduplicateVisits}
-              consultantGroupings={consultantGroupings}
-              selectedConsultant={filters.consultants[0] || ''}
-              onSelectConsultantTeam={(cons, member) => {
-                if (member) {
-                  setFilters((prev) => ({
-                    ...prev,
-                    consultants: [cons],
-                    supportTeamMembers: [member],
-                    selectedSupportTeam: `MEMBER:${cons}:${member}`,
-                  }));
-                } else {
-                  setFilters((prev) => ({
-                    ...prev,
-                    consultants: [cons],
-                    supportTeamMembers: [`CONS_ALL:${cons}`],
-                    selectedSupportTeam: `CONS_ALL:${cons}`,
-                  }));
-                }
-              }}
-            />
-
-            {/* 2. Tempat Khusus Komparasi Check In - Check Out */}
-            <CheckInOutComparison records={filteredRecords} />
-
-            {/* 3. Data Table */}
-            <VisitTable records={filteredRecords} deduplicateEnabled={filters.deduplicateVisits} />
-          </div>
+          <SummaryCards
+            records={filteredRecords}
+            uniqueVisitsCount={uniqueVisitsCount}
+            deduplicateEnabled={filters.deduplicateVisits}
+            onOpenMultiSupportDetails={() => setIsMultiSupportOpen(true)}
+          />
+        )}
+        {activeTab === 'outlets' && <OutletVisitSummary records={filteredRecords} />}
+        {activeTab === 'trend' && (
+          <DailyVisitTrendChart records={filteredRecords} deduplicateEnabled={filters.deduplicateVisits}
+            dateRangeStart={filters.dateRangeStart} dateRangeEnd={filters.dateRangeEnd} />
+        )}
+        {activeTab === 'planned' && (
+          <PlannedVsActualBarChart records={filteredRecords} deduplicateEnabled={filters.deduplicateVisits}
+            dateRangeStart={filters.dateRangeStart} dateRangeEnd={filters.dateRangeEnd} />
         )}
 
         {/* Dedicated Monthly View (Tampilan By Month) */}
@@ -723,9 +605,6 @@ export default function App() {
 
         {activeTab === 'quality' && (
           <VisitQualityInsights records={filteredRecords} />
-        )}
-        {activeTab === 'csat' && (
-          <CSATDashboard records={allRecords} filters={filters} />
         )}
         </>}
       </main>
