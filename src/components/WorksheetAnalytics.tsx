@@ -60,7 +60,20 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
   const ticket = ticketSummary(filtered);
   const csat = csatSummary(filtered);
   const agenda = useMemo(()=>summarizeCsatAgendas(id==='csat'?filtered:[],omniVisits),[id,filtered,omniVisits]);
-  const coverage = useMemo(() => id === 'csat' ? summarizeVisitCsatCoverage(rows, visits) : null, [id, rows, visits]);
+  const scopedVisits = useMemo(() => id === 'csat' ? visits.filter(visit =>
+    matchesWorksheetFilter({
+      row: { 'Book Type': visit.bookType, 'Ticket ID': visit.ticketId, Outlet: visit.outletName },
+      assignments: [{ supervisor: visit.supervisor, consultantName: visit.consultantName, supportName: visit.supportName }],
+      person: displayTeamName(visit.supportName, teamMasterRows),
+      areas: [visit.area],
+      date: sheetDate(visit.dateVisit),
+      period: sheetDate(visit.dateVisit).slice(0, 7),
+    }, { ...primary, support: '' }, 'csat') &&
+    (!primary.support || [visit.supportName, ...visit.supportTeamList, ...visit.jointSupportNames]
+      .some(name => displayTeamName(name, teamMasterRows) === primary.support)) &&
+    (!choices['Visit Type'] || visit.visitType === choices['Visit Type'])
+  ) : [], [id, visits, primary, teamMasterRows, choices]);
+  const coverage = useMemo(() => id === 'csat' ? summarizeVisitCsatCoverage(filtered, scopedVisits, visits) : null, [id, filtered, scopedVisits, visits]);
   const omni = useMemo(()=>omniForTicketRows(id==='ticket'?filtered:[],omniVisits,omniIndex),[id,filtered,omniVisits,omniIndex]);
   const roles = groupCounts(filtered,row=>teamRole(row['Job Tittle']));
   const roleCount = (name:string)=>roles.find(role=>role.name===name)?.total || 0;
@@ -95,22 +108,6 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
       <h2 className="text-xl font-bold text-slate-900">{id==='ticket'?'Performa Tiket':id==='csat'?'Kepuasan Pelanggan':'Struktur & Direktori Tim'}</h2>
       <p className="mt-1 text-sm text-slate-500">{id==='ticket'?'Pantau volume tiket dan penyelesaian per periode, departemen, area, dan PIC.':id==='csat'?'Pantau penilaian pelanggan, tren respons, dan feedback layanan.':'Kenali komposisi jabatan dan temukan anggota tim.'}</p>
     </div></div>
-    {coverage && <section className="space-y-3" aria-label="Total Visit vs CSAT Submitted">
-      <div>
-        <h3 className="font-semibold text-slate-900">Total Visit vs CSAT Submitted</h3>
-        <p className="mt-1 text-sm text-slate-600">Ringkasan seluruh data visit yang dimuat. Filter respons CSAT di bawah berlaku untuk rincian respons.</p>
-      </div>
-      <Metrics items={[
-        { title: 'Total Visit', value: number(visits.length), note: 'Seluruh baris visit yang masuk dashboard, termasuk tiket dan tanggal yang berulang' },
-        { title: 'CSAT Submitted', value: number(rows.length), note: 'Seluruh respons CSAT, termasuk beberapa respons untuk satu visit' },
-      ]}/>
-      <h4 className="text-sm font-semibold text-slate-700">Cakupan berdasarkan visit unik</h4>
-      <Metrics items={[
-        { title: 'Total visit unik', value: number(coverage.totalVisits), note: 'Tiket ID + tanggal visit' },
-        { title: 'Visit dengan CSAT', value: number(coverage.coveredVisits), note: 'Visit unik dengan respons yang berhasil dicocokkan' },
-        { title: 'Cakupan CSAT', value: percentage(coverage.coverage), note: 'Visit dengan CSAT ÷ total visit unik' },
-      ]}/>
-    </section>}
     {id !== 'team' && <WorksheetFilterBar id={id} items={enriched} filter={primary} onChange={setPrimary} count={filtered.length} displayName={name=>displayTeamName(name,teamMasterRows)}/>}
     <div className={panel+' flex flex-wrap items-end gap-3'}>
       {id==='team' && <label className="flex-1 min-w-48 text-xs font-semibold text-slate-500">{id==='team'?'Cari anggota tim':'Cari di subdashboard'}
@@ -121,6 +118,22 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
       </label>)}
       <button onClick={()=>{setSearch('');setChoices({});setPrimary({...emptyWorksheetFilter});}} className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600">Reset filter</button>
     </div>
+    {coverage && <section className="space-y-3" aria-label="Total Visit vs CSAT Submitted">
+      <div>
+        <h3 className="font-semibold text-slate-900">Total Visit vs CSAT Submitted</h3>
+        <p className="mt-1 text-sm text-slate-600">Total Visit mengikuti tanggal visit dan CSAT Submitted mengikuti tanggal submit. Rating hanya memfilter respons CSAT.</p>
+      </div>
+      <Metrics items={[
+        { title: 'Total Visit', value: number(scopedVisits.length), note: 'Baris visit sesuai filter, termasuk tiket dan tanggal yang berulang' },
+        { title: 'CSAT Submitted', value: number(filtered.length), note: 'Respons CSAT sesuai filter, termasuk beberapa respons untuk satu visit' },
+      ]}/>
+      <h4 className="text-sm font-semibold text-slate-700">Cakupan berdasarkan visit unik</h4>
+      <Metrics items={[
+        { title: 'Total visit unik', value: number(coverage.totalVisits), note: 'Tiket ID + tanggal visit' },
+        { title: 'Visit dengan CSAT', value: number(coverage.coveredVisits), note: 'Visit unik dengan respons yang berhasil dicocokkan' },
+        { title: 'Cakupan CSAT', value: percentage(coverage.coverage), note: 'Visit dengan CSAT ÷ total visit unik' },
+      ]}/>
+    </section>}
     <Metrics items={metrics}/>
     {id==='ticket' && <section className="space-y-3" aria-label="Perhitungan Omni"><h3 className="font-semibold text-slate-900">Omni · Report Visit</h3><Metrics items={[
       {title:'Visit Omni',value:number(omni.visitOmni),note:'Status Cancel dikecualikan'},
