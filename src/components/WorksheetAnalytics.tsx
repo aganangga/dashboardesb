@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Ticket, Star, Users } from 'lucide-react';
 import { CsatAgendaTable } from './CsatAgendaTable';
-import { summarizeCsatAgendas } from '../utils/csatAgenda';
+import { summarizeCsatAgendas, summarizeVisitCsatCoverage } from '../utils/csatAgenda';
 import { attachOmniColumns, buildOmniIndex, formatOmniDuration, omniForTicketRows } from '../utils/omniMetrics';
 import { displayTeamName } from '../utils/teamDirectory';
 import { WorksheetFilterBar } from './WorksheetFilterBar';
@@ -60,6 +60,7 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
   const ticket = ticketSummary(filtered);
   const csat = csatSummary(filtered);
   const agenda = useMemo(()=>summarizeCsatAgendas(id==='csat'?filtered:[],omniVisits),[id,filtered,omniVisits]);
+  const coverage = useMemo(() => id === 'csat' ? summarizeVisitCsatCoverage(rows, visits) : null, [id, rows, visits]);
   const omni = useMemo(()=>omniForTicketRows(id==='ticket'?filtered:[],omniVisits,omniIndex),[id,filtered,omniVisits,omniIndex]);
   const roles = groupCounts(filtered,row=>teamRole(row['Job Tittle']));
   const roleCount = (name:string)=>roles.find(role=>role.name===name)?.total || 0;
@@ -94,6 +95,17 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
       <h2 className="text-xl font-bold text-slate-900">{id==='ticket'?'Performa Tiket':id==='csat'?'Kepuasan Pelanggan':'Struktur & Direktori Tim'}</h2>
       <p className="mt-1 text-sm text-slate-500">{id==='ticket'?'Pantau volume tiket dan penyelesaian per periode, departemen, area, dan PIC.':id==='csat'?'Pantau penilaian pelanggan, tren respons, dan feedback layanan.':'Kenali komposisi jabatan dan temukan anggota tim.'}</p>
     </div></div>
+    {coverage && <section className="space-y-3" aria-label="Total Visit vs CSAT">
+      <div>
+        <h3 className="font-semibold text-slate-900">Total Visit vs CSAT</h3>
+        <p className="mt-1 text-sm text-slate-600">Ringkasan seluruh data visit yang dimuat. Filter respons CSAT di bawah berlaku untuk rincian respons.</p>
+      </div>
+      <Metrics items={[
+        { title: 'Total visit unik', value: number(coverage.totalVisits), note: 'Tiket ID + tanggal visit' },
+        { title: 'Visit dengan CSAT', value: number(coverage.coveredVisits), note: 'Visit unik dengan respons yang berhasil dicocokkan' },
+        { title: 'Cakupan CSAT', value: percentage(coverage.coverage), note: 'Visit dengan CSAT ÷ total visit unik' },
+      ]}/>
+    </section>}
     {id !== 'team' && <WorksheetFilterBar id={id} items={enriched} filter={primary} onChange={setPrimary} count={filtered.length} displayName={name=>displayTeamName(name,teamMasterRows)}/>}
     <div className={panel+' flex flex-wrap items-end gap-3'}>
       {id==='team' && <label className="flex-1 min-w-48 text-xs font-semibold text-slate-500">{id==='team'?'Cari anggota tim':'Cari di subdashboard'}

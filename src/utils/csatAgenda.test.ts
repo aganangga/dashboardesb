@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import type {ProcessedRecord} from '../types';
-import {aggregateCsatAgendas,summarizeCsatAgendas} from './csatAgenda';
+import {aggregateCsatAgendas,summarizeCsatAgendas,summarizeVisitCsatCoverage} from './csatAgenda';
 const visit=(ticketId:string,dateVisit:string)=>({ticketId,dateVisit,raw:{},supportName:'A',supportTeamList:[],jointSupportNames:[]}) as ProcessedRecord;
 
 test('CSAT ratings 4 and 5 in one agenda become 4.5 and each agenda has equal weight',()=>{
@@ -26,4 +26,16 @@ test('explicit schedule and unique date-only fallback join the same confirmed ag
 test('unknown rating does not become zero in an agenda average and explicit IDs are accepted',()=>{
  const s=summarizeCsatAgendas([{'Agenda ID':'A',Rating:'Puas'},{'Agenda ID':'A',Rating:'unknown'}],[]);
  assert.equal(s.average,4);assert.equal(s.agendas[0].responses,2);assert.equal(s.agendas[0].validResponses,1);
+});
+
+test('visit coverage deduplicates responses and excludes agendas outside the visit dataset', () => {
+  const first = visit('T1', '01/09/2026');
+  const rows = [
+    { 'Ticket ID': 'T1', 'Jadwal Agenda': '01/09/2026' },
+    { 'Ticket ID': 'T1', 'Jadwal Agenda': '01/09/2026' },
+    { 'Ticket ID': 'T1' },
+    { 'Ticket ID': 'T2', 'Jadwal Agenda': '01/09/2026' },
+  ];
+  assert.deepEqual(summarizeVisitCsatCoverage(rows, [first, first, visit('T1', '02/09/2026')]),
+    { totalVisits: 2, coveredVisits: 1, coverage: 50 });
 });
