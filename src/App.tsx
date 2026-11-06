@@ -7,6 +7,7 @@ import { WorksheetDashboard } from './components/WorksheetDashboard';
 import { Navbar } from './components/Navbar';
 import { ModernSidebar } from './components/ModernSidebar';
 import { FilterBar } from './components/FilterBar';
+import { OutletVisitSummary } from './components/OutletVisitSummary';
 import { SummaryCards } from './components/SummaryCards';
 import { DailyVisitTrendChart } from './components/DailyVisitTrendChart';
 import { PlannedVsActualBarChart } from './components/PlannedVsActualBarChart';
@@ -23,7 +24,7 @@ import { OmniSyncModal } from './components/OmniSyncModal';
 import type { OmniSyncDataset } from './utils/omniSync';
 import { MultiSupportModal } from './components/MultiSupportModal';
 import { ShareModal } from './components/ShareModal';
-import { SlidersHorizontal, Layers, Clock, Table, BarChart2, CheckCircle2, Calendar, Share2, Sparkles } from 'lucide-react';
+import { Layers, Clock, Table, BarChart2, CheckCircle2, Calendar, Sparkles } from 'lucide-react';
 
 export default function App() {
   const [selectedWorksheet, setSelectedWorksheet] = useState('visit');
@@ -62,7 +63,6 @@ export default function App() {
   const [isColumnMapperOpen, setIsColumnMapperOpen] = useState<boolean>(false);
   const [isUploadOpen, setIsUploadOpen] = useState<boolean>(false);
   const [isOmniSyncOpen, setIsOmniSyncOpen] = useState<boolean>(false);
-  const [dataSource, setDataSource] = useState<'csv' | 'omni'>('csv');
   const [isMultiSupportOpen, setIsMultiSupportOpen] = useState<boolean>(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
   const [isAIInsightOpen, setIsAIInsightOpen] = useState<boolean>(false);
@@ -141,14 +141,27 @@ export default function App() {
     return getAvailableMonthsFromRecords(allRecords);
   }, [allRecords]);
 
+  function findSearchedConsultant(search: string) {
+    const query = search.trim().toLowerCase();
+    if (!query) return '';
+    const matches = availableConsultants.filter(name => name !== 'unname' && name.toLowerCase().includes(query));
+    return matches.find(name => name.toLowerCase() === query) ?? (matches.length === 1 ? matches[0] : '');
+  }
+
+  const consultantSearch = findSearchedConsultant(filters.search);
+  const effectiveFilters = useMemo(() => consultantSearch && !filters.consultants.length
+    ? { ...filters, consultants: [consultantSearch] }
+    : filters, [consultantSearch, filters]);
+
   // Run the same filter predicate for visit totals and team-person counts.
   const filterRecords = (activeFilters: FilterState): ProcessedRecord[] => {
     return allRecords.filter((rec) => {
       // 1. Search
       if (activeFilters.search) {
-        const q = activeFilters.search.toLowerCase();
-        const match =
-          rec.outletName.toLowerCase().includes(q) ||
+        const q = activeFilters.search.trim().toLowerCase();
+        const match = consultantSearch
+          ? rec.consultantName === consultantSearch
+          : rec.outletName.toLowerCase().includes(q) ||
           rec.supportName.toLowerCase().includes(q) ||
           rec.supportTeam.toLowerCase().includes(q) ||
           rec.supportTeamList.some((p) => p.toLowerCase().includes(q)) ||
@@ -256,12 +269,12 @@ export default function App() {
 
   };
 
-  const filteredRecords = useMemo(() => filterRecords(filters), [allRecords, filters]);
+  const filteredRecords = useMemo(() => filterRecords(effectiveFilters), [allRecords, effectiveFilters]);
   // Counts stay scoped to the current consultant, dates, area and book type,
   // but ignore an already-selected visitor so other options remain stable.
   const teamCountRecords = useMemo(
-    () => filterRecords({ ...filters, supportTeamMembers: [], selectedSupportTeam: '' }),
-    [allRecords, filters]
+    () => filterRecords({ ...effectiveFilters, supportTeamMembers: [], selectedSupportTeam: '' }),
+    [allRecords, effectiveFilters]
   );
 
   // Calculate unique visits count (Total Visit) based on Primary Key: Tiket ID + Date Visit
@@ -286,7 +299,19 @@ export default function App() {
 
   // Handler for partial filter updates
   const handleFilterChange = (partial: Partial<FilterState>) => {
-    setFilters((prev) => ({ ...prev, ...partial }));
+    setFilters(prev => {
+      const next = { ...prev, ...partial };
+      if (partial.search !== undefined && (consultantSearch || findSearchedConsultant(partial.search))) {
+        next.consultants = [];
+        next.supportTeamMembers = [];
+        next.selectedSupportTeam = '';
+      }
+      if (consultantSearch && partial.consultants) {
+        if (partial.consultants[0] !== consultantSearch) next.search = '';
+        else if (!prev.consultants.length && partial.supportTeamMembers?.length) next.consultants = [];
+      }
+      return next;
+    });
   };
 
   const handleResetFilters = () => {
@@ -315,7 +340,6 @@ export default function App() {
   const handleDataLoaded = (newData: RawDataRow[], newHeaders: string[]) => {
     setRawData(newData);
     setHeaders(newHeaders);
-    setDataSource('csv');
     // Open column mapper automatically so user can inspect or adjust their specific data columns
     setIsColumnMapperOpen(true);
   };
@@ -329,7 +353,6 @@ export default function App() {
     setRawData(newData);
     setHeaders(newHeaders);
     setMapping(resolveColumnMapping(newHeaders));
-    setDataSource('csv');
   };
 
   // Omni payload is only accepted after endpoint + schema validation and user review.
@@ -338,7 +361,6 @@ export default function App() {
     setRawData(dataset.data);
     setHeaders(dataset.headers);
     setMapping(resolveColumnMapping(dataset.headers));
-    setDataSource('omni');
   };
 
   const handleResetToDefault = () => {
@@ -346,7 +368,6 @@ export default function App() {
     setRawData(defaultParsed.data);
     setHeaders(defaultParsed.headers);
     setMapping(DEFAULT_COLUMN_MAPPING);
-    setDataSource('csv');
     handleResetFilters();
   };
 
@@ -441,13 +462,9 @@ export default function App() {
 
       {/* Top Navigation */}
       {selectedWorksheet === 'visit' && <Navbar
-        totalRecords={rawData.length}
-        uniqueVisits={uniqueVisitsCount}
-        deduplicateEnabled={filters.deduplicateVisits}
         onOpenColumnMapper={() => setIsColumnMapperOpen(true)}
         onOpenUpload={() => setIsUploadOpen(true)}
         onOpenOmniSync={() => setIsOmniSyncOpen(true)}
-        dataSource={dataSource}
         onResetData={handleResetToDefault}
         onExportCsv={handleExportCsv}
         onDownloadSingleHtml={handleDownloadSingleHtml}
@@ -458,56 +475,19 @@ export default function App() {
       <main className="modern-main flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         <WorksheetDashboard selected={selectedWorksheet} onSelect={handleWorksheetSelect} onVisitLoaded={handleWorksheetVisitLoaded} visits={allRecords} omniVisits={reportRecords} teamMasterRows={teamMasterRows} onTeamLoaded={rows => { setTeamMasterRows(rows); setTeamMasterError(''); }} />
         {selectedWorksheet === 'visit' && <>
-        {/* Banner with user options callout */}
-        <div className="modern-welcome bg-gradient-to-r from-indigo-50/80 via-white to-purple-50/80 border border-indigo-100 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
-          <div className="space-y-1">
-            <div className="flex items-center space-x-2">
-              <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-100 text-indigo-700 border border-indigo-200">
-                Aturan Khusus Terpasang
-              </span>
-              <span className="text-xs text-slate-500">Data ter-update secara interaktif</span>
-            </div>
-            <h2 className="text-sm sm:text-base font-bold text-slate-900">
-              Primary Key: Tiket ID + Date Visit (Total Visit) &bull; Separator Support Team (Line 2) &bull; Master Data Team (SPV - L2 - L1)
-            </h2>
-            <p className="text-xs text-slate-600">
-              Total Visit riil dihitung berdasarkan Tiket ID + Tanggal Visit. Mapping seluruh tim operasional tersinkronisasi per SPV &rarr; L2 &rarr; L1 tanpa missing.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
-            <button
-              type="button"
-              onClick={() => setIsAIInsightOpen(true)}
-              className="px-3 py-2 rounded-xl text-xs font-semibold text-violet-700 border border-violet-200 bg-violet-50 hover:bg-violet-100 flex items-center gap-1.5 shadow-2xs"
-              title="Analisis agregat sesuai filter dashboard"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>AI Insight</span>
-            </button>
-            <button
-              onClick={() => setIsShareModalOpen(true)}
-              className="px-3 py-2 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-indigo-700 border border-indigo-200 shadow-2xs transition-all flex items-center space-x-1.5 cursor-pointer"
-              title="Buka URL publik dan panduan akses tim"
-            >
-              <Share2 className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Link Publik</span>
-            </button>
-            <button
-              onClick={() => setIsColumnMapperOpen(true)}
-              className="px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all flex items-center space-x-1.5 cursor-pointer"
-            >
-              <SlidersHorizontal className="w-3.5 h-3.5" />
-              <span>Sesuaikan Kolom Data</span>
-            </button>
-          </div>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-slate-600">Ringkasan kunjungan mengikuti filter di bawah.</p>
+          <button type="button" onClick={() => setIsAIInsightOpen(true)}
+            className="flex items-center gap-2 rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-sm font-semibold text-violet-800">
+            <Sparkles className="h-4 w-4" /> AI Insight
+          </button>
         </div>
 
         {teamMasterError && <p role="status" className="text-xs text-amber-700">{teamMasterError}</p>}
         {/* Global Filter Bar */}
         <FilterBar
           displayName={nameFromTeamMaster}
-          filters={filters}
+          filters={effectiveFilters}
           onFilterChange={handleFilterChange}
           onResetFilters={handleResetFilters}
           availableSupervisors={availableSupervisors}
@@ -607,6 +587,8 @@ export default function App() {
         {/* Content sections based on active tab */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
+            <OutletVisitSummary records={filteredRecords} />
+
             {/* Grafik Garis Tren Kunjungan Harian (Daily Visit Trend Line Chart) */}
             <DailyVisitTrendChart
               records={filteredRecords}

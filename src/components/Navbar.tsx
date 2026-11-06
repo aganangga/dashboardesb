@@ -1,14 +1,10 @@
 import React from 'react';
-import { SlidersHorizontal, UploadCloud, RefreshCw, Download, FileCode, ShieldCheck, Share2, CloudDownload } from 'lucide-react';
+import { SlidersHorizontal, UploadCloud, RefreshCw, Download, FileCode, Share2, CloudDownload } from 'lucide-react';
 
 interface NavbarProps {
-  totalRecords: number;
-  uniqueVisits: number;
-  deduplicateEnabled: boolean;
   onOpenColumnMapper: () => void;
   onOpenUpload: () => void;
   onOpenOmniSync: () => void;
-  dataSource: 'csv' | 'omni';
   onResetData: () => void;
   onExportCsv: () => void;
   onDownloadSingleHtml: () => void;
@@ -16,13 +12,9 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
-  totalRecords,
-  uniqueVisits,
-  deduplicateEnabled,
   onOpenColumnMapper,
   onOpenUpload,
   onOpenOmniSync,
-  dataSource,
   onResetData,
   onExportCsv,
   onDownloadSingleHtml,
@@ -40,35 +32,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div>
               <div className="flex items-center space-x-2">
                 <h1 className="modern-navbar-title text-lg font-bold tracking-tight text-slate-900">
-                  Dashboard Monitoring Visit &amp; Check In-Out
+                  Monitoring Kunjungan ESB
                 </h1>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  <ShieldCheck className="w-3 h-3 mr-1" />
-                  {dataSource === 'omni' ? 'Omni API' : 'Data CSV'}
-                </span>
               </div>
-              <p className="text-xs text-slate-500">
-                Breakdown Tanggal, Area, SPV, Konsulting, Support &amp; Team, Book Type &amp; Komparasi Check In-Out
-              </p>
             </div>
           </div>
 
           {/* Quick Metrics & Actions */}
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            <div className="hidden lg:flex items-center bg-slate-50 rounded-xl px-3 py-1.5 border border-slate-200 text-xs space-x-3">
-              <div>
-                <span className="text-slate-500 block text-[10px] uppercase font-semibold">Total Row Data</span>
-                <span className="font-bold text-slate-900 text-sm">{totalRecords}</span>
-              </div>
-              <div className="h-6 w-px bg-slate-200" />
-              <div>
-                <span className="text-emerald-700 block text-[10px] uppercase font-semibold">
-                  Total Visit (Riil)
-                </span>
-                <span className="font-bold text-emerald-600 text-sm">{uniqueVisits}</span>
-              </div>
-            </div>
-
             {/* Action buttons */}
             <button
               id="btn-column-mapping"

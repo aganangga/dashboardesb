@@ -179,6 +179,22 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     return new Map([...memberVisitKeys.entries()].map(([name, visits]) => [name, visits.size]));
   }, [teamCountRecords, teamMembers]);
 
+  const crossTeamVisits = React.useMemo(() => {
+    if (!selectedConsultant) return new Map<string, Set<string>>();
+    const visitors = new Map<string, Set<string>>();
+    for (const record of teamCountRecords) {
+      for (const person of [record.supportName, ...record.supportTeamList, ...record.teamParticipants, ...record.jointSupportNames]) {
+        if (!person.trim() || ['-', 'unname'].includes(person.trim().toLowerCase()) ||
+            teamMembers.some(member => isSameSupportMember(person, member.fullName))) continue;
+        const name = displayName(person);
+        const visits = visitors.get(name) ?? new Set<string>();
+        visits.add(record.primaryVisitKey);
+        visitors.set(name, visits);
+      }
+    }
+    return visitors;
+  }, [selectedConsultant, teamMembers, teamCountRecords, displayName]);
+
   const detailedTeamList = React.useMemo(() => {
     const list = teamMembers.map((member) => {
       const count = memberVisitCountMap.get(member.fullName.toLowerCase()) ?? 0;
@@ -415,13 +431,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               className="w-full bg-amber-50/50 border border-amber-300 rounded-lg px-2.5 py-1.5 text-xs text-amber-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-500 font-medium"
             >
               <option value="">
-                Semua {teamLabel} ({teamMembers.map((m) => m.nickname).join(', ') || 'Semua'})
+                Semua support {teamLabel}
               </option>
-              {teamMembers.map((m) => {
+              {dedicatedMembers.map((m) => {
                 const cnt = memberVisitCountMap.get(m.fullName.toLowerCase()) ?? 0;
                 return (
                   <option key={m.fullName} value={m.fullName}>
-                    {displayName(m.fullName)} {m.fullName === selectedConsultant ? '[Konsultan]' : ''} — {cnt} visit
+                    {displayName(m.fullName)} — {cnt} visit
                   </option>
                 );
               })}
@@ -445,6 +461,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               ))}
             </select>
           )}
+          {crossTeamVisits.size > 0 && <details className="mt-2 text-sm text-amber-900">
+            <summary className="cursor-pointer font-semibold">Perbantuan tim ({crossTeamVisits.size} orang)</summary>
+            <ul className="mt-1 space-y-1">{[...crossTeamVisits].sort(([a], [b]) => a.localeCompare(b)).map(([name, visits]) =>
+              <li key={name}>{name} · {visits.size} visit</li>)}</ul>
+          </details>}
         </div>
 
         {/* 4. Area / Wilayah Filter */}
