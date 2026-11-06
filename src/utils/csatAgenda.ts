@@ -52,7 +52,7 @@ export function summarizeCsatAgendas(rows:RawDataRow[],visits:ProcessedRecord[])
 }
 
 // Coverage uses the same ticket + visit-date unit as the Visit dashboard.
-export function summarizeVisitCsatCoverage(rows: RawDataRow[], visits: ProcessedRecord[]) {
+export function summarizeVisitCsatCoverage(rows: RawDataRow[], visits: ProcessedRecord[], matchingVisits = visits) {
   const visitKeys = new Set<string>();
   const keysByAgenda = new Map<string, Set<string>>();
   for (const visit of visits) {
@@ -74,7 +74,7 @@ export function summarizeVisitCsatCoverage(rows: RawDataRow[], visits: Processed
   }
 
   const covered = new Set<string>();
-  for (const agenda of aggregateCsatAgendas(rows, visits)) {
+  for (const agenda of aggregateCsatAgendas(rows, matchingVisits)) {
     if (!agenda.resolved) continue;
     const matches = keysByAgenda.get(agenda.key);
     if (matches?.size === 1) covered.add([...matches][0]);
