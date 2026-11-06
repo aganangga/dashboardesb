@@ -405,9 +405,6 @@ export const MASTER_DATA_TEAM: MasterDataTeamItem[] = [
 
   { no: 30, spv: 'Muhamad Rimaduddin', l2: 'Cherly Vitaloka', l1FullName: 'Vinna Maharani', l1Nickname: 'Vinna', role: 'L1 Support', status: 'Aktif' },
   { no: 31, spv: 'Muhamad Rimaduddin', l2: 'Cherly Vitaloka', l1FullName: 'Alif Izzuddin Ramadhan', l1Nickname: 'Alif', role: 'L1 Support', status: 'Aktif' },
-  { no: 32, spv: 'Muhamad Rimaduddin', l2: 'Cherly Vitaloka', l1FullName: 'Melati Cantika', l1Nickname: 'Melati', role: 'L1 Support', status: 'Aktif' },
-  { no: 33, spv: 'Muhamad Rimaduddin', l2: 'Cherly Vitaloka', l1FullName: 'Nurul Huda', l1Nickname: 'Nurul', role: 'L1 Support', status: 'Aktif' },
-  { no: 34, spv: 'Muhamad Rimaduddin', l2: 'Cherly Vitaloka', l1FullName: 'Rafi Mahasin', l1Nickname: 'Rafi', role: 'L1 Support', status: 'Aktif' },
 
   // SPV 3: M. Iriansyah Suhendar (2 Konsultan Lead)
   { no: 35, spv: 'M. Iriansyah Suhendar', l2: 'Airlangga Aziz', l1FullName: 'Alian Alfin Nuha', l1Nickname: 'Alfin', role: 'L1 Support', status: 'Aktif' },
