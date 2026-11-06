@@ -433,11 +433,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               <option value="">
                 Semua support {teamLabel}
               </option>
-              {dedicatedMembers.map((m) => {
+              {teamMembers.map((m) => {
                 const cnt = memberVisitCountMap.get(m.fullName.toLowerCase()) ?? 0;
                 return (
                   <option key={m.fullName} value={m.fullName}>
-                    {displayName(m.fullName)} — {cnt} visit
+                    {displayName(m.fullName)}{m.fullName === selectedConsultant ? " (L2)" : ""} — {cnt} visit
                   </option>
                 );
               })}
