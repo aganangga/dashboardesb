@@ -85,7 +85,6 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
     {title:'Jumlah visit',value:number(ticket.visits),note:'Kolom Visit Qty pada worksheet tiket'},
     {title:'PIC terlibat',value:number(ticket.pics),note:`${ticket.rows} baris PIC-periode sesuai filter`},
   ] : id==='csat' ? [
-    {title:'Respons CSAT',value:number(csat.responses)},
     {title:'Agenda terhubung',value:agenda.agendaCount?number(agenda.agendaCount):agenda.unresolved?'—':'0',note:agenda.unresolved?`${agenda.unresolved} respons belum memiliki kaitan agenda yang pasti`:`${csat.tickets} tiket unik pada respons sesuai filter`},
     {title:'Rata-rata CSAT',value:agenda.average===null?'—':agenda.average.toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})+' / 5'},
     {title:'Tingkat kepuasan',value:percentage(agenda.satisfaction),note:'Nilai ≥ 4; agenda yang sama dirata-ratakan dahulu'},
@@ -118,23 +117,26 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
       </label>)}
       <button onClick={()=>{setSearch('');setChoices({});setPrimary({...emptyWorksheetFilter});}} className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600">Reset filter</button>
     </div>
-    {coverage && <section className="space-y-3" aria-label="Total Visit vs CSAT Submitted">
+    {coverage && <section className="space-y-3" aria-label="Ringkasan Visit dan CSAT">
       <div>
-        <h3 className="font-semibold text-slate-900">Total Visit vs CSAT Submitted</h3>
+        <h3 className="font-semibold text-slate-900">Ringkasan Visit dan CSAT</h3>
         <p className="mt-1 text-sm text-slate-600">Total Visit mengikuti tanggal visit dan CSAT Submitted mengikuti tanggal submit. Rating hanya memfilter respons CSAT.</p>
       </div>
       <Metrics items={[
         { title: 'Total Visit', value: number(scopedVisits.length), note: 'Baris visit sesuai filter, termasuk tiket dan tanggal yang berulang' },
         { title: 'CSAT Submitted', value: number(filtered.length), note: 'Respons CSAT sesuai filter, termasuk beberapa respons untuk satu visit' },
+        ...metrics,
       ]}/>
-      <h4 className="text-sm font-semibold text-slate-700">Cakupan berdasarkan visit unik</h4>
-      <Metrics items={[
+      <details className={panel}>
+        <summary className="cursor-pointer text-sm font-semibold text-slate-700">Rincian pencocokan visit unik</summary>
+        <div className="mt-4"><Metrics items={[
         { title: 'Total visit unik', value: number(coverage.totalVisits), note: 'Tiket ID + tanggal visit' },
         { title: 'Visit dengan CSAT', value: number(coverage.coveredVisits), note: 'Visit unik dengan respons yang berhasil dicocokkan' },
-        { title: 'Cakupan CSAT', value: percentage(coverage.coverage), note: 'Visit dengan CSAT ÷ total visit unik' },
-      ]}/>
+        { title: 'Cakupan CSAT', value: percentage(coverage.coveredVisits ? coverage.coverage : null), note: coverage.coveredVisits ? 'Visit dengan CSAT ÷ total visit unik' : 'Belum ada respons yang berhasil dipasangkan dengan visit dalam filter ini' },
+        ]}/></div>
+      </details>
     </section>}
-    <Metrics items={metrics}/>
+    {!coverage && <Metrics items={metrics}/>}
     {id==='ticket' && <section className="space-y-3" aria-label="Perhitungan Omni"><h3 className="font-semibold text-slate-900">Omni · Report Visit</h3><Metrics items={[
       {title:'Visit Omni',value:number(omni.visitOmni),note:'Status Cancel dikecualikan'},
       {title:'H+0 Omni',value:number(omni.h0),note:'Tanggal check-out = tanggal check-in'},
