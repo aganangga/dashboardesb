@@ -4,6 +4,7 @@ import { Ticket, Star, Users } from 'lucide-react';
 import { CsatAgendaTable } from './CsatAgendaTable';
 import { summarizeCsatAgendas, summarizeVisitCsatCoverage } from '../utils/csatAgenda';
 import { attachOmniColumns, buildOmniIndex, formatOmniDuration, omniForTicketRows } from '../utils/omniMetrics';
+import { MASTER_DATA_TEAM } from '../utils/dataProcessor';
 import { displayTeamName } from '../utils/teamDirectory';
 import { WorksheetFilterBar } from './WorksheetFilterBar';
 import { enrichWorksheetRows, matchesWorksheetFilter, emptyWorksheetFilter } from '../utils/worksheetFilters';
@@ -74,6 +75,44 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
     (!choices['Visit Type'] || visit.visitType === choices['Visit Type'])
   ) : [], [id, visits, primary, teamMasterRows, choices]);
   const coverage = useMemo(() => id === 'csat' ? summarizeVisitCsatCoverage(filtered, scopedVisits, visits) : null, [id, filtered, scopedVisits, visits]);
+  const teamBreakdown = useMemo(() => {
+    if (id !== 'csat') return [];
+    type Counts = { visits: number; responses: number };
+    const totals = new Map<string, Counts & { members: Map<string, Counts> }>();
+    const count = (name: string, metric: keyof Counts, people: string[]) => {
+      const team = !name || name.toLowerCase() === 'belum terpetakan' ? 'Belum terpetakan' : name;
+      const row = totals.get(team) ?? { visits: 0, responses: 0, members: new Map<string, Counts>() };
+      row[metric]++;
+      for (const person of new Set(people.map(name => displayTeamName(name.trim(), teamMasterRows)))) {
+        if (!person || person === '-' || (primary.support && person !== primary.support)) continue;
+        const member = row.members.get(person) ?? { visits: 0, responses: 0 };
+        member[metric]++;
+        row.members.set(person, member);
+      }
+      totals.set(team, row);
+    };
+    for (const visit of scopedVisits) count(visit.consultantName, 'visits', [
+      visit.supportName, ...visit.supportTeamList, ...visit.jointSupportNames,
+    ]);
+    const included = new Set(filtered);
+    for (const item of enriched) {
+      if (!included.has(item.row)) continue;
+      const teams = new Set<string>(item.assignments.filter(a =>
+        (!primary.supervisor || a.supervisor === primary.supervisor) &&
+        (!primary.consultant || a.consultantName === primary.consultant)
+      ).map(a => a.consultantName));
+      count(teams.size === 1 ? [...teams][0] : 'Belum terpetakan', 'responses', [item.person]);
+    }
+    const consultants = new Set(MASTER_DATA_TEAM.filter(row => row.l2 !== 'ERP Advisor').map(row => row.l2));
+    for (const [team, row] of totals) {
+      if (!consultants.has(team)) continue;
+      const lead = displayTeamName(team, teamMasterRows);
+      if ((!primary.support || primary.support === lead) && !row.members.has(lead)) {
+        row.members.set(lead, { visits: 0, responses: 0 });
+      }
+    }
+    return [...totals].sort(([a], [b]) => a.localeCompare(b, 'id'));
+  }, [id, scopedVisits, filtered, enriched, primary.supervisor, primary.consultant, primary.support, teamMasterRows]);
   const omni = useMemo(()=>omniForTicketRows(id==='ticket'?filtered:[],omniVisits,omniIndex),[id,filtered,omniVisits,omniIndex]);
   const roles = groupCounts(filtered,row=>teamRole(row['Job Tittle']));
   const roleCount = (name:string)=>roles.find(role=>role.name===name)?.total || 0;
@@ -85,7 +124,6 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
     {title:'Jumlah visit',value:number(ticket.visits),note:'Kolom Visit Qty pada worksheet tiket'},
     {title:'PIC terlibat',value:number(ticket.pics),note:`${ticket.rows} baris PIC-periode sesuai filter`},
   ] : id==='csat' ? [
-    {title:'Respons CSAT',value:number(csat.responses)},
     {title:'Agenda terhubung',value:agenda.agendaCount?number(agenda.agendaCount):agenda.unresolved?'—':'0',note:agenda.unresolved?`${agenda.unresolved} respons belum memiliki kaitan agenda yang pasti`:`${csat.tickets} tiket unik pada respons sesuai filter`},
     {title:'Rata-rata CSAT',value:agenda.average===null?'—':agenda.average.toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})+' / 5'},
     {title:'Tingkat kepuasan',value:percentage(agenda.satisfaction),note:'Nilai ≥ 4; agenda yang sama dirata-ratakan dahulu'},
@@ -118,23 +156,55 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
       </label>)}
       <button onClick={()=>{setSearch('');setChoices({});setPrimary({...emptyWorksheetFilter});}} className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600">Reset filter</button>
     </div>
-    {coverage && <section className="space-y-3" aria-label="Total Visit vs CSAT Submitted">
+    {coverage && <section className="space-y-3" aria-label="Ringkasan Visit dan CSAT">
       <div>
-        <h3 className="font-semibold text-slate-900">Total Visit vs CSAT Submitted</h3>
+        <h3 className="font-semibold text-slate-900">Ringkasan Visit dan CSAT</h3>
         <p className="mt-1 text-sm text-slate-600">Total Visit mengikuti tanggal visit dan CSAT Submitted mengikuti tanggal submit. Rating hanya memfilter respons CSAT.</p>
       </div>
       <Metrics items={[
         { title: 'Total Visit', value: number(scopedVisits.length), note: 'Baris visit sesuai filter, termasuk tiket dan tanggal yang berulang' },
         { title: 'CSAT Submitted', value: number(filtered.length), note: 'Respons CSAT sesuai filter, termasuk beberapa respons untuk satu visit' },
+        { title: 'CSAT vs Visit', value: percentage(scopedVisits.length ? filtered.length / scopedVisits.length * 100 : null), note: 'CSAT Submitted ÷ Total Visit × 100%' },
+        ...metrics,
       ]}/>
-      <h4 className="text-sm font-semibold text-slate-700">Cakupan berdasarkan visit unik</h4>
-      <Metrics items={[
+      <section className={panel} aria-label="CSAT vs Visit per Tim">
+        <h4 className="font-semibold text-slate-900">CSAT vs Visit per Tim</h4>
+        <p className="mt-1 text-sm text-slate-600">Rincian per orang tampil di bawah timnya. Satu visit dapat dihitung untuk beberapa peserta, jadi angka anggota bisa melebihi total tim. Respons tanpa tim yang pasti masuk ke Belum terpetakan.</p>
+        {teamBreakdown.length ? <div className="mt-3 overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50"><tr>
+              <th scope="col" className="p-3 text-left">Tim Konsultan</th>
+              <th scope="col" className="p-3 text-right">Total Visit</th>
+              <th scope="col" className="p-3 text-right">CSAT Submitted</th>
+              <th scope="col" className="p-3 text-right">CSAT vs Visit</th>
+            </tr></thead>
+            <tbody>{teamBreakdown.map(([team, counts]) => <React.Fragment key={team}><tr className="border-t border-slate-200 bg-slate-50">
+              <th scope="row" className="p-3 text-left font-medium">{displayTeamName(team, teamMasterRows)}</th>
+              <td className="p-3 text-right tabular-nums">{number(counts.visits)}</td>
+              <td className="p-3 text-right tabular-nums">{number(counts.responses)}</td>
+              <td className="p-3 text-right font-semibold tabular-nums">{percentage(counts.visits ? counts.responses / counts.visits * 100 : null)}</td>
+            </tr>
+            {[...counts.members].sort(([a], [b]) => Number(b === displayTeamName(team, teamMasterRows)) - Number(a === displayTeamName(team, teamMasterRows)) || a.localeCompare(b, 'id')).map(([person, member]) =>
+              <tr key={person} className="border-t border-slate-100">
+                <th scope="row" className="py-2 pl-8 pr-3 text-left font-normal text-slate-700">{person}{person === displayTeamName(team, teamMasterRows) ? ' (L2)' : ''}</th>
+                <td className="p-3 text-right tabular-nums">{number(member.visits)}</td>
+                <td className="p-3 text-right tabular-nums">{number(member.responses)}</td>
+                <td className="p-3 text-right tabular-nums">{percentage(member.visits ? member.responses / member.visits * 100 : null)}</td>
+              </tr>)}
+            </React.Fragment>)}</tbody>
+          </table>
+        </div> : <p className="mt-3 text-sm text-slate-600">Tidak ada data sesuai filter.</p>}
+      </section>
+      <details className={panel}>
+        <summary className="cursor-pointer text-sm font-semibold text-slate-700">Rincian pencocokan visit unik</summary>
+        <div className="mt-4"><Metrics items={[
         { title: 'Total visit unik', value: number(coverage.totalVisits), note: 'Tiket ID + tanggal visit' },
         { title: 'Visit dengan CSAT', value: number(coverage.coveredVisits), note: 'Visit unik dengan respons yang berhasil dicocokkan' },
-        { title: 'Cakupan CSAT', value: percentage(coverage.coverage), note: 'Visit dengan CSAT ÷ total visit unik' },
-      ]}/>
+        { title: 'Cakupan CSAT', value: percentage(coverage.coveredVisits ? coverage.coverage : null), note: coverage.coveredVisits ? 'Visit dengan CSAT ÷ total visit unik' : 'Belum ada respons yang berhasil dipasangkan dengan visit dalam filter ini' },
+        ]}/></div>
+      </details>
     </section>}
-    <Metrics items={metrics}/>
+    {!coverage && <Metrics items={metrics}/>}
     {id==='ticket' && <section className="space-y-3" aria-label="Perhitungan Omni"><h3 className="font-semibold text-slate-900">Omni · Report Visit</h3><Metrics items={[
       {title:'Visit Omni',value:number(omni.visitOmni),note:'Status Cancel dikecualikan'},
       {title:'H+0 Omni',value:number(omni.h0),note:'Tanggal check-out = tanggal check-in'},
