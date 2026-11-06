@@ -353,7 +353,7 @@ export function formatDuration(minutes: number | null): string {
 
 // Canonical mapping of Consultant (L2) to Supervisor (SPV)
 export const CONSULTANT_TO_SPV_MAP: Record<string, string> = {
-  'Ayu Febrina Sianturi': 'Jane Margareth Widjaja',
+  'Ayu Febrina Sianturi': 'Muhamad Rimaduddin',
   'Tri Hastuti Wulandari': 'Jane Margareth Widjaja',
   'Dika Anugerah Pratama': 'Jane Margareth Widjaja',
   'Rezi Rizki Raedini': 'Jane Margareth Widjaja',
@@ -368,9 +368,8 @@ export const CONSULTANT_TO_SPV_MAP: Record<string, string> = {
 // Sheet Master Data Team: Mapping lengkap tim operasional per SPV -> L2 -> L1 serta Tim Khusus ERP Advisor
 export const MASTER_DATA_TEAM: MasterDataTeamItem[] = [
   // SPV 1: Jane Margareth Widjaja (4 Konsultan Lead)
-  { no: 1, spv: 'Jane Margareth Widjaja', l2: 'Ayu Febrina Sianturi', l1FullName: 'Fera Eka Waty N', l1Nickname: 'Fera', role: 'L1 Support', status: 'Aktif' },
-  { no: 3, spv: 'Jane Margareth Widjaja', l2: 'Ayu Febrina Sianturi', l1FullName: 'Rafi Mahasin', l1Nickname: 'Rafi', role: 'L1 Support', status: 'Aktif' },
-  { no: 4, spv: 'Jane Margareth Widjaja', l2: 'Ayu Febrina Sianturi', l1FullName: 'Nabila Aprilia Nugrahany', l1Nickname: 'Nabila', role: 'L1 Support', status: 'Aktif' },
+  { no: 1, spv: 'Muhamad Rimaduddin', l2: 'Ayu Febrina Sianturi', l1FullName: 'Fera Eka Waty N', l1Nickname: 'Fera', role: 'L1 Support', status: 'Aktif' },
+  { no: 4, spv: 'Muhamad Rimaduddin', l2: 'Ayu Febrina Sianturi', l1FullName: 'Nabila Aprilia Nugrahany', l1Nickname: 'Nabila', role: 'L1 Support', status: 'Aktif' },
 
   { no: 5, spv: 'Jane Margareth Widjaja', l2: 'Tri Hastuti Wulandari', l1FullName: 'Margaretha Agrivani', l1Nickname: 'Margaretha', role: 'L1 Support', status: 'Aktif' },
   { no: 6, spv: 'Jane Margareth Widjaja', l2: 'Tri Hastuti Wulandari', l1FullName: 'Bintang Guntoro', l1Nickname: 'Bintang', role: 'L1 Support', status: 'Aktif' },
@@ -387,21 +386,18 @@ export const MASTER_DATA_TEAM: MasterDataTeamItem[] = [
   { no: 15, spv: 'Jane Margareth Widjaja', l2: 'Rezi Rizki Raedini', l1FullName: 'Noviyanti Nadia', l1Nickname: 'Nadia', role: 'L1 Support', status: 'Aktif' },
   { no: 16, spv: 'Jane Margareth Widjaja', l2: 'Rezi Rizki Raedini', l1FullName: 'Kevin Reynaldi', l1Nickname: 'Kevin', role: 'L1 Support', status: 'Aktif' },
   { no: 17, spv: 'Jane Margareth Widjaja', l2: 'Rezi Rizki Raedini', l1FullName: 'Abi Muhammad Alfarezy', l1Nickname: 'Abi', role: 'L1 Support', status: 'Aktif' },
-  { no: 18, spv: 'Jane Margareth Widjaja', l2: 'Rezi Rizki Raedini', l1FullName: 'Teddi Ari Tama', l1Nickname: 'Teddi', role: 'L1 Support', status: 'Aktif' },
 
   // SPV 2: Muhamad Rimaduddin (3 Konsultan Lead)
   { no: 19, spv: 'Muhamad Rimaduddin', l2: 'David Prima Putra', l1FullName: 'Yessi Tiyastanti', l1Nickname: 'Yessi', role: 'L1 Support', status: 'Aktif' },
   { no: 20, spv: 'Muhamad Rimaduddin', l2: 'David Prima Putra', l1FullName: 'Febrianto Puji Waskito', l1Nickname: 'Febrianto', role: 'L1 Support', status: 'Aktif' },
   { no: 21, spv: 'Muhamad Rimaduddin', l2: 'David Prima Putra', l1FullName: 'Syafiz Amiero', l1Nickname: 'Syafiz', role: 'L1 Support', status: 'Aktif' },
   { no: 22, spv: 'Muhamad Rimaduddin', l2: 'David Prima Putra', l1FullName: 'Nika Rullyta Khairunnisa', l1Nickname: 'Nika', role: 'L1 Support', status: 'Aktif' },
-  { no: 23, spv: 'Muhamad Rimaduddin', l2: 'David Prima Putra', l1FullName: 'Muhammad Rimaduddin', l1Nickname: 'Rimad', role: 'L1 Support', status: 'Aktif' },
-  { no: 24, spv: 'Muhamad Rimaduddin', l2: 'David Prima Putra', l1FullName: 'Yoan Fefi Berliani', l1Nickname: 'Yoan', role: 'L1 Support', status: 'Aktif' },
+  { no: 24, spv: 'Muhamad Rimaduddin', l2: 'Cherly Vitaloka', l1FullName: 'Yoan Fefi Berliani', l1Nickname: 'Yoan', role: 'L1 Support', status: 'Aktif' },
 
   { no: 25, spv: 'Muhamad Rimaduddin', l2: 'Kiki Tri Utari', l1FullName: 'Ardiansyah Hendardi', l1Nickname: 'Ardi', role: 'L1 Support', status: 'Aktif' },
   { no: 26, spv: 'Muhamad Rimaduddin', l2: 'Kiki Tri Utari', l1FullName: 'Rafi Mahasin', l1Nickname: 'Rafi', role: 'L1 Support', status: 'Aktif' },
   { no: 27, spv: 'Muhamad Rimaduddin', l2: 'Kiki Tri Utari', l1FullName: 'Nurul Huda', l1Nickname: 'Nurul', role: 'L1 Support', status: 'Aktif' },
   { no: 28, spv: 'Muhamad Rimaduddin', l2: 'Kiki Tri Utari', l1FullName: 'Melati Cantika', l1Nickname: 'Melati', role: 'L1 Support', status: 'Aktif' },
-  { no: 29, spv: 'Muhamad Rimaduddin', l2: 'Kiki Tri Utari', l1FullName: 'Yoan Fefi Berliani', l1Nickname: 'Yoan', role: 'L1 Support', status: 'Aktif' },
 
   { no: 30, spv: 'Muhamad Rimaduddin', l2: 'Cherly Vitaloka', l1FullName: 'Vinna Maharani', l1Nickname: 'Vinna', role: 'L1 Support', status: 'Aktif' },
   { no: 31, spv: 'Muhamad Rimaduddin', l2: 'Cherly Vitaloka', l1FullName: 'Alif Izzuddin Ramadhan', l1Nickname: 'Alif', role: 'L1 Support', status: 'Aktif' },
@@ -518,7 +514,7 @@ export function resolveSpvAndConsultant(
     normalizeTeamName(spv) === normalizeTeamName(rawConsultant)
   );
   const visitingSpv = masterSupervisors.find((spv) =>
-    normalizeTeamName(spv) === normalizeTeamName(primarySupport)
+    normalizeTeamName(spv) === normalizeTeamName(normalizeSpvName(primarySupport))
   );
   if (visitingSpv && (!rawConsultant || listedSpv)) {
     return {
