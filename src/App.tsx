@@ -599,9 +599,11 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'check-in' && <VisitCheckDashboard records={filteredRecords} mode="check-in" />}
-        {activeTab === 'check-out' && <VisitCheckDashboard records={filteredRecords} mode="check-out" />}
-        {activeTab === 'okr' && <OkrCalculator />}
+        {activeTab === 'check-in-out' && <div className="space-y-4">
+          <VisitCheckDashboard records={filteredRecords} mode="check-in" />
+          <VisitCheckDashboard records={filteredRecords} mode="check-out" />
+        </div>}
+        {activeTab === 'okr' && <OkrCalculator visits={reportRecords} roster={teamRoster} />}
 
         {activeTab === 'table' && (
           <VisitTable records={filteredRecords} deduplicateEnabled={filters.deduplicateVisits} />
