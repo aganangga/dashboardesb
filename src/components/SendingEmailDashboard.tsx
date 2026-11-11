@@ -102,10 +102,10 @@ export function SendingEmailDashboard({ rows, refresh, teamMasterRows }: { rows:
     <section className={panel}>
       <h2 className="font-semibold">Rincian Sending Email</h2>
       <div className="mt-3 overflow-x-auto"><table className="w-full text-left text-sm">
-        <thead className="bg-slate-50"><tr>{['Tiket', 'Konsultan', 'Status tiket', 'Jadwal', 'COMPLETED', 'SEND EMAIL', 'Selisih email', 'Keterangan'].map(label => <th key={label} scope="col" className="p-2">{label}</th>)}</tr></thead>
+        <thead className="bg-slate-50"><tr>{['Tiket', 'Nama Support', 'Status tiket', 'Jadwal', 'COMPLETED', 'SEND EMAIL', 'Selisih email', 'Keterangan'].map(label => <th key={label} scope="col" className="p-2">{label}</th>)}</tr></thead>
         <tbody>{filtered.slice((currentPage - 1) * 15, currentPage * 15).map((item, index) =>
           <tr key={index} className="border-t border-slate-100">{[
-            item.row['Ticket ID'], item.consultantName, item.row.Status, item.scheduled, item.completed, item.sent,
+            item.row['Ticket ID'], item.row['Nama Support'], item.row.Status, item.scheduled, item.completed, item.sent,
             item.emailDays === null ? '' : 'H+' + item.emailDays,
             !item.scheduled ? 'Jadwal belum tercatat' : !timeline ? 'Timeline belum tersedia' : [
               item.emailDays === null ? 'Email: belum ada jejak kirim' : item.emailDays <= 1 ? 'Email: tepat waktu' : 'Email: lewat H+1',
