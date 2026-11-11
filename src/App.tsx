@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { DEFAULT_RAW_CSV } from './data/rawCsv';
-import { DEFAULT_COLUMN_MAPPING, parseCsvString, processRawData, resolveColumnMapping, buildConsultantTeamGroupings, isSameSupportMember, getAvailableMonthsFromRecords, isIncludedDashboardVisit } from './utils/dataProcessor';
+import { buildTeamRoster, DEFAULT_COLUMN_MAPPING, parseCsvString, processRawData, resolveColumnMapping, buildConsultantTeamGroupings, isSameSupportMember, getAvailableMonthsFromRecords, isIncludedDashboardVisit } from './utils/dataProcessor';
 import { ColumnMapping, FilterState, ProcessedRecord, RawDataRow, ConsultantGrouping } from './types';
 import { displayTeamName } from './utils/teamDirectory';
 import { WorksheetDashboard } from './components/WorksheetDashboard';
@@ -13,7 +13,8 @@ import { DailyVisitTrendChart } from './components/DailyVisitTrendChart';
 import { PlannedVsActualBarChart } from './components/PlannedVsActualBarChart';
 import { BreakdownSection } from './components/BreakdownSection';
 import { MonthlyView } from './components/MonthlyView';
-import { CheckInOutComparison } from './components/CheckInOutComparison';
+import { VisitCheckDashboard } from './components/VisitCheckDashboard';
+import { OkrCalculator } from './components/OkrCalculator';
 import { VisitTable } from './components/VisitTable';
 import { VisitQualityInsights } from './components/VisitQualityInsights';
 import { AIInsightPanel } from './components/AIInsightPanel';
@@ -38,6 +39,7 @@ export default function App() {
       .catch(error => { if (!controller.signal.aborted) setTeamMasterError(error.message); });
     return () => controller.abort();
   }, []);
+  const teamRoster = useMemo(() => buildTeamRoster(teamMasterRows), [teamMasterRows]);
   const nameFromTeamMaster = (value: string) => displayTeamName(value, teamMasterRows);
   // Parse initial dataset (or load pre-injected custom data if running inside downloaded singlefile HTML)
   const initialParsed = useMemo(() => {
@@ -86,7 +88,7 @@ export default function App() {
   });
 
   // Process data with active column mapping
-  const reportRecords: ProcessedRecord[] = useMemo(() => processRawData(rawData, mapping), [rawData, mapping]);
+  const reportRecords: ProcessedRecord[] = useMemo(() => processRawData(rawData, mapping, teamRoster), [rawData, mapping, teamRoster]);
   const allRecords: ProcessedRecord[] = useMemo(() => reportRecords.filter(isIncludedDashboardVisit), [reportRecords]);
 
   // Unique filter dropdown options derived from processed records
@@ -132,8 +134,8 @@ export default function App() {
 
   // Structured hierarchical grouping: Nama Consulting -> Area -> Support Team
   const consultantGroupings = useMemo(() => {
-    return buildConsultantTeamGroupings(allRecords);
-  }, [allRecords]);
+    return buildConsultantTeamGroupings(allRecords, teamRoster);
+  }, [allRecords, teamRoster]);
 
   // Available months from all records
   const availableMonths = useMemo(() => {
@@ -229,7 +231,7 @@ export default function App() {
             ...rec.teamParticipants,
             ...rec.jointSupportNames,
           ];
-          return participants.some((person) => isSameSupportMember(person, cleanTarget));
+          return participants.some((person) => isSameSupportMember(person, cleanTarget, teamRoster));
         });
         if (!matchesMember) return false;
       }
@@ -485,6 +487,7 @@ export default function App() {
         {/* Global Filter Bar */}
         <FilterBar
           displayName={nameFromTeamMaster}
+          roster={teamRoster}
           filters={effectiveFilters}
           onFilterChange={handleFilterChange}
           onResetFilters={handleResetFilters}
@@ -557,6 +560,7 @@ export default function App() {
 
         {activeTab === 'breakdowns' && (
           <BreakdownSection
+            roster={teamRoster}
             records={filteredRecords}
             deduplicateEnabled={filters.deduplicateVisits}
             consultantGroupings={consultantGroupings}
@@ -595,9 +599,9 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'comparison' && (
-          <CheckInOutComparison records={filteredRecords} />
-        )}
+        {activeTab === 'check-in' && <VisitCheckDashboard records={filteredRecords} mode="check-in" />}
+        {activeTab === 'check-out' && <VisitCheckDashboard records={filteredRecords} mode="check-out" />}
+        {activeTab === 'okr' && <OkrCalculator />}
 
         {activeTab === 'table' && (
           <VisitTable records={filteredRecords} deduplicateEnabled={filters.deduplicateVisits} />

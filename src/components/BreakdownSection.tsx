@@ -20,6 +20,7 @@ import { formatDuration, buildSpvL2L1Groupings, MASTER_DATA_TEAM } from '../util
 import { SpvL1Analytics } from './SpvL1Analytics';
 
 interface BreakdownSectionProps {
+  roster?: typeof MASTER_DATA_TEAM;
   records: ProcessedRecord[];
   deduplicateEnabled: boolean;
   consultantGroupings?: ConsultantGrouping[];
@@ -36,6 +37,7 @@ export const BreakdownSection: React.FC<BreakdownSectionProps> = ({
   deduplicateEnabled,
   consultantGroupings = [],
   spvGroupings,
+  roster = MASTER_DATA_TEAM,
   selectedConsultant = '',
   onSelectConsultantTeam,
   onSelectSpvGrouping,
@@ -53,8 +55,8 @@ export const BreakdownSection: React.FC<BreakdownSectionProps> = ({
   // Hierarchical grouping: Supervisor -> L2 -> L1
   const computedSpvGroupings = useMemo(() => {
     if (spvGroupings && spvGroupings.length > 0) return spvGroupings;
-    return buildSpvL2L1Groupings(countableRecords);
-  }, [spvGroupings, countableRecords]);
+    return buildSpvL2L1Groupings(countableRecords, roster);
+  }, [spvGroupings, countableRecords, roster]);
 
   const filteredSpvGroupings = useMemo(() => {
     if (!spvSearchQuery.trim()) return computedSpvGroupings;
@@ -87,7 +89,7 @@ export const BreakdownSection: React.FC<BreakdownSectionProps> = ({
 
   // Filtered Master Data Team
   const filteredMasterDataTeam = useMemo(() => {
-    return MASTER_DATA_TEAM.filter((item) => {
+    return roster.filter((item) => {
       if (selectedSpvFilter !== 'all' && item.spv !== selectedSpvFilter) {
         return false;
       }
@@ -101,11 +103,11 @@ export const BreakdownSection: React.FC<BreakdownSectionProps> = ({
         item.role.toLowerCase().includes(q)
       );
     });
-  }, [masterSearchQuery, selectedSpvFilter]);
+  }, [masterSearchQuery, selectedSpvFilter, roster]);
 
   const handleExportMasterDataTeamCsv = () => {
     const headers = ['No', 'Supervisor (SPV)', 'Tim Konsultan (L2)', 'Nama Lengkap Support (L1)', 'Panggilan', 'Peran', 'Total Visit', 'Status'];
-    const rows = MASTER_DATA_TEAM.map((item) => {
+    const rows = roster.map((item) => {
       const visits = memberVisitsCountMap.get(item.l1FullName.toLowerCase().trim()) || 0;
       return [
         item.no,
@@ -524,7 +526,7 @@ export const BreakdownSection: React.FC<BreakdownSectionProps> = ({
             </div>
             <div className="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
               <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Personil Support (L1)</span>
-              <div className="text-xl font-bold text-emerald-600 mt-0.5">{MASTER_DATA_TEAM.length} Anggota</div>
+              <div className="text-xl font-bold text-emerald-600 mt-0.5">{roster.length} Anggota</div>
               <span className="text-[11px] text-emerald-600 font-medium">Terpetakan Penuh</span>
             </div>
             <div className="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">

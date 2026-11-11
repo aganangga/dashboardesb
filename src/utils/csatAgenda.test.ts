@@ -37,5 +37,21 @@ test('visit coverage deduplicates responses and excludes agendas outside the vis
     { 'Ticket ID': 'T2', 'Jadwal Agenda': '01/09/2026' },
   ];
   assert.deepEqual(summarizeVisitCsatCoverage(rows, [first, first, visit('T1', '02/09/2026')]),
-    { totalVisits: 2, coveredVisits: 1, coverage: 50 });
+    { totalVisits: 2, coveredVisits: 1, coverage: 50, visitRatings: [] });
+});
+
+test('two respondents contribute one equally weighted visit rating', () => {
+  const rows = [
+    { 'Ticket ID': 'T1', Rating: '5' },
+    { 'Ticket ID': 'T1', Rating: '3' },
+    { 'Ticket ID': 'T2', Rating: '5' },
+    { 'Ticket ID': 'T3', Rating: '1' },
+  ];
+  const result = summarizeVisitCsatCoverage(rows, [
+    visit('T1', '01/09/2026'), visit('T2', '01/09/2026'),
+    visit('T3', '01/09/2026'), visit('T3', '02/09/2026'),
+  ]);
+  assert.equal(result.coveredVisits, 2);
+  assert.equal(result.coverage, 50);
+  assert.deepEqual(result.visitRatings, [4, 5]);
 });

@@ -1,5 +1,5 @@
 import type { ProcessedRecord, RawDataRow } from '../types';
-import { getMasterAssignmentsForSupport, isSameSupportMember, MASTER_DATA_TEAM } from './dataProcessor';
+import { buildTeamRoster, getMasterAssignmentsForSupport, isSameSupportMember, MASTER_DATA_TEAM } from './dataProcessor';
 import { displayTeamName } from './teamDirectory';
 import { sheetDate } from './worksheetMetrics';
 
@@ -10,18 +10,19 @@ export const emptyWorksheetFilter: WorksheetFilter = { search:'',supervisor:'',c
 const clean = (value: string) => value.trim().toLocaleLowerCase().replace(/\s+/g,' ');
 export const UNMAPPED = 'Belum terpetakan';
 
-export function assignmentsForPerson(person: string): Assignment[] {
-  const exact = getMasterAssignmentsForSupport(person);
+export function assignmentsForPerson(person: string, roster = MASTER_DATA_TEAM): Assignment[] {
+  const exact = getMasterAssignmentsForSupport(person, roster);
   if (exact.length) return exact;
   const key = clean(person);
   if (!key) return [];
   // A shortened name is accepted only when it identifies one canonical person.
-  const candidates = [...new Set(MASTER_DATA_TEAM.flatMap(item=>[item.l1FullName,item.l2]))]
+  const candidates = [...new Set(roster.flatMap(item=>[item.l1FullName,item.l2]))]
     .filter(name=>clean(name).startsWith(key+' ') || key.startsWith(clean(name)+' '));
-  return candidates.length===1 ? getMasterAssignmentsForSupport(candidates[0]) : [];
+  return candidates.length===1 ? getMasterAssignmentsForSupport(candidates[0], roster) : [];
 }
 
 export function enrichWorksheetRows(id: string, rows: RawDataRow[], visits: ProcessedRecord[], roster:RawDataRow[]=[]): WorksheetFilterRow[] {
+  const teamRoster = buildTeamRoster(roster);
   const byTicket = new Map<string,ProcessedRecord[]>();
   for (const visit of visits) {
     const key = clean(visit.ticketId);
@@ -31,7 +32,7 @@ export function enrichWorksheetRows(id: string, rows: RawDataRow[], visits: Proc
     const person = (id==='ticket' ? row.Pic : row['Nama Support'])?.trim() || 'Tidak tercatat';
     const matching = id==='csat' ? byTicket.get(clean(row['Ticket ID']||''))||[] : [];
     const owned = matching.filter(visit=>[visit.supportName,...visit.supportTeamList,...visit.jointSupportNames].some(name=>isSameSupportMember(name,person) || isSameSupportMember(person,name)));
-    let assignments = owned.length ? owned.map(visit=>({supervisor:visit.supervisor,consultantName:visit.consultantName,supportName:person})) : assignmentsForPerson(person);
+    let assignments = owned.length ? owned.map(visit=>({supervisor:visit.supervisor,consultantName:visit.consultantName,supportName:person})) : assignmentsForPerson(person, teamRoster);
     if(!assignments.length) assignments = [{supervisor:UNMAPPED,consultantName:UNMAPPED,supportName:person}];
     const areas = id==='ticket' ? [row.Area?.trim() || UNMAPPED] : [...new Set((owned.length?owned:matching).map(visit=>visit.area).filter(Boolean))];
     const date = id==='csat' ? sheetDate(row['Created At (Date Created)']) : '';

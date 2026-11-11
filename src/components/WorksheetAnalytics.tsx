@@ -4,7 +4,7 @@ import { Ticket, Star, Users } from 'lucide-react';
 import { CsatAgendaTable } from './CsatAgendaTable';
 import { summarizeCsatAgendas, summarizeVisitCsatCoverage } from '../utils/csatAgenda';
 import { attachOmniColumns, buildOmniIndex, formatOmniDuration, omniForTicketRows } from '../utils/omniMetrics';
-import { MASTER_DATA_TEAM } from '../utils/dataProcessor';
+import { buildTeamRoster } from '../utils/dataProcessor';
 import { displayTeamName } from '../utils/teamDirectory';
 import { WorksheetFilterBar } from './WorksheetFilterBar';
 import { enrichWorksheetRows, matchesWorksheetFilter, emptyWorksheetFilter } from '../utils/worksheetFilters';
@@ -103,7 +103,7 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
       ).map(a => a.consultantName));
       count(teams.size === 1 ? [...teams][0] : 'Belum terpetakan', 'responses', [item.person]);
     }
-    const consultants = new Set(MASTER_DATA_TEAM.filter(row => row.l2 !== 'ERP Advisor').map(row => row.l2));
+    const consultants = new Set(buildTeamRoster(teamMasterRows).filter(row => row.l2 !== 'ERP Advisor').map(row => row.l2));
     for (const [team, row] of totals) {
       if (!consultants.has(team)) continue;
       const lead = displayTeamName(team, teamMasterRows);
@@ -115,30 +115,29 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
   }, [id, scopedVisits, filtered, enriched, primary.supervisor, primary.consultant, primary.support, teamMasterRows]);
   const omni = useMemo(()=>omniForTicketRows(id==='ticket'?filtered:[],omniVisits,omniIndex),[id,filtered,omniVisits,omniIndex]);
   const roles = groupCounts(filtered,row=>teamRole(row['Job Tittle']));
-  const roleCount = (name:string)=>roles.find(role=>role.name===name)?.total || 0;
+  const visitRatings = coverage?.visitRatings ?? [];
+  const averageVisitRating = visitRatings.length
+    ? visitRatings.reduce((sum, rating) => sum + rating, 0) / visitRatings.length
+    : null;
   const metrics:Metric[] = id==='ticket' ? [
-    {title:'Total tiket',value:number(ticket.total),note:'Jumlah Total Ticket pada baris PIC-periode'},
+    {title:'Total tiket',value:number(ticket.erpDevTotal),note:'ERP + DEV · RAW DATA TIKET kolom O'},
     {title:'Tiket H+0',value:number(ticket.h0)},
     {title:'Tiket H+1',value:number(ticket.h1)},
     {title:'Proporsi H+0',value:percentage(ticket.h0Rate),note:'H+0 ÷ (H+0 + H+1)'},
-    {title:'Jumlah visit',value:number(ticket.visits),note:'Kolom Visit Qty pada worksheet tiket'},
+    {title:'Visit Qty · Rekap Tiket',value:number(ticket.visits),note:'Kolom Visit Qty pada worksheet tiket'},
     {title:'PIC terlibat',value:number(ticket.pics),note:`${ticket.rows} baris PIC-periode sesuai filter`},
   ] : id==='csat' ? [
     {title:'Agenda terhubung',value:agenda.agendaCount?number(agenda.agendaCount):agenda.unresolved?'—':'0',note:agenda.unresolved?`${agenda.unresolved} respons belum memiliki kaitan agenda yang pasti`:`${csat.tickets} tiket unik pada respons sesuai filter`},
-    {title:'Rata-rata CSAT',value:agenda.average===null?'—':agenda.average.toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})+' / 5'},
-    {title:'Tingkat kepuasan',value:percentage(agenda.satisfaction),note:'Nilai ≥ 4; agenda yang sama dirata-ratakan dahulu'},
+    {title:'Rata-rata CSAT per visit',value:averageVisitRating===null?'—':averageVisitRating.toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})+' / 5',note:`${number(visitRatings.length)} visit terhubung dengan rating valid`},
+    {title:'Tingkat kepuasan',value:percentage(visitRatings.length ? visitRatings.filter(score => score >= 4).length / visitRatings.length * 100 : null),note:'Visit dengan rata-rata rating ≥ 4'},
     {title:'Feedback tertulis',value:number(csat.feedback)},
     {title:'Agenda >1 respons',value:agenda.agendaCount?number(agenda.multipleResponses):agenda.unresolved?'—':'0',note:`${csat.rated} respons memiliki rating valid`},
   ] : [
     {title:'Total karyawan',value:number(filtered.length),note:'Karyawan unik berdasarkan email atau nama'},
-    {title:'Supervisor',value:number(roleCount('Supervisor'))},
-    {title:'Consultant',value:number(roleCount('Consultant'))},
-    {title:'Implementor',value:number(roleCount('Implementor'))},
-    {title:'Jenis jabatan',value:number(new Set(filtered.map(row=>row['Job Tittle']).filter(Boolean)).size)},
     {title:'Email tercatat',value:number(filtered.filter(row=>!!row['Email User']?.trim()).length)},
   ];
   const monthlyCSAT = useMemo(() => groupCounts(filtered.filter(row=>sheetDate(row['Created At (Date Created)'])),row=>sheetDate(row['Created At (Date Created)']).slice(0,7)).sort((a,b)=>a.name.localeCompare(b.name)),[filtered]);
-  const ratingData = ['5 · Sangat Puas','4–<5 · Puas','3–<4 · Cukup','2–<3 · Tidak Puas','1–<2 · Sangat Tidak Puas'].map((name,index)=>({name,total:agenda.agendas.filter(item=>item.score!==null&&Math.floor(item.score)===5-index).length}));
+  const ratingData = ['5 · Sangat Puas','4–<5 · Puas','3–<4 · Cukup','2–<3 · Tidak Puas','1–<2 · Sangat Tidak Puas'].map((name,index)=>({name,total:visitRatings.filter(score=>Math.floor(score)===5-index).length}));
   const team = useMemo(()=>[...filtered].sort((a,b)=>(a['Nama Karyawan']||'').localeCompare(b['Nama Karyawan']||'')),[filtered]);
   const Icon = id==='csat' ? Star : id==='ticket' ? Ticket : Users;
   return <div className="space-y-5">
@@ -159,16 +158,16 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
     {coverage && <section className="space-y-3" aria-label="Ringkasan Visit dan CSAT">
       <div>
         <h3 className="font-semibold text-slate-900">Ringkasan Visit dan CSAT</h3>
-        <p className="mt-1 text-sm text-slate-600">Total Visit mengikuti tanggal visit dan CSAT Submitted mengikuti tanggal submit. Rating hanya memfilter respons CSAT.</p>
+        <p className="mt-1 text-sm text-slate-600">Agenda mengikuti tanggal visit. Respons mengikuti tanggal submit.</p>
       </div>
       <Metrics items={[
-        { title: 'Total Visit', value: number(scopedVisits.length), note: 'Baris visit sesuai filter, termasuk tiket dan tanggal yang berulang' },
+        { title: 'Total agenda visit', value: number(coverage.totalVisits), note: 'Kunjungan unik sesuai filter' },
         { title: 'CSAT Submitted', value: number(filtered.length), note: 'Respons CSAT sesuai filter, termasuk beberapa respons untuk satu visit' },
-        { title: 'CSAT vs Visit', value: percentage(scopedVisits.length ? filtered.length / scopedVisits.length * 100 : null), note: 'CSAT Submitted ÷ Total Visit × 100%' },
+        { title: 'Kontribusi CSAT', value: percentage(coverage.coverage), note: `${number(coverage.coveredVisits)} agenda mendapat CSAT dari ${number(coverage.totalVisits)} · target 80%` },
         ...metrics,
       ]}/>
-      <section className={panel} aria-label="CSAT vs Visit per Tim">
-        <h4 className="font-semibold text-slate-900">CSAT vs Visit per Tim</h4>
+      <section className={panel} aria-label="Respons CSAT per Tim">
+        <h4 className="font-semibold text-slate-900">Respons CSAT per Tim</h4>
         <p className="mt-1 text-sm text-slate-600">Rincian per orang tampil di bawah timnya. Satu visit dapat dihitung untuk beberapa peserta, jadi angka anggota bisa melebihi total tim. Respons tanpa tim yang pasti masuk ke Belum terpetakan.</p>
         {teamBreakdown.length ? <div className="mt-3 overflow-x-auto">
           <table className="w-full text-sm">
@@ -176,7 +175,7 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
               <th scope="col" className="p-3 text-left">Tim Konsultan</th>
               <th scope="col" className="p-3 text-right">Total Visit</th>
               <th scope="col" className="p-3 text-right">CSAT Submitted</th>
-              <th scope="col" className="p-3 text-right">CSAT vs Visit</th>
+              <th scope="col" className="p-3 text-right">Respons ÷ visit</th>
             </tr></thead>
             <tbody>{teamBreakdown.map(([team, counts]) => <React.Fragment key={team}><tr className="border-t border-slate-200 bg-slate-50">
               <th scope="row" className="p-3 text-left font-medium">{displayTeamName(team, teamMasterRows)}</th>

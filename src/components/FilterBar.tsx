@@ -29,6 +29,7 @@ import {
 } from '../utils/dataProcessor';
 
 interface FilterBarProps {
+  roster?: Parameters<typeof getDedicatedSupportTeamsForConsultant>[2];
   displayName?: (name: string) => string;
   filters: FilterState;
   onFilterChange: (newFilters: Partial<FilterState>) => void;
@@ -60,9 +61,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   availableMonths = [],
   consultantGroupings = [],
   teamCountRecords,
-  totalFilteredRecords,
-  totalFilteredVisits,
-  supportTeamVisitsCount,
+  roster,
   displayName = (name) => name,
 }) => {
   const [isTeamDropdownOpen, setIsTeamDropdownOpen] = React.useState(false);
@@ -103,10 +102,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   // Dedicated support team members for the selected consultant
   const dedicatedMembers: DedicatedSupportMember[] = React.useMemo(() => {
     if (selectedConsultant) {
-      return getDedicatedSupportTeamsForConsultant(selectedConsultant);
+      return getDedicatedSupportTeamsForConsultant(selectedConsultant, [], roster);
     }
     return [];
-  }, [selectedConsultant]);
+  }, [selectedConsultant, roster]);
 
   // Do not label an SPV or a shared L2 group as a single consultant's team.
   const teamLabel = selectedConsultant.startsWith(SHARED_L2_TEAM_PREFIX)
@@ -171,7 +170,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         ...record.jointSupportNames,
       ];
       teamMembers.forEach((member) => {
-        if (participants.some((name) => isSameSupportMember(name, member.fullName))) {
+        if (participants.some((name) => isSameSupportMember(name, member.fullName, roster))) {
           memberVisitKeys.get(member.fullName.toLowerCase())!.add(record.primaryVisitKey);
         }
       });
@@ -185,7 +184,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     for (const record of teamCountRecords) {
       for (const person of [record.supportName, ...record.supportTeamList, ...record.teamParticipants, ...record.jointSupportNames]) {
         if (!person.trim() || ['-', 'unname'].includes(person.trim().toLowerCase()) ||
-            teamMembers.some(member => isSameSupportMember(person, member.fullName))) continue;
+            teamMembers.some(member => isSameSupportMember(person, member.fullName, roster))) continue;
         const name = displayName(person);
         const visits = visitors.get(name) ?? new Set<string>();
         visits.add(record.primaryVisitKey);
@@ -247,7 +246,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     }
 
     // When consultant changes, verify if the currently selected support member belongs to this consultant
-    const membersForNew = getDedicatedSupportTeamsForConsultant(newConsultant);
+    const membersForNew = getDedicatedSupportTeamsForConsultant(newConsultant, [], roster);
     const isStillValid =
       currentSelectedSupportMember &&
       membersForNew.some(
@@ -294,7 +293,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     // Normal selection within selected consultant's team
     let targetConsultants = filters.consultants;
     if (targetConsultants.length === 0) {
-      const foundCons = findConsultantForSupportMember(val);
+      const foundCons = findConsultantForSupportMember(val, roster);
       if (foundCons) {
         targetConsultants = [foundCons];
       }
@@ -943,29 +942,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         </div>
       )}
 
-      {/* Result Indicator Banner */}
-      <div className="text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-100">
-        <span>
-          Menampilkan <strong className="text-slate-900 font-semibold">{totalFilteredVisits}</strong> Total Visit
-          <span className="text-slate-600 font-mono text-[10px] ml-1.5 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
-            Primary Key: Tiket ID + Date Visit
-          </span>
-          {filters.deduplicateVisits && totalFilteredRecords !== totalFilteredVisits && (
-            <span> (dari total <strong className="text-indigo-700">{totalFilteredRecords}</strong> baris tiket)</span>
-          )}
-        </span>
-        <div className="flex items-center space-x-3">
-          {supportTeamVisitsCount > 0 && (
-            <span className="text-emerald-700 font-medium flex items-center space-x-1">
-              <Users className="w-3 h-3" />
-              <span>{supportTeamVisitsCount} visit didampingi Support Team</span>
-            </span>
-          )}
-          {filters.deduplicateVisits && (
-            <span className="text-emerald-700 font-medium">✓ Total Visit Real per Period per Day Aktif</span>
-          )}
-        </div>
-      </div>
     </div>
   );
 };

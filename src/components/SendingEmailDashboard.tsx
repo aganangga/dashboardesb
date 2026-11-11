@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import type { RawDataRow } from '../types';
-import { MASTER_DATA_TEAM, isSameSupportMember, parseCustomDate, resolveSpvAndConsultant } from '../utils/dataProcessor';
+import { buildTeamRoster, isSameSupportMember, parseCustomDate, resolveSpvAndConsultant } from '../utils/dataProcessor';
 import { matchSendingEmailRows } from '../utils/sendingEmail';
 
 const number = new Intl.NumberFormat('id-ID', { maximumFractionDigits: 1 });
 const panel = 'rounded-2xl border border-slate-200 bg-white p-4';
 
-export function SendingEmailDashboard({ rows, refresh }: { rows: RawDataRow[]; refresh: number }) {
+export function SendingEmailDashboard({ rows, refresh, teamMasterRows }: { rows: RawDataRow[]; refresh: number; teamMasterRows: RawDataRow[] }) {
   const [timeline, setTimeline] = useState<RawDataRow[] | null>(null);
   const [error, setError] = useState(false);
   const [supervisor, setSupervisor] = useState('');
@@ -31,16 +31,17 @@ export function SendingEmailDashboard({ rows, refresh }: { rows: RawDataRow[]; r
 
   const data = useMemo(() => matchSendingEmailRows(rows, timeline ?? []), [rows, timeline]);
   const months = [...new Set(data.map(item => item.scheduled.slice(0, 7)).filter(Boolean))].sort().reverse();
+  const teamRoster = useMemo(() => buildTeamRoster(teamMasterRows), [teamMasterRows]);
   const assignedRows = useMemo(() => data.map(item => ({
     ...item,
     ...resolveSpvAndConsultant(
       item.row['Nama Support'], item.row['Nama Consultant'], item.row.Supervisor,
-      parseCustomDate(item.row['Jadwal Agenda']),
+      parseCustomDate(item.row['Jadwal Agenda']), teamRoster,
     ),
-  })), [data]);
+  })), [data, teamRoster]);
   const uniqueNames = (names: string[]) => [...new Set(names)].sort((a, b) => a.localeCompare(b, 'id'));
-  const supervisors = uniqueNames(MASTER_DATA_TEAM.map(member => member.spv));
-  const roster = MASTER_DATA_TEAM.filter(member => !supervisor || member.spv === supervisor);
+  const supervisors = uniqueNames(teamRoster.map(member => member.spv));
+  const roster = teamRoster.filter(member => !supervisor || member.spv === supervisor);
   const consultants = uniqueNames(roster.map(member => member.l2));
   const selectedRoster = roster.filter(member => !consultant || member.l2 === consultant);
   const implementors = uniqueNames(selectedRoster.flatMap(member =>
@@ -50,7 +51,7 @@ export function SendingEmailDashboard({ rows, refresh }: { rows: RawDataRow[]; r
     (!supervisor || rowSpv === supervisor) && (!consultant || consultantName === consultant) &&
     (!month || scheduled.startsWith(month)) &&
     (!implementor || (row['Nama Support'] || '').split(/[,;\r\n/]+/).some(value =>
-      isSameSupportMember(value.trim(), implementor) || isSameSupportMember(implementor, value.trim()))) &&
+      isSameSupportMember(value.trim(), implementor, teamRoster) || isSameSupportMember(implementor, value.trim(), teamRoster))) &&
     [row['Ticket ID'], row['Nama Consultant'], row['Nama Support'], row['Nama Outlet']]
       .some(value => (value || '').toLowerCase().includes(query.trim().toLowerCase())));
   const sent = filtered.filter(item => item.emailDays !== null && item.emailDays <= 1).length;
@@ -91,8 +92,8 @@ export function SendingEmailDashboard({ rows, refresh }: { rows: RawDataRow[]; r
     <div className="grid gap-3 sm:grid-cols-3">
       {[
         ['Total tiket', number.format(filtered.length), 'Tiket SEND EMAIL sesuai filter, di luar status CANCEL'],
-        ['Email terkirim paling lambat H+1', rate(sent, knownSent), number.format(sent) + ' dari ' + number.format(knownSent) + ' tiket dengan jejak SEND EMAIL'],
-        ['Status COMPLETED di hari jadwal', rate(completed, knownCompleted), number.format(completed) + ' dari ' + number.format(knownCompleted) + ' tiket dengan jejak COMPLETED'],
+        ['Email terkirim paling lambat H+1', rate(sent, knownSent), timeline ? `${number.format(sent)}/${number.format(knownSent)} tepat waktu · ${number.format(knownSent)}/${number.format(filtered.length)} berjejak` : 'Menunggu data timeline'],
+        ['Status COMPLETED di hari jadwal', rate(completed, knownCompleted), timeline ? `${number.format(completed)}/${number.format(knownCompleted)} selesai H+0 · ${number.format(knownCompleted)}/${number.format(filtered.length)} berjejak` : 'Menunggu data timeline'],
       ].map(([label, value, note]) => <article key={label} className={panel}>
         <h2 className="text-sm font-semibold">{label}</h2><p className="my-2 text-2xl font-bold">{value}</p><p className="text-xs text-slate-600">{note}</p>
       </article>)}
@@ -108,7 +109,7 @@ export function SendingEmailDashboard({ rows, refresh }: { rows: RawDataRow[]; r
             item.emailDays === null ? '' : 'H+' + item.emailDays,
             !item.scheduled ? 'Jadwal belum tercatat' : !timeline ? 'Timeline belum tersedia' : [
               item.emailDays === null ? 'Email: belum ada jejak kirim' : item.emailDays <= 1 ? 'Email: tepat waktu' : 'Email: lewat H+1',
-              !item.completed ? 'COMPLETED: belum ada jejak' : item.completed === item.scheduled ? 'COMPLETED: di hari jadwal' : 'COMPLETED: setelah hari jadwal',
+              !item.completed ? 'COMPLETED: belum ada jejak' : item.completed === item.scheduled ? 'COMPLETED: di hari jadwal' : 'COMPLETED: beda hari',
             ].join(' · '),
           ].map((value, column) => <td key={column} className="p-2">{value || '—'}</td>)}</tr>)}</tbody>
       </table></div>

@@ -432,21 +432,45 @@ const normalizeSpvName = (value: string): string => {
 const primarySupportName = (value: string): string =>
   (value || '').split(/[,;\n\r/]+/).map((name) => name.trim()).find(Boolean) || '';
 
-const masterConsultants = Array.from(new Set(MASTER_DATA_TEAM.map((row) => row.l2)));
+export function buildTeamRoster(rows: RawDataRow[]): MasterDataTeamItem[] {
+  const roster: MasterDataTeamItem[] = [];
+  let spv = '';
+  let l2 = '';
+  for (const row of rows) {
+    const name = row['Nama Karyawan']?.trim();
+    if (!name) continue;
+    const level = row.Level?.trim().toUpperCase();
+    if (level === 'L3') {
+      spv = name === 'Muhamad Iriansyah Suhendar' ? 'M. Iriansyah Suhendar' : normalizeSpvName(name);
+      l2 = '';
+    }
+    if (level === 'L2') l2 = name;
+    if ((level === 'L1' || level === 'L2') && spv && l2) {
+      const previous = MASTER_DATA_TEAM.find(item => isSameSupportMember(name, item.l1FullName) ||
+        normalizeTeamName(name).startsWith(normalizeTeamName(item.l1FullName) + ' '));
+      roster.push({ no: roster.length + 1, spv, l2, l1FullName: name,
+        l1Nickname: previous?.l1Nickname || name, role: level === 'L2' ? 'L2 Consultant' : 'L1 Support', status: 'Aktif' });
+    }
+  }
+  if (!roster.length) return MASTER_DATA_TEAM;
+  return [...roster, ...MASTER_DATA_TEAM.filter(item => item.l2 === 'ERP Advisor')];
+}
+
+
 const masterSupervisors = Array.from(new Set(MASTER_DATA_TEAM.map((row) => row.spv)));
 
 // These are verified Master Data Team group labels, not invented L2 owners.
 export const SHARED_L2_TEAM_PREFIX = 'Tim Bersama L2: ';
 export const DIRECT_SPV_VISIT_PREFIX = 'Visit SPV: ';
 
-const canonicalConsultantName = (value: string): string | null =>
-  masterConsultants.find((name) => normalizeTeamName(name) === normalizeTeamName(value)) || null;
+const canonicalConsultantName = (value: string, roster = MASTER_DATA_TEAM): string | null =>
+  roster.find((row) => normalizeTeamName(row.l2) === normalizeTeamName(value))?.l2 || null;
 
 // One person may explicitly appear in more than one team. Return all roster matches.
-export function getMasterAssignmentsForSupport(personName: string): Array<{ supervisor: string; consultantName: string; supportName: string }> {
+export function getMasterAssignmentsForSupport(personName: string, roster = MASTER_DATA_TEAM): Array<{ supervisor: string; consultantName: string; supportName: string }> {
   const key = normalizeTeamName(personName);
   if (!key) return [];
-  const assignments = MASTER_DATA_TEAM.filter((item) =>
+  const assignments = roster.filter((item) =>
     normalizeTeamName(item.l1FullName) === key || normalizeTeamName(item.l1Nickname) === key
   ).map((item) => ({
     supervisor: item.spv,
@@ -454,9 +478,9 @@ export function getMasterAssignmentsForSupport(personName: string): Array<{ supe
     supportName: item.l1FullName,
   }));
   if (assignments.length > 0) return assignments;
-  const directL2 = canonicalConsultantName(personName);
+  const directL2 = canonicalConsultantName(personName, roster);
   if (directL2) {
-    const owner = MASTER_DATA_TEAM.find((item) => item.l2 === directL2);
+    const owner = roster.find((item) => item.l2 === directL2);
     return owner ? [{ supervisor: owner.spv, consultantName: directL2, supportName: directL2 }] : [];
   }
   return [];
@@ -471,49 +495,51 @@ export function findMasterMappingForSupport(supportName: string): MasterDataTeam
   return new Set(candidates.map((item) => item.l2)).size === 1 ? candidates[0] : null;
 }
 
-export function isSameSupportMember(person: string, selectedName: string): boolean {
+export function isSameSupportMember(person: string, selectedName: string, roster = MASTER_DATA_TEAM): boolean {
   const left = normalizeTeamName(person);
   const right = normalizeTeamName(selectedName);
   if (!left || !right) return false;
   if (left === right) return true;
-  const candidates = MASTER_DATA_TEAM.filter((item) =>
+  const candidates = roster.filter((item) =>
     normalizeTeamName(item.l1FullName) === right || normalizeTeamName(item.l1Nickname) === right
   );
   const uniqueFullNames = [...new Set(candidates.map((item) => normalizeTeamName(item.l1FullName)))];
-  return uniqueFullNames.length === 1 && uniqueFullNames[0] === left;
+  return uniqueFullNames.length === 1 && (uniqueFullNames[0] === left || roster.some(item => normalizeTeamName(item.l1FullName) === uniqueFullNames[0] && normalizeTeamName(item.l1Nickname) === left));
 }
 
 export function resolveSpvAndConsultant(
   supportRaw: string,
   consultantRaw?: string,
   supervisorRaw?: string,
-  visitDate?: Date | null
+  visitDate?: Date | null,
+  roster = MASTER_DATA_TEAM
 ): { supervisor: string; consultantName: string } {
+  const supervisors = [...new Set(roster.map(row => row.spv))];
   const primarySupport = primarySupportName(supportRaw);
   // Historical assignment: through July 2026 Tegar belongs to Dika;
   // from August 2026 onward the master assignment is Agung.
   // Explicit ticket L2 ownership remains authoritative.
   const isHistoricalTegar = !!visitDate && visitDate.getTime() < new Date(2026, 7, 1).getTime()
-    && normalizeTeamName(primarySupport) === 'tegar rangga';
+    && normalizeTeamName(primarySupport).startsWith('tegar rangga');
   const rawConsultant = (consultantRaw || '').trim();
   const rawSpv = normalizeSpvName(supervisorRaw || '');
 
   // Raw consultant is authoritative ONLY if it is a registered L2 in Master Team.
   // Cross-team visitor attendance does not change the registered L2 owner.
-  const explicitL2 = canonicalConsultantName(rawConsultant);
+  const explicitL2 = canonicalConsultantName(rawConsultant, roster);
   if (explicitL2) {
     return {
       consultantName: explicitL2,
-      supervisor: MASTER_DATA_TEAM.find((row) => row.l2 === explicitL2)?.spv || 'Belum Terpetakan',
+      supervisor: roster.find((row) => row.l2 === explicitL2)?.spv || 'Belum Terpetakan',
     };
   }
 
   // SPV doing the visit themself is recognized through Master SPV hierarchy,
   // without inventing an L2 consultant for their attendance.
-  const listedSpv = masterSupervisors.find((spv) =>
+  const listedSpv = supervisors.find((spv) =>
     normalizeTeamName(spv) === normalizeTeamName(rawConsultant)
   );
-  const visitingSpv = masterSupervisors.find((spv) =>
+  const visitingSpv = supervisors.find((spv) =>
     normalizeTeamName(spv) === normalizeTeamName(normalizeSpvName(primarySupport))
   );
   if (visitingSpv && (!rawConsultant || listedSpv)) {
@@ -525,12 +551,12 @@ export function resolveSpvAndConsultant(
 
   // If raw consultant is an L1, use its master memberships. Otherwise use
   // the actual primary support to resolve consultant ownership.
-  const exactMember = getMasterAssignmentsForSupport(rawConsultant);
+  const exactMember = getMasterAssignmentsForSupport(rawConsultant, roster);
   const historicalAssignment = [{ supervisor: 'Jane Margareth Widjaja', consultantName: 'Dika Anugerah Pratama', supportName: 'Tegar Rangga' }];
   const candidates = isHistoricalTegar && (!rawConsultant || normalizeTeamName(rawConsultant) === 'tegar rangga') ? historicalAssignment : (!listedSpv && exactMember.length)
     ? exactMember
-    : getMasterAssignmentsForSupport(primarySupport);
-  const selectedSpv = masterSupervisors.find((spv) =>
+    : getMasterAssignmentsForSupport(primarySupport, roster);
+  const selectedSpv = supervisors.find((spv) =>
     normalizeTeamName(spv) === normalizeTeamName(rawSpv)
   ) || listedSpv || '';
   const matching = selectedSpv
@@ -564,7 +590,8 @@ export function isIncludedDashboardVisit(record: Pick<ProcessedRecord, 'ticketId
 
 export function processRawData(
   rawData: RawDataRow[],
-  mapping: ColumnMapping = DEFAULT_COLUMN_MAPPING
+  mapping: ColumnMapping = DEFAULT_COLUMN_MAPPING,
+  roster = MASTER_DATA_TEAM
 ): ProcessedRecord[] {
   // Step 1: Initial parsing of rows
   const parsedRecords: ProcessedRecord[] = rawData.map((row, index) => {
@@ -581,7 +608,7 @@ export function processRawData(
 
     // Resolve ownership using the visit date, not today's roster for historical visits.
     const visitDateForMapping = parseCustomDate((row[mapping.agendaSchedule] || row['Date Visit'] || createdAt).trim());
-    const resolved = resolveSpvAndConsultant(rawSupport, rawConsultant, rawSupervisor, visitDateForMapping);
+    const resolved = resolveSpvAndConsultant(rawSupport, rawConsultant, rawSupervisor, visitDateForMapping, roster);
     const supervisor = resolved.supervisor;
     const consultantName = resolved.consultantName;
 
@@ -880,14 +907,15 @@ export const CONSULTANT_DEDICATED_TEAMS: Record<string, DedicatedSupportMember[]
 // Retrieve support team members for a consultant
 export function getDedicatedSupportTeamsForConsultant(
   consultant: string,
-  records: ProcessedRecord[] = []
+  records: ProcessedRecord[] = [],
+  roster = MASTER_DATA_TEAM
 ): DedicatedSupportMember[] {
   if (!consultant) return [];
   // A shared L2 label maps ONLY to support members registered under every
   // candidate L2. Do not add all of Ayu/Dika's staff or a fictional L2 visitor.
   if (consultant.startsWith(SHARED_L2_TEAM_PREFIX)) {
     const names = consultant.slice(SHARED_L2_TEAM_PREFIX.length).split(' / ');
-    const matchingRows = MASTER_DATA_TEAM.filter((row) => names.includes(row.l2));
+    const matchingRows = roster.filter((row) => names.includes(row.l2));
     const byMember = new Map<string, { row: MasterDataTeamItem; l2: Set<string> }>();
     matchingRows.forEach((row) => {
       const key = normalizeTeamName(row.l1FullName);
@@ -909,6 +937,10 @@ export function getDedicatedSupportTeamsForConsultant(
     return [{ fullName: name, nickname: name.split(' ')[0], displayName: name + ' (SPV)' }];
   }
 
+
+  if (roster !== MASTER_DATA_TEAM) return roster.filter(row => row.l2 === consultant).map(row => ({
+    fullName: row.l1FullName, nickname: row.l1Nickname, displayName: row.l1FullName,
+  }));
 
   // Direct exact match from predefined mapping
   for (const [cName, members] of Object.entries(CONSULTANT_DEDICATED_TEAMS)) {
@@ -954,11 +986,11 @@ export function getDedicatedSupportTeamsForConsultant(
 
 // Find which consultant a support member belongs to
 // Ambiguous support members must not be silently assigned to the first roster.
-export function findConsultantForSupportMember(memberName: string): string | null {
+export function findConsultantForSupportMember(memberName: string, roster = MASTER_DATA_TEAM): string | null {
   const primary = normalizeTeamName(memberName);
   if (!primary) return null;
   const consultants = [...new Set(
-    MASTER_DATA_TEAM.filter((item) =>
+    roster.filter((item) =>
       normalizeTeamName(item.l1FullName) === primary || normalizeTeamName(item.l1Nickname) === primary
     ).map((item) => item.l2)
   )];
@@ -966,7 +998,7 @@ export function findConsultantForSupportMember(memberName: string): string | nul
 }
 
 // Build structured grouping of Nama Consulting -> Area -> Support Team
-export function buildConsultantTeamGroupings(records: ProcessedRecord[]): ConsultantGrouping[] {
+export function buildConsultantTeamGroupings(records: ProcessedRecord[], roster = MASTER_DATA_TEAM): ConsultantGrouping[] {
   const consultantMap = new Map<
     string,
     {
@@ -1030,7 +1062,7 @@ export function buildConsultantTeamGroupings(records: ProcessedRecord[]): Consul
     const allAreas = Array.from(data.areas.keys()).filter(Boolean);
 
     // Use dedicated team definition if available for this consultant
-    const dedicated = getDedicatedSupportTeamsForConsultant(consultant, records);
+    const dedicated = getDedicatedSupportTeamsForConsultant(consultant, records, roster);
     let supportMembers: SupportMemberInfo[] = [];
 
     if (dedicated.length > 0) {
@@ -1078,7 +1110,7 @@ export function buildConsultantTeamGroupings(records: ProcessedRecord[]): Consul
 }
 
 // Build Hierarchical Grouping for Supervisor -> L2 (Line 2 / Support Team) -> L1 (Line 1 / Support Utama)
-export function buildSpvL2L1Groupings(records: ProcessedRecord[]): SpvL2L1Grouping[] {
+export function buildSpvL2L1Groupings(records: ProcessedRecord[], roster = MASTER_DATA_TEAM): SpvL2L1Grouping[] {
   const spvMap = new Map<
     string,
     {
@@ -1094,16 +1126,16 @@ export function buildSpvL2L1Groupings(records: ProcessedRecord[]): SpvL2L1Groupi
     // Master Team is the only authority for SPV/L2/L1 grouping. Never create
     // a supervisor from raw blank/'unname' spreadsheet cells.
     const visitDate = parseCustomDate(rec.dateVisit || '');
-    const supportAssignments = getMasterAssignmentsForSupport(rec.supportName || '');
-    const normalizedL2 = canonicalConsultantName(rec.consultantName || '');
+    const supportAssignments = getMasterAssignmentsForSupport(rec.supportName || '', roster);
+    const normalizedL2 = canonicalConsultantName(rec.consultantName || '', roster);
     const ownership = resolveSpvAndConsultant(
-      rec.supportName || '', normalizedL2 || '', '', visitDate
+      rec.supportName || '', normalizedL2 || '', '', visitDate, roster
     );
-    const canonicalL2 = canonicalConsultantName(ownership.consultantName);
+    const canonicalL2 = canonicalConsultantName(ownership.consultantName, roster);
     const canonicalSpv = canonicalL2
-      ? MASTER_DATA_TEAM.find(item => item.l2 === canonicalL2)?.spv
+      ? roster.find(item => item.l2 === canonicalL2)?.spv
       : null;
-    const validSpv = masterSupervisors.find(name =>
+    const validSpv = roster.map(row => row.spv).find(name =>
       normalizeTeamName(name) === normalizeTeamName(canonicalSpv || '')
     );
 
@@ -1114,7 +1146,7 @@ export function buildSpvL2L1Groupings(records: ProcessedRecord[]): SpvL2L1Groupi
     const rawL1 = (rec.supportName || '').trim();
     const canonicalL1 = supportAssignments.find(item =>
       normalizeTeamName(item.consultantName) === normalizeTeamName(canonicalL2)
-    )?.supportName || (canonicalConsultantName(rawL1) ? rawL1 : '');
+    )?.supportName || (canonicalConsultantName(rawL1, roster) ? rawL1 : '');
     if (!canonicalL1) return;
     const spv = validSpv;
 
