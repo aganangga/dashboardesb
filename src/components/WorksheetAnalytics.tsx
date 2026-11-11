@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Ticket, Star, Users } from 'lucide-react';
 import { CsatAgendaTable } from './CsatAgendaTable';
 import { summarizeCsatAgendas, summarizeVisitCsatCoverage } from '../utils/csatAgenda';
@@ -136,8 +136,28 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
     {title:'Total karyawan',value:number(filtered.length),note:'Karyawan unik berdasarkan email atau nama'},
     {title:'Email tercatat',value:number(filtered.filter(row=>!!row['Email User']?.trim()).length)},
   ];
-  const monthlyCSAT = useMemo(() => groupCounts(filtered.filter(row=>sheetDate(row['Created At (Date Created)'])),row=>sheetDate(row['Created At (Date Created)']).slice(0,7)).sort((a,b)=>a.name.localeCompare(b.name)),[filtered]);
-  const ratingData = ['5 · Sangat Puas','4–<5 · Puas','3–<4 · Cukup','2–<3 · Tidak Puas','1–<2 · Sangat Tidak Puas'].map((name,index)=>({name,total:visitRatings.filter(score=>Math.floor(score)===5-index).length}));
+  const monthlyCSAT = useMemo(() => {
+    const months = new Map<string, { name: string; total: number; rated: number; sum: number }>();
+    if (id !== 'csat') return [];
+    for (const row of filtered) {
+      const name = sheetDate(row['Created At (Date Created)']).slice(0, 7);
+      if (!name) continue;
+      const item = months.get(name) ?? { name, total: 0, rated: 0, sum: 0 };
+      const score = csatScore(row.Rating);
+      item.total++;
+      if (score !== null) {
+        item.rated++;
+        item.sum += score;
+      }
+      months.set(name, item);
+    }
+    return [...months.values()].sort((a, b) => a.name.localeCompare(b.name)).map(item => ({
+      ...item, average: item.rated ? item.sum / item.rated : null,
+    }));
+  }, [filtered, id]);
+  const ratings = id === 'csat' ? filtered.map(row => csatScore(row.Rating)) : [];
+  const ratingData = ratings.some(score => score !== null) ? ['5 · Sangat Puas','4 · Puas','3 · Cukup','2 · Tidak Puas','1 · Sangat Tidak Puas']
+    .map((name,index) => ({ name, total: ratings.filter(score => score === 5 - index).length })) : [];
   const team = useMemo(()=>[...filtered].sort((a,b)=>(a['Nama Karyawan']||'').localeCompare(b['Nama Karyawan']||'')),[filtered]);
   const Icon = id==='csat' ? Star : id==='ticket' ? Ticket : Users;
   return <div className="space-y-5">
@@ -166,6 +186,34 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
         { title: 'Kontribusi CSAT', value: percentage(coverage.coverage), note: `${number(coverage.coveredVisits)} agenda mendapat CSAT dari ${number(coverage.totalVisits)} · target 80%` },
         ...metrics,
       ]}/>
+    {coverage && <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+      <Chart title="Tren Respons CSAT per Bulan Submit" data={monthlyCSAT}/>
+      <Chart title="Distribusi rating per respons CSAT" data={ratingData} horizontal/>
+      <Chart title="Respons CSAT per Support" data={groupCounts(filtered,row=>row['Nama Support']||'').slice(0,10)} horizontal/>
+      <section className={panel + ' min-w-0'}>
+        <h3 className="font-semibold text-slate-900">Tren rata-rata rating per respons</h3>
+        <p className="mb-3 text-xs text-slate-600">Skala 1–5 · rating valid berdasarkan bulan submit.</p>
+        {monthlyCSAT.some(item => item.rated) ? <div className="h-64"><ResponsiveContainer width="100%" height="100%">
+          <LineChart data={monthlyCSAT} margin={{ right: 16 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false}/><XAxis dataKey="name" tick={{ fontSize: 11 }}/>
+            <YAxis domain={[1, 5]} allowDecimals={false} width={34}/><Tooltip formatter={value => number(Number(value)) + ' / 5'}/>
+            <Line dataKey="average" name="Rata-rata respons" stroke="#4338ca" strokeWidth={2} dot={{ r: 3 }}/>
+          </LineChart>
+        </ResponsiveContainer></div> : <p className="py-16 text-center text-sm text-slate-500">Belum ada rating bertanggal sesuai filter.</p>}
+      </section>
+      <section className={panel + ' min-w-0'}>
+        <h3 className="font-semibold text-slate-900">Cakupan pencocokan CSAT ke visit</h3>
+        <p className="mb-3 text-xs text-slate-600">Visit unik sesuai filter, berdasarkan respons yang berhasil dipasangkan.</p>
+        {coverage.totalVisits ? <div className="h-64"><ResponsiveContainer width="100%" height="100%">
+          <BarChart data={[{ name: 'Visit unik', linked: coverage.coveredVisits, unmatched: coverage.totalVisits - coverage.coveredVisits }]}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false}/><XAxis dataKey="name"/><YAxis allowDecimals={false}/><Tooltip/><Legend/>
+            <Bar dataKey="linked" name="Terhubung ke CSAT" stackId="coverage" fill="#0f766e" maxBarSize={70}/>
+            <Bar dataKey="unmatched" name="Belum terhubung" stackId="coverage" fill="#94a3b8" maxBarSize={70}/>
+          </BarChart>
+        </ResponsiveContainer></div> : <p className="py-16 text-center text-sm text-slate-500">Tidak ada visit sesuai filter.</p>}
+      </section>
+      <Chart title="Respons per Jenis Kunjungan"  data={groupCounts(filtered,row=>row['Visit Type']||'')} horizontal/>
+    </div>}
       <section className={panel} aria-label="Respons CSAT per Tim">
         <h4 className="font-semibold text-slate-900">Respons CSAT per Tim</h4>
         <p className="mt-1 text-sm text-slate-600">Rincian per orang tampil di bawah timnya. Satu visit dapat dihitung untuk beberapa peserta, jadi angka anggota bisa melebihi total tim. Respons tanpa tim yang pasti masuk ke Belum terpetakan.</p>
@@ -220,12 +268,7 @@ export function WorksheetAnalytics({ id, rows, renderDetails, visits = [], omniV
       <Chart title="Volume Tiket per Area" data={groupTickets(filtered,'Area').sort((a,b)=>b.total-a.total)} horizontal/>
       <Chart title="10 PIC dengan Volume Tiket Terbesar" data={groupTickets(filtered,'Pic').sort((a,b)=>b.total-a.total).slice(0,10)} horizontal/>
     </div><p className="text-xs text-slate-500">Perhitungan memakai baris berisi bulan dan PIC. Baris formula tanpa identitas PIC-periode tidak ikut dihitung. Visit Qty adalah data worksheet tiket, terpisah dari metrik dashboard visit.</p></>}
-    {id==='csat' && <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-      <Chart title="Tren Respons CSAT per Bulan Submit" data={monthlyCSAT}/>
-      <Chart title="Distribusi Nilai CSAT" data={ratingData} horizontal/>
-      <Chart title="Respons CSAT per Support" data={groupCounts(filtered,row=>row['Nama Support']||'').slice(0,10)} horizontal/>
-      <Chart title="Respons per Jenis Kunjungan" data={groupCounts(filtered,row=>row['Visit Type']||'')} horizontal/>
-    </div>}
+
     {id==='team' && <><Chart title="Komposisi Jabatan Tim" data={roles} horizontal/>
       <section className={panel}><h3 className="mb-4 text-base font-semibold text-slate-900">Direktori Anggota Tim</h3>
         {!team.length && <p className="text-sm text-slate-500">Tidak ada anggota tim sesuai filter.</p>}

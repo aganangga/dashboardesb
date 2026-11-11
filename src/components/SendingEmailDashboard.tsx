@@ -1,3 +1,4 @@
+import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import React, { useEffect, useMemo, useState } from 'react';
 import type { RawDataRow } from '../types';
 import { buildTeamRoster, isSameSupportMember, parseCustomDate, resolveSpvAndConsultant } from '../utils/dataProcessor';
@@ -59,6 +60,26 @@ export function SendingEmailDashboard({ rows, refresh, teamMasterRows }: { rows:
   const knownSent = filtered.filter(item => item.sent).length;
   const knownCompleted = filtered.filter(item => item.completed).length;
   const rate = (n: number, denominator: number) => denominator ? number.format(n / denominator * 100) + '%' : '—';
+  const buckets = new Map<string, { sent: number; knownSent: number; completed: number; knownCompleted: number }>();
+  for (const item of filtered) {
+    if (!item.scheduled) continue;
+    const period = month ? item.scheduled : item.scheduled.slice(0, 7);
+    const bucket = buckets.get(period) ?? { sent: 0, knownSent: 0, completed: 0, knownCompleted: 0 };
+    bucket.sent += Number(item.emailDays !== null && item.emailDays <= 1);
+    bucket.knownSent += Number(!!item.sent);
+    bucket.completed += Number(item.completed === item.scheduled);
+    bucket.knownCompleted += Number(!!item.completed);
+    buckets.set(period, bucket);
+  }
+  const trend = [...buckets].sort(([a], [b]) => a.localeCompare(b)).map(([period, bucket]) => ({
+    period,
+    email: bucket.knownSent ? bucket.sent / bucket.knownSent * 100 : null,
+    completion: bucket.knownCompleted ? bucket.completed / bucket.knownCompleted * 100 : null,
+  }));
+  const statusCounts = [
+    { name: 'SEND EMAIL', onTime: sent, other: knownSent - sent, unknown: filtered.length - knownSent },
+    { name: 'COMPLETED', onTime: completed, other: knownCompleted - completed, unknown: filtered.length - knownCompleted },
+  ];
   const lastPage = Math.max(1, Math.ceil(filtered.length / 15));
   const currentPage = Math.min(page, lastPage);
 
@@ -99,6 +120,35 @@ export function SendingEmailDashboard({ rows, refresh, teamMasterRows }: { rows:
       </article>)}
     </div>
     <p className="text-sm text-slate-600">Target form selesai di hari jadwal adalah 100%. Sheet sumber belum menyediakan waktu submit form, sehingga status COMPLETED ditampilkan sebagai indikator terpisah. Tiket tanpa jejak status tidak masuk pembagi KPI terkait.</p>
+    {timeline && filtered.length > 0 && <div className="grid gap-3 xl:grid-cols-2">
+      <section className={panel + ' min-w-0'}>
+        <h2 className="font-semibold">Tren ketepatan {month ? 'harian' : 'bulanan'}</h2>
+        <p className="mb-3 text-xs text-slate-600">Berdasarkan tanggal jadwal. Persentase memakai tiket berjejak pada masing-masing status.</p>
+        {trend.some(item => item.email !== null || item.completion !== null) ? <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%"><LineChart data={trend} margin={{ right: 16, left: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false}/>
+            <XAxis dataKey="period" tickFormatter={value => month ? value.slice(8) : value} minTickGap={18} tick={{ fontSize: 11 }}/>
+            <YAxis domain={[0, 100]} tickFormatter={value => value + '%'} tick={{ fontSize: 11 }}/>
+            <Tooltip formatter={value => number.format(Number(value)) + '%'}/><Legend/>
+            <Line dataKey="email" name="Email ≤ H+1" stroke="#4338ca" strokeWidth={2} dot={{ r: 2 }}/>
+            <Line dataKey="completion" name="COMPLETED H+0" stroke="#0f766e" strokeWidth={2} dot={{ r: 2 }}/>
+          </LineChart></ResponsiveContainer>
+        </div> : <p className="py-16 text-center text-sm text-slate-500">Belum ada jejak status pada periode ini.</p>}
+      </section>
+      <section className={panel + ' min-w-0'}>
+        <h2 className="font-semibold">Cakupan dan hasil timeline</h2>
+        <p className="mb-3 text-xs text-slate-600">Tepat waktu berarti email maksimal H+1 dan COMPLETED pada hari jadwal.</p>
+        <div className="h-64"><ResponsiveContainer width="100%" height="100%">
+          <BarChart data={statusCounts} margin={{ right: 16, left: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false}/><XAxis dataKey="name" tick={{ fontSize: 11 }}/>
+            <YAxis allowDecimals={false} tick={{ fontSize: 11 }}/><Tooltip/><Legend/>
+            <Bar dataKey="onTime" name="Tepat waktu" stackId="timeline" fill="#0f766e" maxBarSize={64}/>
+            <Bar dataKey="other" name="Di luar target waktu" stackId="timeline" fill="#d97706" maxBarSize={64}/>
+            <Bar dataKey="unknown" name="Tanpa jejak" stackId="timeline" fill="#94a3b8" maxBarSize={64}/>
+          </BarChart>
+        </ResponsiveContainer></div>
+      </section>
+    </div>}
     <section className={panel}>
       <h2 className="font-semibold">Rincian Sending Email</h2>
       <div className="mt-3 overflow-x-auto"><table className="w-full text-left text-sm">
