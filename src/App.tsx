@@ -599,10 +599,7 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'check-in-out' && <div className="space-y-4">
-          <VisitCheckDashboard records={filteredRecords} mode="check-in" />
-          <VisitCheckDashboard records={filteredRecords} mode="check-out" />
-        </div>}
+        {activeTab === 'check-in-out' && <VisitCheckDashboard records={filteredRecords} />}
         {activeTab === 'okr' && <OkrCalculator visits={reportRecords} roster={teamRoster} />}
 
         {activeTab === 'table' && (

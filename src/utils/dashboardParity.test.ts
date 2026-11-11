@@ -10,7 +10,9 @@ test('approved dashboard modules survive legacy HTML migration', () => {
     assert.ok(app.includes('<' + module), module + ' must be rendered');
   }
 
-  assert.ok(app.includes('mode="check-in"') && app.includes('mode="check-out"'));
+  assert.ok(app.includes("activeTab === 'check-in-out'"));
+  const checks = read('src/components/VisitCheckDashboard.tsx');
+  assert.ok(checks.includes('Check-in H+0') && checks.includes('Check-out H+0'));
   assert.ok(app.includes('<OmniSyncModal'), 'Omni sync modal must be mounted');
   assert.ok(read('src/components/Navbar.tsx').includes('btn-omni-sync'), 'Omni sync button must be available');
 
