@@ -43,7 +43,7 @@ export function ticketSummary(rows: RawDataRow[]) {
   const data = ticketDataRows(rows);
   const h0 = sumColumn(data,'Total H+0');
   const h1 = sumColumn(data,'Total H+1');
-  return { rows: data.length, total: sumColumn(data,'Total Ticket'), h0, h1,
+  return { rows: data.length, total: sumColumn(data,'Total Ticket'), erpDevTotal: sumColumn(data,'Total Ticket ERP + DEv'), h0, h1,
     h0Rate: h0 + h1 ? h0 / (h0 + h1) * 100 : null, visits: sumColumn(data,'Visit Qty'),
     pics: new Set(data.map(row => row.Pic!.trim().toLocaleLowerCase())).size };
 }

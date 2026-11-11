@@ -6,10 +6,11 @@ const read = (path: string) => readFileSync(path, 'utf8');
 
 test('approved dashboard modules survive legacy HTML migration', () => {
   const app = read('src/App.tsx');
-  for (const module of ['WorksheetDashboard', 'AIInsightPanel', 'ModernSidebar', 'VisitTable', 'CheckInOutComparison']) {
+  for (const module of ['WorksheetDashboard', 'AIInsightPanel', 'ModernSidebar', 'VisitTable', 'VisitCheckDashboard']) {
     assert.ok(app.includes('<' + module), module + ' must be rendered');
   }
 
+  assert.ok(app.includes('mode="check-in"') && app.includes('mode="check-out"'));
   assert.ok(app.includes('<OmniSyncModal'), 'Omni sync modal must be mounted');
   assert.ok(read('src/components/Navbar.tsx').includes('btn-omni-sync'), 'Omni sync button must be available');
 

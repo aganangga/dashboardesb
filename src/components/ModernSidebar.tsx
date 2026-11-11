@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { LayoutDashboard, CalendarDays, ChartNoAxesCombined, Clock3, Table2, Star, Menu, X, Ticket, Users, Mail } from 'lucide-react';
 
-export type DashboardTab = 'overview' | 'outlets' | 'trend' | 'planned' | 'monthly' | 'breakdowns' | 'comparison' | 'table' | 'quality';
+export type DashboardTab = 'overview' | 'outlets' | 'trend' | 'planned' | 'monthly' | 'breakdowns' | 'check-in' | 'check-out' | 'okr' | 'table' | 'quality';
 interface ModernSidebarProps {
   activeTab: DashboardTab;
   onSelect: (tab: DashboardTab) => void;
@@ -22,7 +22,9 @@ const navigation: Array<{id:DashboardTab;label:string;Icon:React.ComponentType<{
   {id:'planned',label:'Jadwal vs Realisasi',Icon:CalendarDays},
   {id:'monthly',label:'Bulanan',Icon:CalendarDays},
   {id:'breakdowns',label:'Breakdown Tim & Area',Icon:ChartNoAxesCombined},
-  {id:'comparison',label:'Check-in/out',Icon:Clock3},
+  {id:'check-in',label:'Check-in',Icon:Clock3},
+  {id:'check-out',label:'Check-out',Icon:Clock3},
+  {id:'okr',label:'Simulasi OKR',Icon:Star},
   {id:'table',label:'Rincian Kunjungan',Icon:Table2},
   {id:'quality',label:'SLA & Kunjungan Berulang',Icon:ChartNoAxesCombined},
 ];

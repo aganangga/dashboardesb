@@ -122,8 +122,8 @@ export function WorksheetDashboard({ selected, onSelect, onVisitLoaded, visits =
     </div>
     {error && <p role="alert" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">{error}{selected === 'visit' && ' Data kunjungan sebelumnya tetap ditampilkan.'}</p>}
     </section>
-    {selected === 'team' && <TeamMasterEditor />}
-    {selected === 'sending-email' && dataset && <SendingEmailDashboard rows={dataset.records} refresh={reload} />}
+    {selected === 'team' && <details className="rounded-xl border border-slate-200 p-4"><summary className="cursor-pointer font-semibold">Mapping dan histori tim</summary><TeamMasterEditor /></details>}
+    {selected === 'sending-email' && dataset && <SendingEmailDashboard rows={dataset.records} refresh={reload} teamMasterRows={teamMasterRows} />}
     {selected !== 'visit' && selected !== 'sending-email' && dataset && <WorksheetAnalytics id={selected} rows={dataset.records} visits={visits} omniVisits={omniVisits} teamMasterRows={teamMasterRows} renderDetails={records=><WorksheetTable dataset={{...dataset, records}}/>} />}
     {selected !== 'visit' && !dataset && !error && <p role="status" className="text-sm text-slate-500">Memuat data {sheet.title}…</p>}
   </div>;

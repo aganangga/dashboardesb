@@ -1,6 +1,6 @@
 import React from 'react';
-import { Search, RotateCcw } from 'lucide-react';
-import { emptyWorksheetFilter, type WorksheetFilter, type WorksheetFilterRow } from '../utils/worksheetFilters';
+import { Search } from 'lucide-react';
+import { type WorksheetFilter, type WorksheetFilterRow } from '../utils/worksheetFilters';
 
 const selectStyle='mt-1.5 block w-full min-w-0 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-normal text-slate-800 disabled:opacity-60';
 const values=(items:string[])=>[...new Set(items.filter(Boolean))].sort();
@@ -25,7 +25,7 @@ export function WorksheetFilterBar({id,items,filter,onChange,count,displayName=(
         {id==='csat' && <div className="mt-2 flex min-w-0 items-center gap-1"><input aria-label="Tanggal mulai CSAT" type="date" value={filter.start} max={filter.end||undefined} onChange={e=>update('start',e.target.value)} className="min-w-0 w-1/2 rounded-md border border-slate-200 p-1 text-[10px]"/><span>–</span><input aria-label="Tanggal akhir CSAT" type="date" value={filter.end} min={filter.start||undefined} onChange={e=>update('end',e.target.value)} className="min-w-0 w-1/2 rounded-md border border-slate-200 p-1 text-[10px]"/></div>}
       </div>
     </div>
-    <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3 text-xs text-slate-500"><span>Menampilkan <strong className="text-blue-700">{count.toLocaleString('id-ID')}</strong> {id==='csat'?'respons CSAT':'baris PIC-periode'}</span><button onClick={()=>onChange({...emptyWorksheetFilter})} className="inline-flex items-center gap-1.5 font-semibold text-blue-600"><RotateCcw className="h-3.5 w-3.5"/>Reset filter utama</button></div>
+    <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3 text-xs text-slate-500"><span>Menampilkan <strong className="text-blue-700">{count.toLocaleString('id-ID')}</strong> {id==='csat'?'respons CSAT':'baris PIC-periode'}</span></div>
     {id==='ticket' && <p className="mt-2 text-[11px] text-slate-500">Sheet tiket berupa rekap bulanan; tanggal harian dan Book Type belum tersedia.</p>}
   </section>;
 }

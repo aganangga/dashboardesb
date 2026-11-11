@@ -74,14 +74,23 @@ export function summarizeVisitCsatCoverage(rows: RawDataRow[], visits: Processed
   }
 
   const covered = new Set<string>();
+  const ratingsByVisit = new Map<string, { sum: number; count: number }>();
   for (const agenda of aggregateCsatAgendas(rows, matchingVisits)) {
     if (!agenda.resolved) continue;
     const matches = keysByAgenda.get(agenda.key);
-    if (matches?.size === 1) covered.add([...matches][0]);
+    if (matches?.size !== 1) continue;
+    const visit = [...matches][0];
+    covered.add(visit);
+    if (agenda.score === null) continue;
+    const rating = ratingsByVisit.get(visit) ?? { sum: 0, count: 0 };
+    rating.sum += agenda.score * agenda.validResponses;
+    rating.count += agenda.validResponses;
+    ratingsByVisit.set(visit, rating);
   }
   return {
     totalVisits: visitKeys.size,
     coveredVisits: covered.size,
     coverage: visitKeys.size ? covered.size / visitKeys.size * 100 : null,
+    visitRatings: [...ratingsByVisit.values()].map(rating => rating.sum / rating.count),
   };
 }
