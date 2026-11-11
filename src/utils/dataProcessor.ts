@@ -419,8 +419,11 @@ export const MASTER_DATA_TEAM: MasterDataTeamItem[] = [
 // Resolve consultant ownership strictly: explicit source value first, then uniquely mapped roster.
 // Never assign a default consultant or choose the first match for shared support members.
 // Master Data Team is the single source of truth for SPV / L2 / L1 membership.
-const normalizeTeamName = (value: string): string =>
-  (value || '').trim().replace(/\s+/g, ' ').toLowerCase();
+const normalizeTeamName = (value: string): string => {
+  const name = (value || '').trim().replace(/\s+/g, ' ').toLowerCase();
+  // SEND EMAIL uses the shorter name while TEAM MASTER HIRARKI stores the full name.
+  return name === 'syafiz amiero wisesanadar' ? 'syafiz amiero' : name;
+};
 
 const normalizeSpvName = (value: string): string => {
   const normalized = normalizeTeamName(value);
