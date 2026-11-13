@@ -6,7 +6,7 @@ interface NavbarProps {
   onOpenUpload: () => void;
   onOpenOmniSync: () => void;
   onResetData: () => void;
-  onExportCsv: () => void;
+  onExportCsv?: () => void;
   onDownloadSingleHtml: () => void;
   onOpenShareModal: () => void;
 }
@@ -90,7 +90,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               Unduh HTML (Offline)
             </button>
 
-            <button
+            {onExportCsv && <button
               id="btn-export-csv"
               onClick={onExportCsv}
               className="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-2xs transition-all"
@@ -98,7 +98,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Download className="w-3.5 h-3.5 mr-1 text-emerald-600" />
               Export
-            </button>
+            </button>}
 
             <button
               id="btn-reset-data"

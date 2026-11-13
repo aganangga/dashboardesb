@@ -15,6 +15,7 @@ import { BreakdownSection } from './components/BreakdownSection';
 import { MonthlyView } from './components/MonthlyView';
 import { VisitCheckDashboard } from './components/VisitCheckDashboard';
 import { OkrCalculator } from './components/OkrCalculator';
+import { PersonalVisitDashboard } from './components/PersonalVisitDashboard';
 import { VisitTable } from './components/VisitTable';
 import { VisitQualityInsights } from './components/VisitQualityInsights';
 import { AIInsightPanel } from './components/AIInsightPanel';
@@ -27,6 +28,7 @@ import { ShareModal } from './components/ShareModal';
 import { Sparkles } from 'lucide-react';
 
 export default function App() {
+  const [personalView, setPersonalView] = useState(false);
   const [selectedWorksheet, setSelectedWorksheet] = useState('visit');
   const [teamMasterRows, setTeamMasterRows] = useState<RawDataRow[]>((window as any).__CUSTOM_TEAM_MASTER__ || []);
   const [teamMasterError, setTeamMasterError] = useState('');
@@ -458,7 +460,7 @@ export default function App() {
 
   return (
     <div className="modern-shell min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-indigo-600 selection:text-white">
-      <ModernSidebar activeTab={activeTab} selectedWorksheet={selectedWorksheet} onSelectWorksheet={handleWorksheetSelect} onSelect={setActiveTab} />
+      <ModernSidebar activeTab={activeTab} selectedWorksheet={selectedWorksheet} onSelectWorksheet={handleWorksheetSelect} onSelect={tab => { setPersonalView(false); setActiveTab(tab); }} />
 
       {/* Top Navigation */}
       {selectedWorksheet === 'visit' && <Navbar
@@ -466,7 +468,7 @@ export default function App() {
         onOpenUpload={() => setIsUploadOpen(true)}
         onOpenOmniSync={() => setIsOmniSyncOpen(true)}
         onResetData={handleResetToDefault}
-        onExportCsv={handleExportCsv}
+        onExportCsv={personalView ? undefined : handleExportCsv}
         onDownloadSingleHtml={handleDownloadSingleHtml}
         onOpenShareModal={() => setIsShareModalOpen(true)}
       />}
@@ -475,6 +477,20 @@ export default function App() {
       <main className="modern-main flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         <WorksheetDashboard selected={selectedWorksheet} onSelect={handleWorksheetSelect} onVisitLoaded={handleWorksheetVisitLoaded} visits={allRecords} omniVisits={reportRecords} teamMasterRows={teamMasterRows} onTeamLoaded={rows => { setTeamMasterRows(rows); setTeamMasterError(''); }} />
         {selectedWorksheet === 'visit' && <>
+        <div role="group" aria-label="Cakupan kunjungan" className="inline-flex gap-1 rounded-xl border border-slate-200 bg-white p-1">
+          {([['Visit Tim', false], ['Visit Personal', true]] as const).map(([label, personal]) => (
+            <button key={label} type="button" aria-pressed={personalView === personal}
+              onClick={() => setPersonalView(personal)}
+              className="rounded-lg px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 aria-pressed:bg-indigo-100 aria-pressed:text-indigo-900">
+              {label}
+            </button>
+          ))}
+        </div>
+        {personalView ? <PersonalVisitDashboard records={allRecords} roster={teamRoster}
+          initialMonth={filters.selectedMonth}
+          initialPerson={filters.selectedSupportTeam?.match(/^(?:MEMBER|AUTO):[^:]+:(.+)$/)?.[1] ||
+            filters.supportTeamMembers.find(name => !name.includes(':')) || filters.consultants[0] || ''}
+        /> : <>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-slate-600">Ringkasan kunjungan mengikuti filter di bawah.</p>
           <button type="button" onClick={() => setIsAIInsightOpen(true)}
@@ -609,6 +625,7 @@ export default function App() {
         {activeTab === 'quality' && (
           <VisitQualityInsights records={filteredRecords} />
         )}
+        </>}
         </>}
       </main>
 
